@@ -4,13 +4,14 @@ namespace aw {
 namespace core {
 namespace ai {
 
+
+enum class TaskResult{
+
+    TASK_RESULT_FAILED = 0,
+    TASK_RESULT_PASSED
+};
+
 class ITask {
-
-    enum class TaskResult{
-
-        TASK_RESULT_FAILED = 0,
-        TASK_RESULT_PASSED
-    };
 
     public:
         
