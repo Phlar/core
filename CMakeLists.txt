@@ -1,4 +1,6 @@
 project(Core)
+cmake_minimum_required(VERSION 3.1.2 FATAL_ERROR)
+
 
 #"Treat warning as errors"
 if(MSVC)
@@ -23,6 +25,7 @@ message(STATUS "BoostDir: ${BOOST_ROOT}")
 find_package(Boost 1.57 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
-cmake_minimum_required(VERSION 3.1.2 FATAL_ERROR)
+
+enable_testing()
 
 add_subdirectory(./ai)
