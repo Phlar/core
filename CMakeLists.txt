@@ -41,4 +41,5 @@ endforeach()
 
 enable_testing()
 
+add_subdirectory(./base)
 add_subdirectory(./ai)
