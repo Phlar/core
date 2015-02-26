@@ -1,13 +1,16 @@
 #pragma once
 
-#include <ICondition.hpp>
+#include "ICondition.hpp"
+
+#include "InterfaceImpl.hpp"
+
 
 namespace aw {
 namespace core {
 namespace ai {
 namespace impl {
 
-class Condition : public ICondition {
+class Condition : public base::InterfaceImpl<ICondition, base::ReferenceCounted> {
 
     public:
 

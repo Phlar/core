@@ -1,8 +1,6 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE "Test_ReferenceCounted"
 
-#pragma warning (disable: 4250)
-
 #include <IReferenceCounted.hpp>
 #include <ReferenceCounted.hpp>
 #include <InterfaceImpl.hpp>
@@ -13,6 +11,8 @@
 
 #include <iostream>
 
+
+#pragma warning (disable: 4250)
 
 namespace aw {
 namespace core {

@@ -1,18 +1,23 @@
 #pragma once
 
-#include "IAction.hpp"
-
 #include "InterfaceImpl.hpp"
 
+#include "IAction.hpp"
 
 namespace aw {
 namespace core {
 namespace ai {
 namespace impl {
 
-class Action : public base::InterfaceImpl<IAction, base::ReferenceCounted> {
+class Action : public base::InterfaceImpl<IAction, base::ReferenceCounted>
+    
+    /*IAction */{
 
     public:
+
+        //! \todo Instead of adding this c'tor rather think of how to re-use the parameterized one
+        //        with having a '&' as input parameter.
+        Action();
 
         Action(const ActionFnc& action);
         virtual ~Action();
@@ -32,4 +37,4 @@ class Action : public base::InterfaceImpl<IAction, base::ReferenceCounted> {
 } // namespace impl
 } // namespace ai
 } // namespace core
-} // namespace aw
+} // namespace ^^aw
