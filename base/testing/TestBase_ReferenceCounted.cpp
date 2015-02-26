@@ -25,7 +25,7 @@ class ISomeClass : public virtual IReferenceCounted {
         virtual int GetReferenceCount() const = 0;
 }; 
 
-class SomeClass : public ISomeClass, public base::ReferenceCounted, public boost::noncopyable
+class SomeClass : public InterfaceImpl<ISomeClass>, public boost::noncopyable
 {    
     public:
 
@@ -84,7 +84,6 @@ BOOST_AUTO_TEST_CASE(TestRefCountedInstances) {
         BOOST_CHECK(alive);
         BOOST_CHECK_EQUAL(instanceA->GetReferenceCount(), 1);
     }
-    
 }
 
 } // namespace base
