@@ -6,3 +6,5 @@ message(STATUS "Found source files for library: " ${BaseCore_Sources})
 
 include_directories(.)
 add_library(LibBaseCore ${BaseCore_Sources} ${BaseCore_Headers})
+
+set_target_properties(LibBaseCore PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

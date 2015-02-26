@@ -16,6 +16,6 @@ foreach(testSourceFile ${BaseCore_Test_Sources})
 	add_executable(${testName} ${testSourceFile})
 	
 	#Link to boost' unit-test framework
-	target_link_libraries(${testName} ${Boost_LIBRARIES} LibAICore)
+	target_link_libraries(${testName} ${Boost_LIBRARIES})
 
 endforeach(testSourceFile)

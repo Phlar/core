@@ -7,28 +7,36 @@ namespace core {
 namespace base {
 
 
-class ReferenceCounted : IReferenceCounted {
+class ReferenceCounted : public virtual IReferenceCounted {
 
     public:
 
         ReferenceCounted()
-        : m_refCount(1) {
+        : m_refCount(0) {
+        }
+
+        virtual ~ReferenceCounted() {
         }
 
         //! Todo: Atomic!
-        void AddReference() {
+        virtual void AddReference() {
 
             ++m_refCount;            
         }
 
         //! Todo: Atomic!
-        void DecreaseReference() {
+        virtual void DecreaseReference() {
 
             --m_refCount;
             if(m_refCount == 0) {
 
                 delete this;
             }
+        }
+
+        int GetRefCount() const {
+
+            return m_refCount;
         }
 
     protected:
