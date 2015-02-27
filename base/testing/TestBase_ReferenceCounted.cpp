@@ -17,6 +17,7 @@
 namespace aw {
 namespace core {
 namespace base {
+namespace testing {
 
 class ISomeClass : public virtual IReferenceCounted {
 
@@ -86,6 +87,7 @@ BOOST_AUTO_TEST_CASE(TestRefCountedInstances) {
     }
 }
 
+} // namespace testing
 } // namespace base
 } // namespace core
 } // namespace aw

@@ -18,7 +18,7 @@ namespace core {
 namespace base {
 
 template<typename IfT, typename TRef = ReferenceCounted>
-class InterfaceImpl : public ReferenceCounted, public IfT {
+class InterfaceImpl : public ReferenceCounted, public virtual IfT {
 
     protected:
 
