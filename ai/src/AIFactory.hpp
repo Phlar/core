@@ -14,6 +14,7 @@ class AIFactory {
         AIFactory();
         virtual ~AIFactory();
 
+        // Todo: Check how to provide default parameters in case of pass by reference!
         IActionPtr createAction(const ActionFnc& action) const;
         IConditionPtr createCondition(const ConditionFnc& condition) const;
 };

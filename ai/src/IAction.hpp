@@ -21,7 +21,7 @@ class IAction : public virtual ITask {
 
     public:
         
-        //! \brief Defines the action to invoke
+        //! \brief Defines the action to invoke.
         virtual void SetAction(const ActionFnc& action) = 0;
 };
 typedef boost::intrusive_ptr<IAction> IActionPtr;

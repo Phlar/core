@@ -2,6 +2,8 @@
 
 #include "IReferenceCounted.hpp"
 
+#include <boost/intrusive_ptr.hpp>
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -21,6 +23,7 @@ class ITask : public virtual base::IReferenceCounted {
         //! get processed.
         virtual TaskResult evaluate() = 0;
 };
+typedef boost::intrusive_ptr<ITask> ITaskPtr;
 
 } // namespace ai
 } // namespace core
