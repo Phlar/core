@@ -2,6 +2,8 @@
 
 #include "Action.hpp"
 #include "Condition.hpp"
+#include "Sequencer.hpp"
+#include "Selector.hpp"
 
 namespace aw {
 namespace core {
@@ -21,6 +23,16 @@ IActionPtr AIFactory::createAction(const ActionFnc& action) const {
 IConditionPtr AIFactory::createCondition(const ConditionFnc& condition) const {
 
     return IConditionPtr(new impl::Condition(condition));
+}
+
+ISequencerPtr AIFactory::createSequencer() const {
+
+    return ISequencerPtr(new impl::Sequencer());
+}
+
+ISelectorPtr AIFactory::createSelector() const {
+
+    return ISelectorPtr(new impl::Selector());
 }
 
 } // namespace ai

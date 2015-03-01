@@ -3,6 +3,7 @@
 namespace aw {
 namespace core {
 namespace ai {
+namespace impl {
 
 TaskContainer::TaskContainer() 
 : m_children() {
@@ -39,6 +40,7 @@ void TaskContainer::RemoveTasks(ITaskPtr task) {
 }
 
 
+} // namespace impl
 } // namespace ai
 } // namespace core
 } // namespace aw

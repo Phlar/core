@@ -17,6 +17,7 @@ class ITaskContainer : public virtual ITask {
         virtual size_t GetNumTasks() const = 0;
 
         //! \brief Adds a task as a new child entry.
+        //! Todo: Check how to react on creating possible cycles.
         virtual void AddTask(ITaskPtr task, bool append = true) = 0;
 
         //! \brief Removes one (or more) tasks.

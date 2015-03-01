@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
 #include "ITaskContainer.hpp"
 
 #include "InterfaceImpl.hpp"
@@ -9,6 +10,7 @@
 namespace aw {
 namespace core {
 namespace ai {
+namespace impl {
 
 class TaskContainer : public base::InterfaceImpl<ITaskContainer, base::ReferenceCounted> {
 
@@ -24,10 +26,10 @@ class TaskContainer : public base::InterfaceImpl<ITaskContainer, base::Reference
         // A Task-container itself cannot be constructed as such
         TaskContainer();
 
-        typedef std::list<ITaskPtr> TaskList;
         TaskList m_children;
 };
 
+} // namespace impl
 } // namespace ai
 } // namespace core
 } // namespace aw

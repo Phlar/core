@@ -22,7 +22,7 @@ class IInstanceableTaskContainer : public virtual ITaskContainer {
 };
 typedef boost::intrusive_ptr<IInstanceableTaskContainer> IInstanceableTaskContainerPtr;
 
-class InstanceableTaskContainer : public TaskContainer, public IInstanceableTaskContainer {
+class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskContainer>, public impl::TaskContainer {
 
     public: 
         InstanceableTaskContainer() {
