@@ -13,7 +13,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public Task {
+class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public impl::Task {
 
     public:
         virtual ~TaskContainer();
