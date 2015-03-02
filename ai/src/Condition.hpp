@@ -2,6 +2,8 @@
 
 #include "ICondition.hpp"
 
+#include "Task.hpp"
+
 #include "InterfaceImpl.hpp"
 
 
@@ -10,7 +12,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class Condition : public base::InterfaceImpl<ICondition, base::ReferenceCounted> {
+class Condition : public base::InterfaceImpl<ICondition>, public Task {
 
     public:
 

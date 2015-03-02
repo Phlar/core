@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
+
 #include "IReferenceCounted.hpp"
 
 #include <boost/intrusive_ptr.hpp>
@@ -9,7 +11,7 @@ namespace core {
 namespace ai {
 
 
-enum class TaskResult{
+enum class TaskResult {
 
     TASK_RESULT_FAILED = 0,
     TASK_RESULT_PASSED
@@ -22,6 +24,10 @@ class ITask : public virtual base::IReferenceCounted {
         //! \brief Calling this invokes the subtree underneath to
         //! get processed.
         virtual TaskResult evaluate() = 0;
+       
+        //! \brief Return all parents of this node
+        virtual TaskList GetParents() const = 0;
+
 };
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
 

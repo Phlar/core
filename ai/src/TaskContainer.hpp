@@ -2,6 +2,7 @@
 
 #include "AIFwdDeclarations.hpp"
 #include "ITaskContainer.hpp"
+#include "Task.hpp"
 
 #include "InterfaceImpl.hpp"
 
@@ -12,7 +13,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class TaskContainer : public base::InterfaceImpl<ITaskContainer, base::ReferenceCounted> {
+class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public Task {
 
     public:
         virtual ~TaskContainer();

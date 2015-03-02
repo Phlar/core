@@ -2,6 +2,7 @@
 
 #include "IAction.hpp"
 
+#include "Task.hpp"
 #include "InterfaceImpl.hpp"
 
 
@@ -10,7 +11,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class Action : public base::InterfaceImpl<IAction, base::ReferenceCounted> {
+class Action : public base::InterfaceImpl<IAction>, public Task {
 
     public:
 
