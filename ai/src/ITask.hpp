@@ -23,7 +23,7 @@ class ITask : public virtual base::IReferenceCounted {
         
         //! \brief Calling this invokes the subtree underneath to
         //! get processed.
-        virtual TaskResult evaluate() = 0;
+        virtual TaskResult evaluate() = 0;                                                                                              
 };
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
 

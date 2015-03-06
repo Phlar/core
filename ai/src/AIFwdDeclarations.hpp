@@ -2,6 +2,7 @@
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/function.hpp>
+#include <boost/uuid/uuid.hpp>
 
 #include <list>
 #include <vector>
@@ -28,8 +29,20 @@ typedef boost::intrusive_ptr<ISequencer> ISequencerPtr;
 class ISelector;
 typedef boost::intrusive_ptr<ISelector> ISelectorPtr;
 
+class IBlackboard;
+typedef boost::intrusive_ptr<IBlackboard> IBlackboardPtr;
+
+class IBlackboardValue;
+typedef boost::intrusive_ptr<IBlackboardValue> IBlackboardValuePtr;
+
+
+typedef boost::uuids::uuid UUID;
+
 typedef std::list<ITaskPtr> TaskList;
 typedef std::vector<ITaskPtr> TaskVector;
+
+typedef std::list<IBlackboardValuePtr> BlackboardValueList;
+typedef std::vector<IBlackboardValuePtr> BlackboardValueVector;
 
 } // namespace ai
 } // namespace core
