@@ -17,5 +17,7 @@ foreach(testSourceFile ${BaseCore_Test_Sources})
 	
 	#Link to boost' unit-test framework
 	target_link_libraries(${testName} ${Boost_LIBRARIES})
+		
+	add_test(NAME ${testName} COMMAND ${testName})
 
 endforeach(testSourceFile)

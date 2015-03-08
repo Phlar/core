@@ -17,5 +17,7 @@ foreach(testSourceFile ${AICore_Test_Sources})
 	
 	#Link to boost' unit-test framework
 	target_link_libraries(${testName} ${Boost_LIBRARIES} LibAICore)
+	
+	add_test(NAME ${testName} COMMAND ${testName})	
 
 endforeach(testSourceFile)
