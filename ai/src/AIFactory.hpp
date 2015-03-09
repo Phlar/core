@@ -22,6 +22,7 @@ class AIFactory {
         IConditionPtr   createCondition(const ConditionFnc& condition) const;
         ISequencerPtr   createSequencer() const;
         ISelectorPtr    createSelector() const;
+        IBlackboardPtr  createBlackboard() const;
 };
 
 } // namespace ai

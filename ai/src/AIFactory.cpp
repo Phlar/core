@@ -4,6 +4,7 @@
 #include "Condition.hpp"
 #include "Sequencer.hpp"
 #include "Selector.hpp"
+#include "Blackboard.hpp"
 
 namespace aw {
 namespace core {
@@ -33,6 +34,11 @@ ISequencerPtr AIFactory::createSequencer() const {
 ISelectorPtr AIFactory::createSelector() const {
 
     return ISelectorPtr(new impl::Selector());
+}
+
+IBlackboardPtr AIFactory::createBlackboard() const {
+
+    return IBlackboardPtr(new impl::Blackboard());
 }
 
 } // namespace ai

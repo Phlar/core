@@ -15,7 +15,10 @@ namespace ai {
 //! while processing the tree. Data is stored in a 
 //! key / value store where key = UUID returned via
 //! IBlackboardValue::GetTypeID() and a collecction
-//! of IBlackboardValues.
+//! of IBlackboardValues. Within a container of a certain type
+//! the values must be unique by ID. However across containers
+//! IDs of values must not be unique.
+//! \todo Check if we shouldn't be more strict on the above statement!
 class IBlackboard : public virtual base::IReferenceCounted {
 
     public:

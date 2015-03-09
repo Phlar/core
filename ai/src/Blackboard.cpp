@@ -22,6 +22,14 @@ void Blackboard::AddValue(IBlackboardValuePtr value) {
         throw std::invalid_argument("Empty value cannot be added to blackboard.");
     }
 
+    if(value->GetTypeID().is_nil()) {
+        throw std::invalid_argument("Value having invalid type-ID cannot be added to blackboard");
+    }
+
+    if(value->GetID().is_nil()) {
+        throw std::invalid_argument("Value having invalid ID cannot be added to blackboard");
+    }
+
     // Insert or retrieve list of values
     std::pair<ValueMap::iterator, bool> insertResult = 
         m_valueMap.insert(std::make_pair(value->GetTypeID(), BlackboardValueList(1, value)));
