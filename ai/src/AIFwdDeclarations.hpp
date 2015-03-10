@@ -17,6 +17,9 @@ typedef boost::intrusive_ptr<ITask> ITaskPtr;
 class ITaskContainer;
 typedef boost::intrusive_ptr<ITask> ITaskContainerPtr;
 
+class ITaskParameter;
+typedef boost::intrusive_ptr<ITaskParameter> ITaskParameterPtr;
+
 class IAction;
 typedef boost::intrusive_ptr<IAction> IActionPtr;
 

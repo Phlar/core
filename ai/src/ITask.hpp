@@ -20,6 +20,9 @@ enum class TaskResult {
 class ITask : public virtual base::IReferenceCounted {
 
     public:
+
+        //! \brief Returns the task's unique ID
+        virtual UUID GetID() const;
         
         //! \brief Calling this invokes the subtree underneath to
         //! get processed.

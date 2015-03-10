@@ -13,14 +13,18 @@ namespace impl {
 class Task : public base::InterfaceImpl<ITask> {
 
     public:
-        virtual ~Task() {
-        };
-        
+        virtual ~Task();
+
+        UUID GetID() const;
+
     protected:
 
         // A task itself cannot be constructed as such
-        Task() {
-        };
+        Task();
+
+    private:
+
+        UUID m_id;
 };
 
 } // namespace impl
