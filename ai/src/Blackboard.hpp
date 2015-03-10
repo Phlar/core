@@ -26,7 +26,7 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
         void AddValue(IBlackboardValuePtr value);
         BlackboardValueList GetValuesByType(const UUID& typeID) const;
         void StoreTaskParameter(ITaskParameterPtr taskParameter);
-        ITaskParameterPtr GetTaskParameter(const UUID& taskID);
+        ITaskParameterPtr GetTaskParameter(const UUID& taskID) const;
         bool RemoveTaskParameter(const UUID& taskID);
         //@}
 

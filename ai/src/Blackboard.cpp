@@ -80,9 +80,9 @@ void Blackboard::StoreTaskParameter(ITaskParameterPtr taskParameter) {
     m_taskParameters[taskParameter->GetAssociatedTaskID()] = taskParameter;
 }
 
-ITaskParameterPtr Blackboard::GetTaskParameter(const UUID& taskID) {
+ITaskParameterPtr Blackboard::GetTaskParameter(const UUID& taskID) const {
 
-    TaskParameterMap::iterator iter = m_taskParameters.find(taskID);
+    TaskParameterMap::const_iterator iter = m_taskParameters.find(taskID);
     if(iter != m_taskParameters.end()) {
         return iter->second;
     }
