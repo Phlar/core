@@ -10,7 +10,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class Task : public base::InterfaceImpl<ITask, base::ReferenceCounted> {
+class Task : public base::InterfaceImpl<ITask> {
 
     public:
         virtual ~Task() {
