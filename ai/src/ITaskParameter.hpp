@@ -27,7 +27,7 @@ class ITaskParameter : public virtual base::IReferenceCounted {
 
         //! \brief Returns the unique identifier of the task this 
         //! parameter structure is associated to.
-        virtual UUID GetAssociatedTaskID() const;
+        virtual UUID GetAssociatedTaskID() const = 0;
 };
 
 typedef boost::intrusive_ptr<ITaskParameter> ITaskParameterPtr;
