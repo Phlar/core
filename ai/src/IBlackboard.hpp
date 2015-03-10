@@ -37,10 +37,11 @@ class IBlackboard : public virtual base::IReferenceCounted {
         virtual void StoreTaskParameter(ITaskParameterPtr taskPArameter) = 0;
 
         //! \brief Performs a lookup for a parameter based on a task-ID.
-        virtual ITaskParameterPtr GetTaskParameter() const;
+        //! \todo Check for non constness due to the lookup in the implementation!
+        virtual ITaskParameterPtr GetTaskParameter(const UUID& taskID) = 0;
 
         //! \brief Removes a task-parameter structure based on a task-ID.
-        virtual bool RemoveTaskParameter(const UUID& taskID);
+        virtual bool RemoveTaskParameter(const UUID& taskID) = 0;
 };
 
 } // namespace ai

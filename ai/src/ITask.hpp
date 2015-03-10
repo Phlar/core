@@ -22,7 +22,7 @@ class ITask : public virtual base::IReferenceCounted {
     public:
 
         //! \brief Returns the task's unique ID
-        virtual UUID GetID() const;
+        virtual UUID GetID() const = 0;
         
         //! \brief Calling this invokes the subtree underneath to
         //! get processed.

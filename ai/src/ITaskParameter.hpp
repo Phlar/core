@@ -4,6 +4,8 @@
 
 #include "IReferenceCounted.hpp"
 
+#include <boost/intrusive_ptr.hpp>
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -19,7 +21,7 @@ namespace ai {
 //! do a lookup for a parameter structure of the task's ID.
 //! \todo: Check whether we could directly keep a reference to the task
 //! itself in here...
-class ITaskParameter : base::IReferenceCounted {
+class ITaskParameter : public virtual base::IReferenceCounted {
 
     public:
 
@@ -27,6 +29,8 @@ class ITaskParameter : base::IReferenceCounted {
         //! parameter structure is associated to.
         virtual UUID GetAssociatedTaskID() const;
 };
+
+typedef boost::intrusive_ptr<ITaskParameter> ITaskParameterPtr;
 
 } // namespace ai
 } // namespace core
