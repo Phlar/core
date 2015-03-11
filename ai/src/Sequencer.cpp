@@ -11,11 +11,11 @@ Sequencer::Sequencer() {
 Sequencer::~Sequencer() {
 }
 
-TaskResult Sequencer::evaluate() {
+TaskResult Sequencer::Evaluate() {
     
     for(ITaskPtr task : m_children) {
 
-        const TaskResult result = task->evaluate();
+        const TaskResult result = task->Evaluate();
         if(result != TaskResult::TASK_RESULT_PASSED) {
             return result;
         }

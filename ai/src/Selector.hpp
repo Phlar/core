@@ -19,7 +19,7 @@ public:
     Selector();
     virtual ~Selector();
 
-    TaskResult evaluate();
+    TaskResult Evaluate();
 };
 
 } // namespace impl

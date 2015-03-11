@@ -31,7 +31,7 @@ class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskCo
         virtual ~InstanceableTaskContainer() {
         }
 
-        TaskResult evaluate() {
+        TaskResult Evaluate() {
 
             return TaskResult::TASK_RESULT_PASSED;
         }

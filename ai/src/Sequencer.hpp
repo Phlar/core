@@ -19,7 +19,7 @@ class Sequencer : public base::InterfaceImpl<ISequencer>, public impl::TaskConta
         Sequencer();
         virtual ~Sequencer();
 
-        TaskResult evaluate();
+        TaskResult Evaluate();
 };
 
 } // namespace impl
