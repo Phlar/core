@@ -22,9 +22,9 @@ class Condition : public base::InterfaceImpl<ICondition>, public Task {
         //! \brief Returns result of the provided evaluation function.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! evaluation function provided.
-        TaskResult Evaluate();
+        TaskResult Evaluate() override;
 
-        void SetCondition(const ConditionFnc& condition);
+        void SetCondition(const ConditionFnc& condition) override;
 
     protected:
 

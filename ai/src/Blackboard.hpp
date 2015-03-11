@@ -23,11 +23,11 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
 
         //@{
         //! Implementations of IBlackboard
-        void AddValue(IBlackboardValuePtr value);
-        BlackboardValueList GetValuesByType(const UUID& typeID) const;
-        void StoreTaskParameter(ITaskParameterPtr taskParameter);
-        ITaskParameterPtr GetTaskParameter(const UUID& taskID) const;
-        bool RemoveTaskParameter(const UUID& taskID);
+        void AddValue(IBlackboardValuePtr value) override;
+        BlackboardValueList GetValuesByType(const UUID& typeID) const override;
+        void StoreTaskParameter(ITaskParameterPtr taskParameter) override;
+        ITaskParameterPtr GetTaskParameter(const UUID& taskID) const override;
+        bool RemoveTaskParameter(const UUID& taskID) override;
         //@}
 
     protected:

@@ -12,8 +12,8 @@ Action::Action(const ActionFnc& action)
 Action::~Action() {
 }
 
-TaskResult Action::Evaluate()
-{
+TaskResult Action::Evaluate() {
+
     if(m_action) {
         return m_action();
     }

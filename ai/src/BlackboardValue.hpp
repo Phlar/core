@@ -32,12 +32,12 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
 
         //!@{
         //! Implemented from IBlackboardValue
-        UUID GetTypeID() const {
+        UUID GetTypeID() const override {
           
             return m_typeID;
         };
 
-        UUID GetID() const {
+        UUID GetID() const override {
 
             return m_id;
         }

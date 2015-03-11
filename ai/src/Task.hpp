@@ -15,7 +15,7 @@ class Task : public base::InterfaceImpl<ITask> {
     public:
         virtual ~Task();
 
-        UUID GetID() const;
+        UUID GetID() const override;
 
     protected:
 

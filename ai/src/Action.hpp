@@ -21,9 +21,9 @@ class Action : public base::InterfaceImpl<IAction>, public Task {
         //! \brief Returns result of the provided action function.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! action function provided.
-        TaskResult Evaluate();
+        TaskResult Evaluate() override;
 
-        void SetAction(const ActionFnc& action);
+        void SetAction(const ActionFnc& action) override;
 
     protected:
 

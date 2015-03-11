@@ -18,9 +18,12 @@ class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public impl::T
     public:
         virtual ~TaskContainer();
 
+        //@{
+        //! Implementations of ITaskContainer
         size_t GetNumTasks() const;
         void AddTask(ITaskPtr task, bool append = true);
         void RemoveTasks(ITaskPtr task);
+        //@}
 
     protected:
 
