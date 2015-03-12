@@ -1,5 +1,7 @@
 #include "Task.hpp"
 
+#include "IBlackboard.hpp"
+
 #include <boost/uuid/random_generator.hpp>
 
 namespace aw {
@@ -19,20 +21,20 @@ UUID Task::GetID() const {
     return m_id;
 }
 
-TaskResult Task::Evaluate() {
+TaskResult Task::Evaluate(IBlackboardPtr blackboard) const {
 
-    preEvaluate();
-    TaskResult result = evaluate();
-    postEvaluate();
+    preEvaluate(blackboard);
+    TaskResult result = evaluate(blackboard);
+    postEvaluate(blackboard);
 
     return result;
 }
 
-void Task::preEvaluate() {
+void Task::preEvaluate(IBlackboardPtr blackboard) const {
 
 }
 
-void Task::postEvaluate() {
+void Task::postEvaluate(IBlackboardPtr blackboard) const {
 
 }
 

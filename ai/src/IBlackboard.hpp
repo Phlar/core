@@ -4,6 +4,8 @@
 
 #include "IReferenceCounted.hpp"
 
+#include <boost/intrusive_ptr.hpp>
+
 #include <list>
 
 
@@ -34,7 +36,7 @@ class IBlackboard : public virtual base::IReferenceCounted {
         virtual BlackboardValueList GetValuesByType(const UUID& typeID) const = 0;
 
         //! \brief Adds or updated a task-parameter structure to the lookup.
-        virtual void StoreTaskParameter(ITaskParameterPtr taskPArameter) = 0;
+        virtual void StoreTaskParameter(ITaskParameterPtr taskParameter) = 0;
 
         //! \brief Performs a lookup for a parameter based on a task-ID.
         virtual ITaskParameterPtr GetTaskParameter(const UUID& taskID) const = 0;
@@ -42,6 +44,8 @@ class IBlackboard : public virtual base::IReferenceCounted {
         //! \brief Removes a task-parameter structure based on a task-ID.
         virtual bool RemoveTaskParameter(const UUID& taskID) = 0;
 };
+
+typedef boost::intrusive_ptr<IBlackboard> IBlackboardPtr;
 
 } // namespace ai
 } // namespace core

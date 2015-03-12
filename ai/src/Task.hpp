@@ -17,7 +17,7 @@ class Task : public base::InterfaceImpl<ITask> {
 
         UUID GetID() const override;
 
-        TaskResult Evaluate() final;
+        TaskResult Evaluate(IBlackboardPtr blackboard) const override final;
 
     protected:
 
@@ -26,10 +26,10 @@ class Task : public base::InterfaceImpl<ITask> {
 
         //! \brief Functions derived implementations can implement.
         //! They will be invoked before and after the actual Evaluate() call.
-        virtual void preEvaluate();
-        virtual void postEvaluate();
+        virtual void preEvaluate(IBlackboardPtr blackboard) const;
+        virtual void postEvaluate(IBlackboardPtr blackboard) const;
 
-        virtual TaskResult evaluate() = 0;
+        virtual TaskResult evaluate(IBlackboardPtr blackboard) const = 0;
 
     private:
 

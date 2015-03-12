@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
 #include "ISequencer.hpp"
 
 #include "TaskContainer.hpp"
@@ -21,7 +22,7 @@ class Sequencer : public base::InterfaceImpl<ISequencer>, public impl::TaskConta
 
     protected:
 
-        TaskResult evaluate() override;
+        TaskResult evaluate(IBlackboardPtr blackboard) const override;
 };
 
 } // namespace impl

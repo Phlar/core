@@ -7,6 +7,7 @@
 
 #include "AIFactory.hpp"
 #include "IAction.hpp"
+#include "IBlackboard.hpp"
 #include "ICondition.hpp"
 #include "ITaskContainer.hpp"
 #include "TaskContainer.hpp"
@@ -33,7 +34,7 @@ class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskCo
 
     protected:
 
-        TaskResult evaluate() override {
+        TaskResult evaluate(IBlackboardPtr blackboard) const override {
 
             return TaskResult::TASK_RESULT_PASSED;
         }

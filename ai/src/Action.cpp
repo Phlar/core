@@ -1,5 +1,8 @@
 #include "Action.hpp"
 
+#include "IBlackboard.hpp"
+
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -19,7 +22,7 @@ void Action::SetAction(const ActionFnc& action) {
     m_action = action;
 }
 
-TaskResult Action::evaluate() {
+TaskResult Action::evaluate(IBlackboardPtr blackboard) const {
 
     if(m_action) {
         return m_action();

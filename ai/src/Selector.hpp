@@ -1,9 +1,9 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
 #include "ISelector.hpp"
 
 #include "TaskContainer.hpp"
-
 #include "InterfaceImpl.hpp"
 
 
@@ -21,7 +21,7 @@ class Selector : public base::InterfaceImpl<ISelector>, public impl::TaskContain
 
     protected:
 
-        TaskResult evaluate() override;
+        TaskResult evaluate(IBlackboardPtr blackboard) const override;
 };
 
 } // namespace impl

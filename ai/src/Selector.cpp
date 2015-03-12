@@ -1,5 +1,7 @@
 #include "Selector.hpp"
 
+#include "IBlackboard.hpp"
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -11,7 +13,7 @@ Selector::Selector() {
 Selector::~Selector() {
 }
 
-TaskResult Selector::evaluate() {
+TaskResult Selector::evaluate(IBlackboardPtr blackboard) const {
 
     if(m_children.empty()) {
 
@@ -20,7 +22,7 @@ TaskResult Selector::evaluate() {
 
     for(ITaskPtr task : m_children) {
 
-        const TaskResult result = task->Evaluate();
+        const TaskResult result = task->Evaluate(blackboard);
         if(result == TaskResult::TASK_RESULT_PASSED) {
             return result;
         }
