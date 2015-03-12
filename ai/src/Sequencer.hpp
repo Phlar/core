@@ -19,7 +19,9 @@ class Sequencer : public base::InterfaceImpl<ISequencer>, public impl::TaskConta
         Sequencer();
         virtual ~Sequencer();
 
-        TaskResult Evaluate() override;
+    protected:
+
+        TaskResult evaluate() override;
 };
 
 } // namespace impl

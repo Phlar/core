@@ -20,7 +20,7 @@ class ICondition : public virtual ITask {
     public:
 
         //! \brief Defines the condition to check.
-        virtual void SetCondition(const ConditionFnc& condition) = 0;        
+        virtual void SetCondition(const ConditionFnc& condition) = 0;
 };
 typedef boost::intrusive_ptr<ICondition> IConditionPtr;
 

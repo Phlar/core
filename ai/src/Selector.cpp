@@ -11,7 +11,7 @@ Selector::Selector() {
 Selector::~Selector() {
 }
 
-TaskResult Selector::Evaluate() {
+TaskResult Selector::evaluate() {
 
     if(m_children.empty()) {
 

@@ -11,7 +11,7 @@ Sequencer::Sequencer() {
 Sequencer::~Sequencer() {
 }
 
-TaskResult Sequencer::Evaluate() {
+TaskResult Sequencer::evaluate() {
     
     for(ITaskPtr task : m_children) {
 

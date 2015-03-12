@@ -12,15 +12,6 @@ Action::Action(const ActionFnc& action)
 Action::~Action() {
 }
 
-TaskResult Action::Evaluate() {
-
-    if(m_action) {
-        return m_action();
-    }
-
-    return TaskResult::TASK_RESULT_PASSED;
-}
-
 void Action::SetAction(const ActionFnc& action) {
 
     //! Todo: Log in case of an empty functor passed.
@@ -28,6 +19,14 @@ void Action::SetAction(const ActionFnc& action) {
     m_action = action;
 }
 
+TaskResult Action::evaluate() {
+
+    if(m_action) {
+        return m_action();
+    }
+
+    return TaskResult::TASK_RESULT_PASSED;
+}
 
 
 } // namespace impl

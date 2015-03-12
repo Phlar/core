@@ -18,14 +18,14 @@ class Action : public base::InterfaceImpl<IAction>, public Task {
         Action(const ActionFnc& action);
         virtual ~Action();
 
-        //! \brief Returns result of the provided action function.
-        //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
-        //! action function provided.
-        TaskResult Evaluate() override;
-
         void SetAction(const ActionFnc& action) override;
 
     protected:
+
+        //! \brief Returns result of the provided action function.
+        //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
+        //! action function provided.
+        TaskResult evaluate() override;
 
         ActionFnc m_action;
 };

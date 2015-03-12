@@ -19,6 +19,23 @@ UUID Task::GetID() const {
     return m_id;
 }
 
+TaskResult Task::Evaluate() {
+
+    preEvaluate();
+    TaskResult result = evaluate();
+    postEvaluate();
+
+    return result;
+}
+
+void Task::preEvaluate() {
+
+}
+
+void Task::postEvaluate() {
+
+}
+
 } // namespace impl
 } // namespace ai
 } // namespace core

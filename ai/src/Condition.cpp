@@ -12,7 +12,7 @@ Condition::Condition(const ConditionFnc& condition)
 Condition::~Condition() {
 }
 
-TaskResult Condition::Evaluate()
+TaskResult Condition::evaluate()
 {
     if(m_condition) {
         return m_condition();

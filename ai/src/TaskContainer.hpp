@@ -20,9 +20,9 @@ class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public impl::T
 
         //@{
         //! Implementations of ITaskContainer
-        size_t GetNumTasks() const;
-        void AddTask(ITaskPtr task, bool append = true);
-        void RemoveTasks(ITaskPtr task);
+        size_t GetNumTasks() const override;
+        void AddTask(ITaskPtr task, bool append = true) override;
+        void RemoveTasks(ITaskPtr task) override;
         //@}
 
     protected:

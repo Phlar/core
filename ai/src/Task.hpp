@@ -17,10 +17,19 @@ class Task : public base::InterfaceImpl<ITask> {
 
         UUID GetID() const override;
 
+        TaskResult Evaluate() final;
+
     protected:
 
         // A task itself cannot be constructed as such
         Task();
+
+        //! \brief Functions derived implementations can implement.
+        //! They will be invoked before and after the actual Evaluate() call.
+        virtual void preEvaluate();
+        virtual void postEvaluate();
+
+        virtual TaskResult evaluate() = 0;
 
     private:
 

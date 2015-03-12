@@ -19,14 +19,14 @@ class Condition : public base::InterfaceImpl<ICondition>, public Task {
         Condition(const ConditionFnc& condition);
         virtual ~Condition();
 
-        //! \brief Returns result of the provided evaluation function.
-        //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
-        //! evaluation function provided.
-        TaskResult Evaluate() override;
-
         void SetCondition(const ConditionFnc& condition) override;
 
     protected:
+
+        //! \brief Returns result of the provided evaluation function.
+        //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
+        //! evaluation function provided.
+        TaskResult evaluate() override;
 
         ConditionFnc m_condition;
 };

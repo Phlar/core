@@ -14,12 +14,14 @@ namespace impl {
 
 class Selector : public base::InterfaceImpl<ISelector>, public impl::TaskContainer {
 
-public:
+    public:
 
-    Selector();
-    virtual ~Selector();
+        Selector();
+        virtual ~Selector();
 
-    TaskResult Evaluate() override;
+    protected:
+
+        TaskResult evaluate() override;
 };
 
 } // namespace impl
