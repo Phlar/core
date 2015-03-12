@@ -1,6 +1,7 @@
 #include "Task.hpp"
 
 #include "IBlackboard.hpp"
+#include "ITaskParameter.hpp"
 
 #include <boost/uuid/random_generator.hpp>
 
@@ -28,6 +29,12 @@ TaskResult Task::Evaluate(IBlackboardPtr blackboard) const {
     postEvaluate(blackboard);
 
     return result;
+}
+
+ITaskParameterPtr Task::CreateTaskParameter() const {
+
+    // By default no parameter-structure is returned.
+    return ITaskParameterPtr();
 }
 
 void Task::preEvaluate(IBlackboardPtr blackboard) const {

@@ -15,10 +15,14 @@ class Task : public base::InterfaceImpl<ITask> {
     public:
         virtual ~Task();
 
+        //!@{
+        //! Implmentations of ITask interface
         UUID GetID() const override;
-
         TaskResult Evaluate(IBlackboardPtr blackboard) const override final;
+        ITaskParameterPtr CreateTaskParameter() const override;
+        //!@}
 
+        
     protected:
 
         // A task itself cannot be constructed as such

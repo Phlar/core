@@ -12,7 +12,7 @@ namespace ai {
 
 //! \brief In order to be able to reuse behavior trees by multiple users,
 //! there must not be any data kept within a task that is required to
-//! control the flow down the tree. For example, when coming back to selector
+//! control the flow down the tree. For example, when coming back to a selector
 //! node from a sub-tree this selector node has to know the next child to
 //! to process. As storage in the selector node itself would interfere
 //! with the execution of the tree by someone else, we will use this parameter
