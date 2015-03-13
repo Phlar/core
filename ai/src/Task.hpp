@@ -18,7 +18,7 @@ class Task : public base::InterfaceImpl<ITask> {
         //!@{
         //! Implmentations of ITask interface
         UUID GetID() const override;
-        TaskResult Evaluate(IBlackboardPtr blackboard) const override final;
+        TaskResult Evaluate(IBlackboardPtr blackboard) const override; /*final*/
         ITaskParameterPtr CreateTaskParameter() const override;
         //!@}
 

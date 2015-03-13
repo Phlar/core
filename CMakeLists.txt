@@ -22,7 +22,7 @@ set(3RD_PARTY_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/ CACHE PATH "Roo
 
 # Try resolving the BOOST libraries
 set(BOOST_ROOT D:/Devel/3rdParty/boost_1_57_0/)
-set(Boost_USE_STATIC_LIBS ON)
+set(BOOST_ALL_DYN_LINK ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 message(STATUS "BoostDir: ${BOOST_ROOT}")
@@ -38,6 +38,10 @@ message(STATUS "Boost Libraries:")
 foreach(lib ${Boost_LIBRARIES})
         message(STATUS ${lib})
 endforeach()
+
+#Resolve turle mock
+set(TURTLE_ROOT D:/Devel/3rdParty/turtle-1.2.6)
+include_directories(${TURTLE_ROOT}/include)
 
 enable_testing()
 
