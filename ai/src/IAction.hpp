@@ -15,7 +15,7 @@ namespace ai {
 typedef boost::function<TaskResult()> ActionFnc;
 
 //! \brief 'Leaf' element that triggers a certain action - if set 
-//! evaluate() will return the action's result. Otherwise TASK_RESULT_PASSED
+//! Evaluate() will return the action's result. Otherwise TASK_RESULT_PASSED
 //! will be returned.
 class IAction : public virtual ITask {
 

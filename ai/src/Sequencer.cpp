@@ -1,5 +1,8 @@
 #include "Sequencer.hpp"
 
+#include "IBlackboard.hpp"
+
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -11,11 +14,11 @@ Sequencer::Sequencer() {
 Sequencer::~Sequencer() {
 }
 
-TaskResult Sequencer::evaluate() {
+TaskResult Sequencer::evaluate(IBlackboardPtr blackboard) const {
     
     for(ITaskPtr task : m_children) {
 
-        const TaskResult result = task->evaluate();
+        const TaskResult result = task->Evaluate(blackboard);
         if(result != TaskResult::TASK_RESULT_PASSED) {
             return result;
         }

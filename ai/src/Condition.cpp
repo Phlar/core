@@ -1,5 +1,7 @@
 #include "Condition.hpp"
 
+#include "IBlackboard.hpp"
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -12,7 +14,7 @@ Condition::Condition(const ConditionFnc& condition)
 Condition::~Condition() {
 }
 
-TaskResult Condition::evaluate()
+TaskResult Condition::evaluate(IBlackboardPtr blackboard) const
 {
     if(m_condition) {
         return m_condition();

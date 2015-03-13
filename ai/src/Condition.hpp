@@ -1,9 +1,9 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
 #include "ICondition.hpp"
 
 #include "Task.hpp"
-
 #include "InterfaceImpl.hpp"
 
 
@@ -19,14 +19,14 @@ class Condition : public base::InterfaceImpl<ICondition>, public Task {
         Condition(const ConditionFnc& condition);
         virtual ~Condition();
 
+        void SetCondition(const ConditionFnc& condition) override;
+
+    protected:
+
         //! \brief Returns result of the provided evaluation function.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! evaluation function provided.
-        TaskResult evaluate();
-
-        void SetCondition(const ConditionFnc& condition);
-
-    protected:
+        TaskResult evaluate(IBlackboardPtr blackboard) const override;
 
         ConditionFnc m_condition;
 };

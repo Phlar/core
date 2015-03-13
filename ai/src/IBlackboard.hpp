@@ -4,6 +4,8 @@
 
 #include "IReferenceCounted.hpp"
 
+#include <boost/intrusive_ptr.hpp>
+
 #include <list>
 
 
@@ -19,6 +21,8 @@ namespace ai {
 //! the values must be unique by ID. However across containers
 //! IDs of values must not be unique.
 //! \todo Check if we shouldn't be more strict on the above statement!
+//! Moreover this container also stores all task-relevant data
+//! a tasks needs in order to be processed. \see ITaskParameter.
 class IBlackboard : public virtual base::IReferenceCounted {
 
     public:
@@ -31,7 +35,17 @@ class IBlackboard : public virtual base::IReferenceCounted {
         //! \brief Returns all values matching by type-ID.
         virtual BlackboardValueList GetValuesByType(const UUID& typeID) const = 0;
 
+        //! \brief Adds or updated a task-parameter structure to the lookup.
+        virtual void StoreTaskParameter(ITaskParameterPtr taskParameter) = 0;
+
+        //! \brief Performs a lookup for a parameter based on a task-ID.
+        virtual ITaskParameterPtr GetTaskParameter(const UUID& taskID) const = 0;
+
+        //! \brief Removes a task-parameter structure based on a task-ID.
+        virtual bool RemoveTaskParameter(const UUID& taskID) = 0;
 };
+
+typedef boost::intrusive_ptr<IBlackboard> IBlackboardPtr;
 
 } // namespace ai
 } // namespace core
