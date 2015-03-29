@@ -7,7 +7,6 @@
 #include <boost/function.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-
 namespace aw {
 namespace core {
 namespace ai {
