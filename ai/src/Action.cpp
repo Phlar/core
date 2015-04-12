@@ -25,7 +25,7 @@ void Action::SetAction(const ActionFnc& action) {
 TaskResult Action::evaluate(IBlackboardPtr blackboard) const {
 
     if(m_action) {
-        return m_action();
+        return m_action(blackboard);
     }
 
     return TaskResult::TASK_RESULT_PASSED;
