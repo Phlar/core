@@ -32,6 +32,26 @@ boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
         (new BlackboardValue<T::type>(defaultValue, T::semanticID));
 }
 
+template<typename T>
+const T& requireSingleBlackBoardValue(IBlackboardPtr blackboard, const UUID& semanticID) {
+
+    if(!blackboard) {
+        throw std::invalid_argument("Invalid blackboard to read value from.");
+    }
+
+    auto values = blackboard->GetValuesByType(semanticID);
+    if(values.size() != 1) {
+        throw std::logic_error("Expected exactly one value.");
+    }
+
+    auto castedValue = boost::dynamic_pointer_cast<BlackboardValue<T>>(values.front());
+    if(!castedValue) ??<
+        throw std::logic_error("Cannot cast blackboard value to target type.");
+    }
+
+    return castedValue->GetValue();
+}
+
 } // namespace support
 } // namespace ai
 } // namespace core
