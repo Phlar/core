@@ -32,6 +32,15 @@ boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
         (new BlackboardValue<T::type>(defaultValue, T::semanticID));
 }
 
+IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const UUID& semanticID) {
+
+    if(!blackboard) {
+        throw std::invalid_argument("Invalid blackboard to read value from.");
+    }
+
+    return blackboard->GetValue(semanticID);
+}
+
 template<typename T>
 T& castBlackboardValueToType(IBlackboardValuePtr blackBoardValue) {
 
@@ -69,6 +78,6 @@ T& getTypedValue(IBlackboardPtr blackboard, const UUID& semanticID) {
 
 //! \brief Convenience macro easing the definition of blackboard-value types.
 #define BLACKBOARD_TYPE(NAME, TYPE, UUID)                                           \
-    typedef support::SemanticTypeTrait<TYPE, UUID> NAME##Trait;                     \
-    typedef support::BlackboardValue<NAME##Trait::type> Blackboard##NAME##Value;    \
+    typedef support::SemanticTypeTrait<TYPE, UUID> NAME;                            \
+    typedef support::BlackboardValue<NAME::type> Blackboard##NAME##Value;           \
     typedef boost::intrusive_ptr<Blackboard##NAME##Value> NAME##Ptr;
