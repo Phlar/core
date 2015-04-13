@@ -19,7 +19,7 @@ namespace ai {
 //! IBlackboardValue::GetTypeID() and a collecction
 //! of IBlackboardValues. Within a container of a certain type
 //! the values must be unique by ID. However across containers
-//! IDs of values must not be unique.
+//! IDs of values need not be unique.
 //! \todo Check if we shouldn't be more strict on the above statement!
 //! Moreover this container also stores all task-relevant data
 //! a tasks needs in order to be processed. \see ITaskParameter.
@@ -29,11 +29,12 @@ class IBlackboard : public virtual base::IReferenceCounted {
 
         //! \brief Adds a value to the board.
         //! Value must not be null nor a duplicate.
-        //! New values are appended to the collection.
-        virtual void AddValue(IBlackboardValuePtr value) = 0;
+        //! In case of a value with the same semantic identifier is already
+        //! to the blackboard, it gets updated.
+        virtual void SetValue(IBlackboardValuePtr value) = 0;
 
         //! \brief Returns all values matching by type-ID.
-        virtual BlackboardValueList GetValuesByType(const UUID& typeID) const = 0;
+        virtual IBlackboardValuePtr GetValue(const UUID& semanticTypeID) const = 0;
 
         //! \brief Adds or updated a task-parameter structure to the lookup.
         virtual void StoreTaskParameter(ITaskParameterPtr taskParameter) = 0;

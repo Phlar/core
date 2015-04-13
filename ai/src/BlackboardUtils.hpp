@@ -33,26 +33,42 @@ boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
 }
 
 template<typename T>
-const T& requireSingleBlackBoardValue(IBlackboardPtr blackboard, const UUID& semanticID) {
+T& castBlackboardValueToType(IBlackboardValuePtr blackBoardValue) {
+
+    if(!blackBoardValue) {
+        throw std::invalid_argument("Invalid blackboard-value to retrieve value from.");
+    }
+
+    auto castedValue = boost::dynamic_pointer_cast<BlackboardValue<T>>(blackBoardValue);
+    if(!castedValue) {
+        throw std::logic_error("Cannot cast blackboard value to target type.");
+    }
+    return castedValue->GetValue();
+}
+
+template<typename T>
+T& getTypedValue(IBlackboardPtr blackboard, const UUID& semanticID) {
 
     if(!blackboard) {
         throw std::invalid_argument("Invalid blackboard to read value from.");
     }
 
-    auto values = blackboard->GetValuesByType(semanticID);
-    if(values.size() != 1) {
-        throw std::logic_error("Expected exactly one value.");
+    IBlackboardValuePtr blackBoardValue = blackboard->GetValue(semanticID);
+    if(!blackBoardValue) {
+        throw std::logic_error("No value listed on black-board matching the semantic type-ID.");
     }
 
-    auto castedValue = boost::dynamic_pointer_cast<BlackboardValue<T>>(values.front());
-    if(!castedValue) ??<
-        throw std::logic_error("Cannot cast blackboard value to target type.");
-    }
-
-    return castedValue->GetValue();
+    return castBlackboardValueToType<T>(blackBoardValue);
 }
 
 } // namespace support
 } // namespace ai
 } // namespace core
 } // namespace aw
+
+
+//! \brief Convenience macro easing the definition of blackboard-value types.
+#define BLACKBOARD_TYPE(NAME, TYPE, UUID)                                           \
+    typedef support::SemanticTypeTrait<TYPE, UUID> NAME##Trait;                     \
+    typedef support::BlackboardValue<NAME##Trait::type> Blackboard##NAME##Value;    \
+    typedef boost::intrusive_ptr<Blackboard##NAME##Value> NAME##Ptr;
