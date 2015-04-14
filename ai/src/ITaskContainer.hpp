@@ -21,9 +21,10 @@ class ITaskContainer : public virtual ITask {
         virtual void AddTask(ITaskPtr task, bool append = true) = 0;
 
         //! \brief Removes one (or more) tasks.
+        //! Todo: Check whether we should allow removal at all!
         virtual void RemoveTasks(ITaskPtr task) = 0;
 };
 
 } // namespace ai
-} // namespace ai     
+} // namespace core
 } // namespace aw

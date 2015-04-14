@@ -23,8 +23,8 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
 
         //@{
         //! Implementations of IBlackboard
-        void AddValue(IBlackboardValuePtr value) override;
-        BlackboardValueList GetValuesByType(const UUID& typeID) const override;
+        void SetValue(IBlackboardValuePtr value) override;
+        IBlackboardValuePtr GetValue(const UUID& semanticID) const override;
 
         void StoreTaskParameter(ITaskParameterPtr taskParameter) override;
         ITaskParameterPtr GetTaskParameter(const UUID& taskID) const override;
@@ -33,8 +33,8 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
 
     protected:
 
-        //! Use a map from type-ID to a ordered list of values.
-        typedef std::map<UUID, BlackboardValueList> ValueMap;
+        //! Use a map from a semantic type-ID to a value.
+        typedef std::map<UUID, IBlackboardValuePtr> ValueMap;
         ValueMap m_valueMap;
 
         //! Mapping from the associated task ID to the task-parameter.

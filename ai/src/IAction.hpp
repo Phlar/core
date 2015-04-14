@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AIFwdDeclarations.hpp"
 #include "ITask.hpp"
 
 #include "IReferenceCounted.hpp"
@@ -7,12 +8,11 @@
 #include <boost/function.hpp>
 #include <boost/intrusive_ptr.hpp>
 
-
 namespace aw {
 namespace core {
 namespace ai {
 
-typedef boost::function<TaskResult()> ActionFnc;
+typedef boost::function<TaskResult(IBlackboardPtr)> ActionFnc;
 
 //! \brief 'Leaf' element that triggers a certain action - if set 
 //! Evaluate() will return the action's result. Otherwise TASK_RESULT_PASSED

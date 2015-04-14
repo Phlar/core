@@ -18,7 +18,7 @@ Blackboard::Blackboard()
 Blackboard::~Blackboard() {
 }
 
-void Blackboard::AddValue(IBlackboardValuePtr value) {
+void Blackboard::SetValue(IBlackboardValuePtr value) {
 
     if(!value) {
         throw std::invalid_argument("Empty value cannot be added to blackboard.");
@@ -32,38 +32,17 @@ void Blackboard::AddValue(IBlackboardValuePtr value) {
         throw std::invalid_argument("Value having invalid ID cannot be added to blackboard");
     }
 
-    // Insert or retrieve list of values
-    std::pair<ValueMap::iterator, bool> insertResult = 
-        m_valueMap.insert(std::make_pair(value->GetTypeID(), BlackboardValueList(1, value)));
-
-    // There's already elements listed with the type-ID...
-    if(!insertResult.second)
-    {
-        // ...check whether the value with the ID is already in the container
-        BlackboardValueList& valueContainer = (insertResult.first)->second;
-        if(std::find_if(valueContainer.begin(), valueContainer.end(), 
-            [&value](const IBlackboardValuePtr& findValue) -> bool 
-            {
-                return findValue->GetID() == value->GetID();
-            }) != valueContainer.end()) {
-
-            throw std::logic_error("Value already listed in blackboard.");
-
-        } else {
-
-            valueContainer.push_back(value);
-        }
-    }  
+    m_valueMap[value->GetTypeID()] = value;
 }
 
-BlackboardValueList Blackboard::GetValuesByType(const UUID& typeID) const {
+IBlackboardValuePtr Blackboard::GetValue(const UUID& semanticID) const {
 
-    ValueMap::const_iterator findIter = m_valueMap.find(typeID);
+    ValueMap::const_iterator findIter = m_valueMap.find(semanticID);
     if(findIter != m_valueMap.end()) {
         return findIter->second;
     }
 
-    return BlackboardValueList();
+    return IBlackboardValuePtr();
 }
 
 void Blackboard::StoreTaskParameter(ITaskParameterPtr taskParameter) {

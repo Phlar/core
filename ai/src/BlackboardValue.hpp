@@ -48,6 +48,11 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
             return m_value;
         }
 
+        T& GetValue() {
+
+            return m_value;
+        }
+
     protected:
         
         virtual ~BlackboardValue() {

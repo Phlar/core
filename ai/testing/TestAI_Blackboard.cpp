@@ -75,9 +75,7 @@ struct AIBlackboardFixture {
 
     AIBlackboardFixture()
     : valueA_1(new BlackboardTestValue(10, UUIDTypeA))
-    , valueA_2(new BlackboardTestValue(11, UUIDTypeA))
     , valueB_1(new BlackboardTestValue(20, UUIDTypeB))
-    , valueB_2(new BlackboardTestValue(21, UUIDTypeB))
     , valueC_1(new BlackboardTestValue(30, UUIDTypeC))
     , taskParameter_1(new BlackboardTestTaskParameter(UUIDTaskA))
     , taskParameter_2(new BlackboardTestTaskParameter(UUIDTaskB))
@@ -88,9 +86,7 @@ struct AIBlackboardFixture {
     }
 
     BlackboardTestValuePtr valueA_1;
-    BlackboardTestValuePtr valueA_2;
     BlackboardTestValuePtr valueB_1;
-    BlackboardTestValuePtr valueB_2;
     BlackboardTestValuePtr valueC_1;
 
     BlackboardTestTaskParameterPtr taskParameter_1;
@@ -104,59 +100,42 @@ struct AIBlackboardFixture {
 
 BOOST_FIXTURE_TEST_CASE(AddValuesToBlackboard, AIBlackboardFixture) {
 
-    BOOST_REQUIRE_NO_THROW(blackboard->AddValue(valueA_1));
-    BOOST_REQUIRE_NO_THROW(blackboard->AddValue(valueA_2));
-    BOOST_REQUIRE_NO_THROW(blackboard->AddValue(valueB_1));
-    BOOST_REQUIRE_NO_THROW(blackboard->AddValue(valueB_2));
-    BOOST_REQUIRE_NO_THROW(blackboard->AddValue(valueC_1));
+    BOOST_REQUIRE_NO_THROW(blackboard->SetValue(valueA_1));
+    BOOST_REQUIRE_NO_THROW(blackboard->SetValue(valueB_1));
 
     // Retrieve all expected entries for certain types.
     {
-        std::list<IBlackboardValuePtr> referenceEntries = boost::assign::list_of
-            (valueA_1)(valueA_2);
-        std::list<IBlackboardValuePtr> blackboardEntries = blackboard->GetValuesByType(UUIDTypeA);
-        BOOST_CHECK_EQUAL_COLLECTIONS(blackboardEntries.begin(), blackboardEntries.end(),
-            referenceEntries.begin(), referenceEntries.end());
+        IBlackboardValuePtr blackboardEntry = blackboard->GetValue(UUIDTypeA);
+        BOOST_CHECK_EQUAL(blackboardEntry, valueA_1);
     }
     {
-        std::list<IBlackboardValuePtr> referenceEntries = boost::assign::list_of
-            (valueB_1)(valueB_2);
-        std::list<IBlackboardValuePtr> blackboardEntries = blackboard->GetValuesByType(UUIDTypeB);
-        BOOST_CHECK_EQUAL_COLLECTIONS(blackboardEntries.begin(), blackboardEntries.end(),
-            referenceEntries.begin(), referenceEntries.end());
+        IBlackboardValuePtr blackboardEntry = blackboard->GetValue(UUIDTypeB);
+        BOOST_CHECK_EQUAL(blackboardEntry, valueB_1);
     }
     {
-        std::list<IBlackboardValuePtr> referenceEntries = boost::assign::list_of(valueC_1);
-        std::list<IBlackboardValuePtr> blackboardEntries = blackboard->GetValuesByType(UUIDTypeC);
-        BOOST_CHECK_EQUAL_COLLECTIONS(blackboardEntries.begin(), blackboardEntries.end(),
-            referenceEntries.begin(), referenceEntries.end());
+        // There should not be a value of this ID.
+        IBlackboardValuePtr blackboardEntry = blackboard->GetValue(UUIDTypeC);
+        BOOST_CHECK_EQUAL(blackboardEntry, IBlackboardValuePtr());
     }
 }
 
 BOOST_FIXTURE_TEST_CASE(AddingInvalidValueShouldThrow, AIBlackboardFixture) {
 
-    BOOST_CHECK_THROW(blackboard->AddValue(IBlackboardValuePtr()), std::invalid_argument);
+    BOOST_CHECK_THROW(blackboard->SetValue(IBlackboardValuePtr()), std::invalid_argument);
 }
 
 BOOST_FIXTURE_TEST_CASE(AddingValueWithInvalidTypeIDShouldThrow, AIBlackboardFixture) {
 
     // Modify a value from the fixture thus its type-ID becomes "empty"
     valueA_1->SetTypeID(UUID());
-    BOOST_CHECK_THROW(blackboard->AddValue(valueA_1), std::invalid_argument);
+    BOOST_CHECK_THROW(blackboard->SetValue(valueA_1), std::invalid_argument);
 }
 
 BOOST_FIXTURE_TEST_CASE(AddingValueWithInvalidIDSHouldThrow, AIBlackboardFixture) {
 
     // Modify a value from the fixture thus its type-ID becomes "empty"
     valueA_1->SetID(boost::uuids::uuid());
-    BOOST_CHECK_THROW(blackboard->AddValue(valueA_1), std::invalid_argument);
-}
-
-BOOST_FIXTURE_TEST_CASE(AddingValueWithSameIDTwiceShouldThrow, AIBlackboardFixture) {
-
-    blackboard->AddValue(valueA_1);
-    valueA_2->SetID(valueA_1->GetID());
-    BOOST_CHECK_THROW(blackboard->AddValue(valueA_2), std::logic_error);
+    BOOST_CHECK_THROW(blackboard->SetValue(valueA_1), std::invalid_argument);
 }
 
 BOOST_FIXTURE_TEST_CASE(AddEmptyTaskParameterShouldThrow, AIBlackboardFixture) {

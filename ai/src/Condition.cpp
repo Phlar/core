@@ -17,7 +17,7 @@ Condition::~Condition() {
 TaskResult Condition::evaluate(IBlackboardPtr blackboard) const
 {
     if(m_condition) {
-        return m_condition();
+        return m_condition(blackboard);
     }
 
     return TaskResult::TASK_RESULT_PASSED;

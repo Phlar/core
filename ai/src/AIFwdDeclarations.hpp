@@ -44,9 +44,6 @@ typedef boost::uuids::uuid UUID;
 typedef std::list<ITaskPtr> TaskList;
 typedef std::vector<ITaskPtr> TaskVector;
 
-typedef std::list<IBlackboardValuePtr> BlackboardValueList;
-typedef std::vector<IBlackboardValuePtr> BlackboardValueVector;
-
 } // namespace ai
 } // namespace core
 } // namespace aw
