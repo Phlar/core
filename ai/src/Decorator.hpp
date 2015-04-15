@@ -1,6 +1,9 @@
 #pragma once
 
 #include "IDecorator.hpp"
+#include "IBlackboard.hpp"
+
+#include "TaskContainer.hpp"
 
 #include "InterfaceImpl.hpp"
 
@@ -11,25 +14,30 @@ namespace ai {
 namespace impl {
 
 
-class Decorator : public base::InterfaceImpl<IDecorator> {
+class Decorator : public base::InterfaceImpl<IDecorator>, public impl::TaskContainer {
 
     public:
 
         virtual ~Decorator();
 
-        void SetTask(ITaskPtr task);
-        TaskResult evaluate();
+        //@{
+        //! Implementation of IDecorator 
+        void SetDecoratedTask(ITaskPtr task);
+        ITaskPtr GetDecoratedTask() const;
+        //@}
 
     protected:
 
-        Decorator();
+        //! \brief Helper derived decorators can invoke to execute
+        //! decorated tasks down the chain.
+        TaskResult evaluateDecoratedTask(IBlackboardPtr blackboard);
 
-        virtual void preEvaluate();
-        virtual void postEvaluate(TaskResult& result);
+        //! Disable direct construction of a decorator itself.
+        Decorator(ITaskPtr decoratedTask = ITaskPtr());
 
     private:
 
-       ITaskPtr m_task;
+        ITaskPtr m_decoratedTask;
 };
 
 } // namespace impl

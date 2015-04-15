@@ -15,15 +15,13 @@ Sequencer::~Sequencer() {
 }
 
 TaskResult Sequencer::evaluate(IBlackboardPtr blackboard) const {
-    
-    for(ITaskPtr task : m_children) {
 
+    for(ITaskPtr task : m_children) {
         const TaskResult result = task->Evaluate(blackboard);
         if(result != TaskResult::TASK_RESULT_PASSED) {
             return result;
         }
     }
-
     return TaskResult::TASK_RESULT_PASSED;
 }
 

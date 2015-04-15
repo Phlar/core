@@ -22,7 +22,6 @@ class Task : public base::InterfaceImpl<ITask> {
         ITaskParameterPtr CreateTaskParameter() const override;
         //!@}
 
-        
     protected:
 
         // A task itself cannot be constructed as such

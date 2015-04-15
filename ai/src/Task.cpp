@@ -38,11 +38,9 @@ ITaskParameterPtr Task::CreateTaskParameter() const {
 }
 
 void Task::preEvaluate(IBlackboardPtr blackboard) const {
-
 }
 
 void Task::postEvaluate(IBlackboardPtr blackboard) const {
-
 }
 
 } // namespace impl

@@ -6,35 +6,30 @@ namespace ai {
 namespace impl {
 
 
-Decorator::Decorator()
-: m_task() {
+Decorator::Decorator(ITaskPtr decoratedTask)
+: m_decoratedTask(decoratedTask) {
 }
 
 Decorator::~Decorator() {
 }
 
-void Decorator::SetTask(ITaskPtr task) {
+void Decorator::SetDecoratedTask(ITaskPtr task) {
 
     // Todo: Add logging in case of switching to an "empty" task.
-    m_task = task;
+    m_decoratedTask = task;
 }
 
-TaskResult Decorator::evaluate() {
+TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard) {
+    
+    if(!m_decoratedTask) {
 
-    // Todo: In case of an empty task - should the pre -/ post-events be
-    // generated at all?
-    if(!m_task) {
+        // Log this.
         return TaskResult::TASK_RESULT_PASSED;
     }
 
-    preEvaluate();
-
-    TaskResult result = m_task->evaluate();
-
-    postEvaluate(result);
-
-    return result;
+    return m_decoratedTask->Evaluate(blackboard);
 }
+
 
 } // namespace impl
 } // namespace core
