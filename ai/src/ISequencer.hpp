@@ -9,7 +9,7 @@ namespace core {
 namespace ai {
 
    
-//! \brief Basic seletor-task which executes its child tasks sequentially until one succeeds. 
+//! \brief Basic sequencer-task which executes its child tasks sequentially until one succeeds. 
 //! In case of no child being attached, Evaluate() returns TaskResult::TASK_RESULT_PASSED.
 class ISequencer : public virtual ITaskContainer {
 };

@@ -19,7 +19,12 @@ void Decorator::SetDecoratedTask(ITaskPtr task) {
     m_decoratedTask = task;
 }
 
-TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard) {
+ITaskPtr Decorator::GetDecoratedTask() const {
+
+    return m_decoratedTask;
+}
+
+TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard) const {
     
     if(!m_decoratedTask) {
 

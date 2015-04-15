@@ -10,7 +10,6 @@ namespace aw {
 namespace core {
 namespace ai {
 
-
 class AIFactory {
 
     public:
@@ -23,6 +22,8 @@ class AIFactory {
         ISequencerPtr   createSequencer() const;
         ISelectorPtr    createSelector() const;
         IBlackboardPtr  createBlackboard() const;
+        IInverterPtr    createInverter() const;
+        IRepeaterPtr    createRepeater() const;
 };
 
 } // namespace ai

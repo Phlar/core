@@ -38,6 +38,14 @@ typedef boost::intrusive_ptr<IBlackboard> IBlackboardPtr;
 class IBlackboardValue;
 typedef boost::intrusive_ptr<IBlackboardValue> IBlackboardValuePtr;
 
+class IDecorator;
+typedef boost::intrusive_ptr<IDecorator> IDecoratorPtr;
+
+class IInverter;
+typedef boost::intrusive_ptr<IInverter> IInverterPtr;
+
+class IRepeater;
+typedef boost::intrusive_ptr<IRepeater> IRepeaterPtr;
 
 typedef boost::uuids::uuid UUID;
 

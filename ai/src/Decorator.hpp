@@ -14,7 +14,7 @@ namespace ai {
 namespace impl {
 
 
-class Decorator : public base::InterfaceImpl<IDecorator>, public impl::TaskContainer {
+class Decorator : public base::InterfaceImpl<IDecorator>, public impl::Task {
 
     public:
 
@@ -30,7 +30,7 @@ class Decorator : public base::InterfaceImpl<IDecorator>, public impl::TaskConta
 
         //! \brief Helper derived decorators can invoke to execute
         //! decorated tasks down the chain.
-        TaskResult evaluateDecoratedTask(IBlackboardPtr blackboard);
+        TaskResult evaluateDecoratedTask(IBlackboardPtr blackboard) const;
 
         //! Disable direct construction of a decorator itself.
         Decorator(ITaskPtr decoratedTask = ITaskPtr());

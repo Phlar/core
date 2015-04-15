@@ -9,11 +9,13 @@ namespace ai {
 
 class IDecorator : public virtual ITask {
 
-    //! \brief Sets / unsets the task to be decorated.
-    virtual void SetDecoratedTask(ITaskPtr task) = 0;
+    public:
 
-    //! \brief Returns the task this decorator affects.
-    virtual ITaskPtr GetDecoratedTask() const = 0;
+        //! \brief Sets / unsets the task to be decorated.
+        virtual void SetDecoratedTask(ITaskPtr task) = 0;
+
+        //! \brief Returns the task this decorator affects.
+        virtual ITaskPtr GetDecoratedTask() const = 0;
 };
 
 } // namespace ai

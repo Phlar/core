@@ -5,6 +5,8 @@
 #include "Sequencer.hpp"
 #include "Selector.hpp"
 #include "Blackboard.hpp"
+#include "Inverter.hpp"
+#include "Repeater.hpp"
 
 namespace aw {
 namespace core {
@@ -39,6 +41,16 @@ ISelectorPtr AIFactory::createSelector() const {
 IBlackboardPtr AIFactory::createBlackboard() const {
 
     return IBlackboardPtr(new impl::Blackboard());
+}
+
+IInverterPtr AIFactory::createInverter() const {
+
+    return IInverterPtr(new impl::Inverter());
+}
+
+IRepeaterPtr AIFactory::createRepeater() const {
+
+    return IRepeaterPtr(new impl::Repeater());
 }
 
 } // namespace ai
