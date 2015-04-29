@@ -20,11 +20,13 @@ class Repeater : public base::InterfaceImpl<IRepeater>, public impl::Decorator {
         Repeater();
         virtual ~Repeater();
 
-        void SetRepeatCondition(const RepeatCondition& repeatCondition) override;
+        void SetRepeatCondition(RepeatConditionUPtr repeatCondition) override;
 
     protected:
 
         TaskResult evaluate(IBlackboardPtr blackboard) const override;
+
+        RepeatConditionUPtr m_repeatCondition;
 };
 
 } // namespace impl

@@ -8,20 +8,42 @@ namespace core {
 namespace ai {
 namespace impl {
 
-Repeater::Repeater() {
+Repeater::Repeater()
+: m_repeatCondition() {
 }
 
 Repeater::~Repeater() {
 }
 
-void Repeater::SetRepeatCondition(const RepeatCondition& /*repeatCondition*/) {
+void Repeater::SetRepeatCondition(RepeatConditionUPtr repeatCondition) {
 
+    //! \todo Uncomment as we have logging at hand.
+    /*
+    if(!repeatCondition) {
+        // Log this.
+    }
+    */
 
+    m_repeatCondition = std::move(repeatCondition);
 }
 
 TaskResult Repeater::evaluate(IBlackboardPtr blackboard) const {
 
-    return TaskResult::TASK_RESULT_PASSED;
+    if(!m_repeatCondition) {
+        
+        // Log this.
+        return evaluateDecoratedTask(blackboard);
+    }
+    else {
+
+        TaskResult result = TaskResult::TASK_RESULT_FAILED;
+        while(m_repeatCondition->Evaluate()) {
+
+            result = evaluateDecoratedTask(blackboard);
+        }
+
+        return result;
+    }
 }
 
 } // namespace impl
