@@ -25,10 +25,6 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
         //! Implementations of IBlackboard
         void SetValue(IBlackboardValuePtr value) override;
         IBlackboardValuePtr GetValue(const UUID& semanticID) const override;
-
-        void StoreTaskParameter(ITaskParameterPtr taskParameter) override;
-        ITaskParameterPtr GetTaskParameter(const UUID& taskID) const override;
-        bool RemoveTaskParameter(const UUID& taskID) override;
         //@}
 
     protected:
@@ -36,12 +32,6 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
         //! Use a map from a semantic type-ID to a value.
         typedef std::map<UUID, IBlackboardValuePtr> ValueMap;
         ValueMap m_valueMap;
-
-        //! Mapping from the associated task ID to the task-parameter.
-        //! \todo: Think of a set with a custom look-up functor- removing
-        //! redundancy in storing task-IDs.
-        typedef std::map<UUID, ITaskParameterPtr> TaskParameterMap;
-        TaskParameterMap m_taskParameters;
 };
 
 } // namespace impl

@@ -31,12 +31,6 @@ TaskResult Task::Evaluate(IBlackboardPtr blackboard) const {
     return result;
 }
 
-ITaskParameterPtr Task::CreateTaskParameter() const {
-
-    // By default no parameter-structure is returned.
-    return ITaskParameterPtr();
-}
-
 void Task::preEvaluate(IBlackboardPtr blackboard) const {
 }
 

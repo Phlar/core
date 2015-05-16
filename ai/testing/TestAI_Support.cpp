@@ -7,7 +7,6 @@
 #include "InterfaceImpl.hpp"
 #include "AIFactory.hpp"
 #include "IBlackboard.hpp"
-#include "ITaskParameter.hpp"
 
 #include "BlackboardUtils.hpp"
 

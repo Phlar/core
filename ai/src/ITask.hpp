@@ -14,7 +14,8 @@ namespace ai {
 enum class TaskResult {
 
     TASK_RESULT_FAILED = 0,
-    TASK_RESULT_PASSED
+    TASK_RESULT_PASSED,
+    TASK_RESULT_RUNNING
 };
 
 class ITask : public virtual base::IReferenceCounted {
@@ -27,10 +28,6 @@ class ITask : public virtual base::IReferenceCounted {
         //! \brief Calling this invokes the subtree underneath to
         //! get processed.
         virtual TaskResult Evaluate(IBlackboardPtr blackboard) const = 0;
-
-        //! \brief Depending on the task that implements this interface
-        //! derived classes may provide a task-specific parameter-list.
-        virtual ITaskParameterPtr CreateTaskParameter() const = 0;
 
 };
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
