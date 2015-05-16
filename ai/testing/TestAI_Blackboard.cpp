@@ -58,7 +58,7 @@ struct AIBlackboardFixture {
     AIBlackboardFixture()
     : valueA_1(new BlackboardTestValue(10, UUIDTypeA))
     , valueB_1(new BlackboardTestValue(20, UUIDTypeB))
-    , valueC_1(new BlackboardTestValue(30, UUIDTypeC))
+    , valueC_1(new BlackboardTestValue(30, UUIDTypeC)) {
 
         blackboard = aiFactory.createBlackboard();
         BOOST_REQUIRE(blackboard);

@@ -1,7 +1,6 @@
 #include "Task.hpp"
 
 #include "IBlackboard.hpp"
-#include "ITaskParameter.hpp"
 
 #include <boost/uuid/random_generator.hpp>
 
