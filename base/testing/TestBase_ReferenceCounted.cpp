@@ -87,6 +87,34 @@ BOOST_AUTO_TEST_CASE(TestRefCountedInstances) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(TestWrapIntoMultipleIntrusivePointers) {
+
+    typedef boost::intrusive_ptr<ISomeClass> ISomeClassPtr;
+
+    bool alive = false;
+
+    {
+        ISomeClassPtr intrusivePointerA;
+        {
+            intrusivePointerA = ISomeClassPtr(new SomeClass(alive));
+            BOOST_CHECK(alive);
+            BOOST_CHECK_EQUAL(intrusivePointerA->GetReferenceCount(), 1);
+
+            // Set up the second intrusive-pointer, referring to the same content.
+            ISomeClassPtr intrusivePointerB;
+            intrusivePointerB = ISomeClassPtr(intrusivePointerA.get());
+            BOOST_CHECK(alive);
+            BOOST_CHECK_EQUAL(intrusivePointerA->GetReferenceCount(), 2);
+            BOOST_CHECK_EQUAL(intrusivePointerB->GetReferenceCount(), 2);
+            BOOST_CHECK_EQUAL(intrusivePointerA.get(), intrusivePointerB.get());
+        }
+
+        BOOST_CHECK(alive);
+        BOOST_CHECK_EQUAL(intrusivePointerA->GetReferenceCount(), 1);
+    }
+    BOOST_CHECK(!alive);
+}
+
 } // namespace testing
 } // namespace base
 } // namespace core

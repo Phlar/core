@@ -21,7 +21,7 @@ class ReferenceCounted : public virtual IReferenceCounted {
         //! Todo: Atomic!
         virtual void AddReference() {
 
-            ++m_refCount;            
+            ++m_refCount;
         }
 
         //! Todo: Atomic!
