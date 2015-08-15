@@ -26,7 +26,7 @@ class Condition : public base::InterfaceImpl<ICondition>, public Task {
         //! \brief Returns result of the provided evaluation function.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! evaluation function provided.
-        TaskResult evaluate(IBlackboardPtr blackboard) const override;
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const override;
 
         ConditionFnc m_condition;
 };

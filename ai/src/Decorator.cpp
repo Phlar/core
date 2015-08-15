@@ -24,7 +24,7 @@ ITaskPtr Decorator::GetDecoratedTask() const {
     return m_decoratedTask;
 }
 
-TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard) const {
+TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
     
     if(!m_decoratedTask) {
 
@@ -32,7 +32,7 @@ TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard) const {
         return TaskResult::TASK_RESULT_PASSED;
     }
 
-    return m_decoratedTask->Evaluate(blackboard);
+    return m_decoratedTask->Evaluate(blackboard, yield);
 }
 
 

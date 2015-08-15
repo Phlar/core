@@ -13,7 +13,7 @@ Selector::Selector() {
 Selector::~Selector() {
 }
 
-TaskResult Selector::evaluate(IBlackboardPtr blackboard) const {
+TaskResult Selector::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
 
     if(m_children.empty()) {
 
@@ -22,7 +22,7 @@ TaskResult Selector::evaluate(IBlackboardPtr blackboard) const {
 
     for(ITaskPtr task : m_children) {
 
-        const TaskResult result = task->Evaluate(blackboard);
+        const TaskResult result = task->Evaluate(blackboard, yield);
         if(result == TaskResult::TASK_RESULT_PASSED) {
             return result;
         }

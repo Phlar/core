@@ -14,10 +14,10 @@ Sequencer::Sequencer() {
 Sequencer::~Sequencer() {
 }
 
-TaskResult Sequencer::evaluate(IBlackboardPtr blackboard) const {
+TaskResult Sequencer::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
 
     for(ITaskPtr task : m_children) {
-        const TaskResult result = task->Evaluate(blackboard);
+        const TaskResult result = task->Evaluate(blackboard, yield);
         if(result != TaskResult::TASK_RESULT_PASSED) {
             return result;
         }

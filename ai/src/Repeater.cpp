@@ -27,19 +27,19 @@ void Repeater::SetRepeatCondition(RepeatConditionUPtr repeatCondition) {
     m_repeatCondition = std::move(repeatCondition);
 }
 
-TaskResult Repeater::evaluate(IBlackboardPtr blackboard) const {
+TaskResult Repeater::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
 
     if(!m_repeatCondition) {
         
         // Log this.
-        return evaluateDecoratedTask(blackboard);
+        return evaluateDecoratedTask(blackboard, yield);
     }
     else {
 
         TaskResult result = TaskResult::TASK_RESULT_FAILED;
         while(m_repeatCondition->Evaluate()) {
 
-            result = evaluateDecoratedTask(blackboard);
+            result = evaluateDecoratedTask(blackboard, yield);
         }
 
         return result;

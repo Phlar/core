@@ -21,10 +21,10 @@ UUID Task::GetID() const {
     return m_id;
 }
 
-TaskResult Task::Evaluate(IBlackboardPtr blackboard) const {
+TaskResult Task::Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
 
     preEvaluate(blackboard);
-    TaskResult result = evaluate(blackboard);
+    TaskResult result = evaluate(blackboard, yield);
     postEvaluate(blackboard);
 
     return result;

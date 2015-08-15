@@ -5,6 +5,8 @@
 
 #include "InterfaceImpl.hpp"
 
+#include <boost/coroutine/asymmetric_coroutine.hpp>
+
 namespace aw {
 namespace core {
 namespace ai {
@@ -16,9 +18,9 @@ class Task : public base::InterfaceImpl<ITask> {
         virtual ~Task();
 
         //!@{
-        //! Implmentations of ITask interface
+        //! Implementations of ITask interface
         UUID GetID() const override;
-        TaskResult Evaluate(IBlackboardPtr blackboard) const override; /*final*/
+        TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const override;
         //!@}
 
     protected:
@@ -31,12 +33,13 @@ class Task : public base::InterfaceImpl<ITask> {
         virtual void preEvaluate(IBlackboardPtr blackboard) const;
         virtual void postEvaluate(IBlackboardPtr blackboard) const;
 
-        virtual TaskResult evaluate(IBlackboardPtr blackboard) const = 0;
+        virtual TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const = 0;
 
     private:
 
         UUID m_id;
 };
+typedef boost::intrusive_ptr<Task> TaskPtr;
 
 } // namespace impl
 } // namespace ai

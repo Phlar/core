@@ -13,12 +13,12 @@ BehaviourTree::BehaviourTree() {
 BehaviourTree::~BehaviourTree() {
 }
 
-void BehaviourTree::SetTreeRoot(ITaskPtr /*rootTask*/) {
+void BehaviourTree::SetRoot(ITaskPtr /*rootTask*/) {
 }
 
-TaskResult BehaviourTree::EvaluateOnce() {
+BehaviourTreeState BehaviourTree::EvaluateOneTick() {
 
-    return TaskResult::TASK_RESULT_FAILED;
+    return BehaviourTreeState::STATE_RUNNING;
 }
 
 

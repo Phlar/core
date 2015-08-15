@@ -30,7 +30,7 @@ class TaskContainer : public base::InterfaceImpl<ITaskContainer>, public impl::T
         // A Task-container itself cannot be constructed as such
         TaskContainer();
 
-        TaskList m_children;
+        std::list<ITaskPtr> m_children;
 };
 
 } // namespace impl

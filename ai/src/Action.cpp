@@ -22,7 +22,7 @@ void Action::SetAction(const ActionFnc& action) {
     m_action = action;
 }
 
-TaskResult Action::evaluate(IBlackboardPtr blackboard) const {
+TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& /*yield*/) const {
 
     if(m_action) {
         return m_action(blackboard);
