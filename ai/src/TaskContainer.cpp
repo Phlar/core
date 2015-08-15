@@ -5,6 +5,7 @@ namespace core {
 namespace ai {
 namespace impl {
 
+
 TaskContainer::TaskContainer() 
 : m_children() {
 }

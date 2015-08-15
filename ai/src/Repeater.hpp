@@ -29,6 +29,8 @@ class Repeater : public base::InterfaceImpl<IRepeater>, public impl::Decorator {
         RepeatConditionUPtr m_repeatCondition;
 };
 
+typedef boost::intrusive_ptr<Repeater> RepeaterPtr;
+
 } // namespace impl
 } // namespace ai
 } // namespace core

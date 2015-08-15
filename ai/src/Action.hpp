@@ -31,6 +31,8 @@ class Action : public base::InterfaceImpl<IAction>, public Task {
         ActionFnc m_action;
 };
 
+typedef boost::intrusive_ptr<Action> ActionPtr;
+
 } // namespace impl
 } // namespace ai
 } // namespace core

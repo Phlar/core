@@ -18,7 +18,7 @@ class ITask;
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
 
 class ITaskContainer;
-typedef boost::intrusive_ptr<ITask> ITaskContainerPtr;
+typedef boost::intrusive_ptr<ITaskContainer> ITaskContainerPtr;
 
 class IAction;
 typedef boost::intrusive_ptr<IAction> IActionPtr;
@@ -48,9 +48,6 @@ class IRepeater;
 typedef boost::intrusive_ptr<IRepeater> IRepeaterPtr;
 
 typedef boost::uuids::uuid UUID;
-
-typedef std::list<ITaskPtr> TaskList;
-typedef std::vector<ITaskPtr> TaskVector;
 
 } // namespace ai
 } // namespace core
