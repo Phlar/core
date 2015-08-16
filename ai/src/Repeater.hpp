@@ -24,7 +24,7 @@ class Repeater : public base::InterfaceImpl<IRepeater>, public impl::Decorator {
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const override;
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 
         RepeatConditionUPtr m_repeatCondition;
 };

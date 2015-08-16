@@ -23,7 +23,7 @@ class ITask : public virtual base::IReferenceCounted {
 
     public:
 
-        typedef boost::coroutines::coroutine<void>::push_type TaskCoroutinePushType;
+        typedef boost::coroutines::coroutine<void>::pull_type TaskCoroutinePullType;
 
         //! \brief Returns the task's unique ID.
         virtual UUID GetID() const = 0;
@@ -34,7 +34,7 @@ class ITask : public virtual base::IReferenceCounted {
         //!                     subtree will be executed at once.
         //! \todo Coroutine handler rather is an implementation detail and should
         //!       not be exposed through the API.
-        virtual TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield = nullptr) const = 0;
+        virtual TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield = nullptr) const = 0;
 };
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
 

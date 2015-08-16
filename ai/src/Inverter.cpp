@@ -14,7 +14,7 @@ Inverter::Inverter() {
 Inverter::~Inverter() {
 }
 
-TaskResult Inverter::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+TaskResult Inverter::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     TaskResult result = evaluateDecoratedTask(blackboard, yield);
     if(result == TaskResult::TASK_RESULT_PASSED) {

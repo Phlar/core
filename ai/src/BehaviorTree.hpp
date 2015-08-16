@@ -35,7 +35,6 @@ class BehaviorTree : public base::InterfaceImpl<IBehaviorTree> {
 
         //@{
         //! Implementations of IBehviourTree
-        //! \todo Test exception handling in case of no root set.
         void SetRoot(ITaskPtr rootTask);
 
         //! \todo  - Test stepwise execution.
@@ -55,11 +54,12 @@ class BehaviorTree : public base::InterfaceImpl<IBehaviorTree> {
         typedef boost::coroutines::coroutine<void>::pull_type   CoroutinePullType;
         typedef boost::coroutines::coroutine<void>::push_type   CoroutinePushType;
         typedef std::unique_ptr<CoroutinePullType>              CoroutinePullTypePtr;
+        typedef std::unique_ptr<CoroutinePushType>              CoroutinePushTypePtr;
 
         //! \brief Worker method to be used as a coroutine.
-        void executeAsync(CoroutinePushType& yield);
+        void executeAsync(CoroutinePullType& yield);
         
-        CoroutinePullTypePtr m_coroutineHandler; // Optional coroutine handler.
+        CoroutinePushTypePtr m_coroutineHandler; // Optional coroutine handler.
 
         ITaskPtr m_root;               // Root task to start execution from.
         IBlackboardPtr m_blackboard;   // Blackboard used throughout execution.

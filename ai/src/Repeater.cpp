@@ -27,7 +27,7 @@ void Repeater::SetRepeatCondition(RepeatConditionUPtr repeatCondition) {
     m_repeatCondition = std::move(repeatCondition);
 }
 
-TaskResult Repeater::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+TaskResult Repeater::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     if(!m_repeatCondition) {
         

@@ -29,7 +29,7 @@ class TestAction : public impl::Action {
         virtual ~TestAction() {
         }
 
-        virtual TaskResult testEvaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* /*yield*/) const {
+        virtual TaskResult testEvaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
 
             if(m_action) {
                 return m_action(blackboard);
@@ -39,7 +39,7 @@ class TestAction : public impl::Action {
         };
 
     protected:
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
             return testEvaluate(blackboard, yield);
         }
 };

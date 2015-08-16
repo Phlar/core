@@ -13,7 +13,7 @@ Selector::Selector() {
 Selector::~Selector() {
 }
 
-TaskResult Selector::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+TaskResult Selector::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     if(m_children.empty()) {
 
