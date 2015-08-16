@@ -21,7 +21,13 @@ UUID Task::GetID() const {
     return m_id;
 }
 
-TaskResult Task::Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
+TaskResult Task::Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+
+    // Due to the used template-pattern, each executed task-derived instance will pass this
+    // point, so this will be the place where to break.
+    if(yield) {
+        (*yield)();
+    }
 
     preEvaluate(blackboard);
     TaskResult result = evaluate(blackboard, yield);
@@ -30,10 +36,10 @@ TaskResult Task::Evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yiel
     return result;
 }
 
-void Task::preEvaluate(IBlackboardPtr blackboard) const {
+void Task::preEvaluate(IBlackboardPtr /*blackboard*/) const {
 }
 
-void Task::postEvaluate(IBlackboardPtr blackboard) const {
+void Task::postEvaluate(IBlackboardPtr /*blackboard*/) const {
 }
 
 } // namespace impl

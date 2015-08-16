@@ -32,7 +32,7 @@ class TestAction : public impl::Action, public boost::noncopyable {
         virtual ~TestAction() {
         }
 
-        virtual TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& /*yield*/) const {
+        virtual TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* /*yield*/) const {
 
             m_timesEvaluated++;
             return m_resultToReturn;

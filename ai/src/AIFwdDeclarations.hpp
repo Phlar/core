@@ -11,8 +11,8 @@ namespace aw {
 namespace core {
 namespace ai {
 
-class IBehaviourTree;
-typedef boost::intrusive_ptr<IBehaviourTree> IBehaviourTreePtr;
+class IBehaviorTree;
+typedef boost::intrusive_ptr<IBehaviorTree> IBehaviorTreePtr;
 
 class ITask;
 typedef boost::intrusive_ptr<ITask> ITaskPtr;

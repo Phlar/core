@@ -14,7 +14,7 @@ Condition::Condition(const ConditionFnc& condition)
 Condition::~Condition() {
 }
 
-TaskResult Condition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& /*yield*/) const
+TaskResult Condition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* /*yield*/) const
 {
     if(m_condition) {
         return m_condition(blackboard);

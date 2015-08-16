@@ -14,7 +14,7 @@ Sequencer::Sequencer() {
 Sequencer::~Sequencer() {
 }
 
-TaskResult Sequencer::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
+TaskResult Sequencer::evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
 
     for(ITaskPtr task : m_children) {
         const TaskResult result = task->Evaluate(blackboard, yield);

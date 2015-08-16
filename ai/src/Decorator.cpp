@@ -24,7 +24,7 @@ ITaskPtr Decorator::GetDecoratedTask() const {
     return m_decoratedTask;
 }
 
-TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePushType& yield) const {
+TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
     
     if(!m_decoratedTask) {
 

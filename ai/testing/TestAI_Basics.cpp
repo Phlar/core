@@ -7,12 +7,12 @@
 
 #include "AIFactory.hpp"
 #include "IAction.hpp"
-#include "IBlackboard.hpp"
-#include "ICondition.hpp"
-#include "ITaskContainer.hpp"
+
 #include "TaskContainer.hpp"
 
 #include "InterfaceImpl.hpp"
+
+#include "Mock_AIAction.hpp"
 
 namespace aw {
 namespace core {
@@ -34,7 +34,7 @@ class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskCo
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType& /*yield*/) const override {
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* /*yield*/) const override {
 
             return TaskResult::TASK_RESULT_PASSED;
         }

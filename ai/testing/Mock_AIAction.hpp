@@ -17,28 +17,47 @@ namespace testing {
 class TestAction : public impl::Action {
 
     public:
+
         TestAction()
         : Action(ActionFnc()) {
+        }
+
+        TestAction(ActionFnc actionFnc)
+        : Action(actionFnc) {
         }
 
         virtual ~TestAction() {
         }
 
-        virtual TaskResult testEvaluate(IBlackboardPtr blackboard) const {
-            return TaskResult::TASK_RESULT_FAILED;
+        virtual TaskResult testEvaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* /*yield*/) const {
+
+            if(m_action) {
+                return m_action(blackboard);
+            } else {
+                return TaskResult::TASK_RESULT_FAILED;
+            }
         };
 
     protected:
-        TaskResult evaluate(IBlackboardPtr blackboard) const {
-            return testEvaluate(blackboard);
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePushType* yield) const {
+            return testEvaluate(blackboard, yield);
         }
 };
 
 
-
 MOCK_BASE_CLASS(MockAIAction, TestAction) {
 
-    MOCK_METHOD(testEvaluate, 1);
+    public:
+
+        MockAIAction()
+        : TestAction() {
+        }
+
+        MockAIAction(ActionFnc actionFnc) 
+        : TestAction(actionFnc) {
+        }
+
+        MOCK_METHOD(testEvaluate, 2);
 };
 
 } // namespace testing	
