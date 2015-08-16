@@ -13,7 +13,7 @@ namespace ai {
 
 class AIFactory {
 
-    public:^^
+    public:
         AIFactory();
         virtual ~AIFactory();
 

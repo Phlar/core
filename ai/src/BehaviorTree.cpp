@@ -60,7 +60,7 @@ BehaviorTreeState BehaviorTree::ExecuteAsync() {
         (*m_coroutineHandler)();
         m_state = m_coroutineHandler ? BehaviorTreeState::STATE_RUNNING : BehaviorTreeState::STATE_FINISHED;
 
-    } catch(const std::exception& e) {
+    } catch(const std::exception& /*e*/) {
 
         //! \todo Log me!
         m_state = BehaviorTreeState::STATE_FAILED;
@@ -76,7 +76,7 @@ BehaviorTreeState BehaviorTree::ExecuteAsync() {
 void BehaviorTree::ResetAsyncExecution() {
 
     //! \todo Check resetting all tasks' properties in the tree!
-    m_coroutineHandler.reset(new ITask::TaskCoroutinePushType(
+    m_coroutineHandler.reset(new CoroutinePullType(
         boost::bind(&BehaviorTree::executeAsync, this, _1)));
     m_state = BehaviorTreeState::STATE_NOT_RUN;
 }
@@ -109,7 +109,7 @@ BehaviorTreeState BehaviorTree::ExecuteSync() {
                     assert(false);
                 }
             }
-        } catch(const std::exception& e) {
+        } catch(const std::exception& /*e*/) {
 
             //! \todo Log me...
             m_state = BehaviorTreeState::STATE_FAILED;
@@ -132,6 +132,11 @@ BehaviorTreeState BehaviorTree::ExecuteSync() {
 BehaviorTreeState BehaviorTree::State() const {
 
     return m_state;
+}
+
+void BehaviorTree::executeAsync(CoroutinePushType& yield) {
+    
+    m_root->Evaluate(m_blackboard, &yield);
 }
 
 

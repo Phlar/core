@@ -40,7 +40,7 @@ class IBehaviorTree : public virtual base::IReferenceCounted {
         virtual BehaviorTreeState ExecuteSync() = 0;
 
         //! \brief Returns current state.
-        BehaviorTreeState State() const = 0;
+        virtual BehaviorTreeState State() const = 0;
 };
 
 typedef boost::intrusive_ptr<IBehaviorTree> IBehaviorTreePtr;

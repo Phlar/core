@@ -3,8 +3,6 @@
 #include "AIFwdDeclarations.hpp"
 #include "IBehaviorTree.hpp"
 
-#include "Task.hpp"
-
 #include "InterfaceImpl.hpp"
 
 #include <boost/coroutine/asymmetric_coroutine.hpp>
@@ -54,15 +52,17 @@ class BehaviorTree : public base::InterfaceImpl<IBehaviorTree> {
 
     protected:
 
-        typedef std::unique_ptr<ITask::TaskCoroutinePushType> TaskCoroutinePushTypePtr;
+        typedef boost::coroutines::coroutine<void>::pull_type   CoroutinePullType;
+        typedef boost::coroutines::coroutine<void>::push_type   CoroutinePushType;
+        typedef std::unique_ptr<CoroutinePullType>              CoroutinePullTypePtr;
 
         //! \brief Worker method to be used as a coroutine.
-        void executeAsync(ITask::TaskCoroutinePushType*);
+        void executeAsync(CoroutinePushType& yield);
         
-        TaskCoroutinePushTypePtr m_coroutineHandler; // Optional coroutine handler.
+        CoroutinePullTypePtr m_coroutineHandler; // Optional coroutine handler.
 
-        TaskPtr m_root;                 // Root task to start execution from.
-        IBlackboardPtr m_blackboard;    // Blackboard used throughout execution.
+        ITaskPtr m_root;               // Root task to start execution from.
+        IBlackboardPtr m_blackboard;   // Blackboard used throughout execution.
         BehaviorTreeState m_state;     // Execution state of the tree.
 };
 
