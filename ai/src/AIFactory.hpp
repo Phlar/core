@@ -25,7 +25,7 @@ class AIFactory {
         IBlackboardPtr      createBlackboard() const;
         IInverterPtr        createInverter() const;
         IRepeaterPtr        createRepeater() const;
-        IBehaviorTreePtr   createBehaviorTree() const;
+        IBehaviorTreePtr    createBehaviorTree() const;
 };
 
 } // namespace ai

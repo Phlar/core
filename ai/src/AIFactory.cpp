@@ -1,6 +1,7 @@
 #include "AIFactory.hpp"
 
 #include "Action.hpp"
+#include "BehaviorTree.hpp"
 #include "Condition.hpp"
 #include "Sequencer.hpp"
 #include "Selector.hpp"
@@ -51,6 +52,11 @@ IInverterPtr AIFactory::createInverter() const {
 IRepeaterPtr AIFactory::createRepeater() const {
 
     return IRepeaterPtr(new impl::Repeater());
+}
+
+IBehaviorTreePtr AIFactory::createBehaviorTree() const {
+
+    return IBehaviorTreePtr(new impl::BehaviorTree());
 }
 
 } // namespace ai
