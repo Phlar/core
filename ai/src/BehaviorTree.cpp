@@ -29,6 +29,8 @@ BehaviorTree::BehaviorTree()
 , m_root(nullptr)
 , m_blackboard(IBlackboardPtr(new Blackboard()))
 , m_state(BehaviorTreeState::STATE_NOT_RUN) {
+
+    ResetAsyncExecution();
 }
 
 BehaviorTree::~BehaviorTree() {
@@ -43,14 +45,11 @@ BehaviorTreeState BehaviorTree::ExecuteAsync() {
 
     validateRoot(m_root);
 
-    // Reset all if necessary.
-    //! \todo: Check whether this should be more explicit - i.e.
-    //! throwing in case of starting a finished coroutine, having
-    //! the user reset the state manually.
+    //! Do not start all over again if the tree was finished before.
     if(m_state == BehaviorTreeState::STATE_FINISHED ||
        m_state == BehaviorTreeState::STATE_FAILED || 
        !m_coroutineHandler) {
-        ResetAsyncExecution();
+        return m_state;
     }
 
     assert(m_coroutineHandler);
@@ -91,24 +90,9 @@ BehaviorTreeState BehaviorTree::ExecuteSync() {
 
         try {
 
-            const TaskResult result = m_root->Evaluate(m_blackboard, nullptr);
+            m_root->Evaluate(m_blackboard, nullptr);
+            m_state = BehaviorTreeState::STATE_FINISHED;
 
-            switch(result) {
-
-                case TaskResult::TASK_RESULT_PASSED: {
-                   m_state = BehaviorTreeState::STATE_FINISHED;
-                }
-                case TaskResult::TASK_RESULT_FAILED: {
-                    m_state = BehaviorTreeState::STATE_FAILED;
-                    break;
-                }
-                default: {
-
-                    // (result != TaskResult::TASK_RESULT_RUNNING) Must not happen during synchronous execution!
-                    // todo: However check what happens in case of asynchronous actions / conditions.
-                    assert(false);
-                }
-            }
         } catch(const std::exception& /*e*/) {
 
             //! \todo Log me...

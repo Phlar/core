@@ -29,6 +29,8 @@ class IBehaviorTree : public virtual base::IReferenceCounted {
         virtual void SetRoot(ITaskPtr rootTask) = 0;
 
         //! \brief Perform a stepwise execution of the tree (asynchronous).
+        //! In case the tree is in "finished" state when calling this function,
+        //! ResetAsyncExecution() has to be called prior to the next execution.
         virtual BehaviorTreeState ExecuteAsync() = 0;
 
         //! \brief In case of an asynchronous execution, the execution will be canceled.

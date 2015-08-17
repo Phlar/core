@@ -31,21 +31,12 @@ class BehaviorTree : public base::InterfaceImpl<IBehaviorTree> {
         BehaviorTree();
         virtual ~BehaviorTree();
 
-        //! \todo Test exception thrown during synchronous / async execution inside of condition / action.
-
         //@{
         //! Implementations of IBehviourTree
         void SetRoot(ITaskPtr rootTask);
-
-        //! \todo  - Test stepwise execution.
-        //!        - Test resetting execution.
         BehaviorTreeState ExecuteAsync();
         void ResetAsyncExecution();
-
-        //! \todo Test synchronous execution.
         BehaviorTreeState ExecuteSync();
-
-        //! \todo Test various state checks.
         BehaviorTreeState State() const;
         //@}
 
