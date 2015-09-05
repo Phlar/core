@@ -16,7 +16,7 @@ Task::Task()
 Task::~Task() {
 }
 
-UUID Task::GetID() const {
+base::UUID Task::GetID() const {
 
     return m_id;
 }

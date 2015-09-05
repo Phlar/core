@@ -3,6 +3,7 @@
 #include "AIFwdDeclarations.hpp"
 #include "ITask.hpp"
 
+#include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
 #include <boost/coroutine/asymmetric_coroutine.hpp>
@@ -19,7 +20,7 @@ class Task : public base::InterfaceImpl<ITask> {
 
         //!@{
         //! Implementations of ITask interface
-        UUID GetID() const override;
+        base::UUID GetID() const override;
         TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
         //!@}
 
@@ -37,7 +38,7 @@ class Task : public base::InterfaceImpl<ITask> {
 
     private:
 
-        UUID m_id;
+        base::UUID m_id;
 };
 typedef boost::intrusive_ptr<Task> TaskPtr;
 

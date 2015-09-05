@@ -2,7 +2,6 @@
 
 #include <boost/intrusive_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/uuid/uuid.hpp>
 
 #include <list>
 #include <vector>
@@ -46,8 +45,6 @@ typedef boost::intrusive_ptr<IInverter> IInverterPtr;
 
 class IRepeater;
 typedef boost::intrusive_ptr<IRepeater> IRepeaterPtr;
-
-typedef boost::uuids::uuid UUID;
 
 } // namespace ai
 } // namespace core

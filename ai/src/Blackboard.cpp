@@ -33,7 +33,7 @@ void Blackboard::SetValue(IBlackboardValuePtr value) {
     m_valueMap[value->GetTypeID()] = value;
 }
 
-IBlackboardValuePtr Blackboard::GetValue(const UUID& semanticID) const {
+IBlackboardValuePtr Blackboard::GetValue(const base::UUID& semanticID) const {
 
     ValueMap::const_iterator findIter = m_valueMap.find(semanticID);
     if(findIter != m_valueMap.end()) {

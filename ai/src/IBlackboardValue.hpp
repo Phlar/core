@@ -2,6 +2,7 @@
 
 #include "AIFwdDeclarations.hpp"
 
+#include "UUID.hpp"
 #include "IReferenceCounted.hpp"
 
 #include <boost/intrusive_ptr.hpp>
@@ -19,10 +20,10 @@ class IBlackboardValue : public virtual base::IReferenceCounted {
     public:
 
         //! \brief Returns the unique identifier for this class.
-        virtual UUID GetTypeID() const = 0;
+        virtual base::UUID GetTypeID() const = 0;
 
         //! \brief Returns the unique identifier for this instance.
-        virtual UUID GetID() const = 0;
+        virtual base::UUID GetID() const = 0;
 
 };
 

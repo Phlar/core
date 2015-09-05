@@ -24,13 +24,13 @@ class Blackboard : public base::InterfaceImpl<IBlackboard> {
         //@{
         //! Implementations of IBlackboard
         void SetValue(IBlackboardValuePtr value) override;
-        IBlackboardValuePtr GetValue(const UUID& semanticID) const override;
+        IBlackboardValuePtr GetValue(const base::UUID& semanticID) const override;
         //@}
 
     protected:
 
         //! Use a map from a semantic type-ID to a value.
-        typedef std::map<UUID, IBlackboardValuePtr> ValueMap;
+        typedef std::map<base::UUID, IBlackboardValuePtr> ValueMap;
         ValueMap m_valueMap;
 };
 

@@ -2,6 +2,7 @@
 
 #include "AIFwdDeclarations.hpp"
 
+#include "UUID.hpp"
 #include "IReferenceCounted.hpp"
 
 #include <boost/intrusive_ptr.hpp>
@@ -26,7 +27,7 @@ class ITask : public virtual base::IReferenceCounted {
         typedef boost::coroutines::coroutine<void>::pull_type TaskCoroutinePullType;
 
         //! \brief Returns the task's unique ID.
-        virtual UUID GetID() const = 0;
+        virtual base::UUID GetID() const = 0;
 
         //! \brief Triggers the next execution step.
         //! \param blackboard   The tree's blackboard to read / write data.
@@ -40,5 +41,4 @@ typedef boost::intrusive_ptr<ITask> ITaskPtr;
 
 } // namespace ai
 } // namespace core
-
 } // namespace aw

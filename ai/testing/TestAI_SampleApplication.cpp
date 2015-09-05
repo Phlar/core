@@ -84,12 +84,12 @@ typedef std::vector<TreePtr> TreeVector;
 
 
 // Define entities to be stored in the blackboard.
-extern const UUID BBForestUID =             boost::uuids::string_generator()("{EF80B0F3-8728-48B1-BCE3-3477EB8F28EB}");
-extern const UUID BBTreesInWarehouseUID =   boost::uuids::string_generator()("{230D961F-642A-4D54-919E-84C0F653158C}");
-extern const UUID BBTreeToPlantPositionID = boost::uuids::string_generator()("{FDA92EFC-67B9-4CB0-B225-BB31A0D7D1C5}");
-extern const UUID BBTreeToChopUID =         boost::uuids::string_generator()("{29AC3857-F712-4F77-B364-74A8582578AB}");
-extern const UUID BBTreePopulationLimitID = boost::uuids::string_generator()("{CD35478D-180D-4CED-AE2B-DBB022F140B7}");
-extern const UUID BBChoppedTreesLimitID =   boost::uuids::string_generator()("{F295989C-9CBC-4B46-9CE5-EBA1F8892DAF}");
+extern const base::UUID BBForestUID =             boost::uuids::string_generator()("{EF80B0F3-8728-48B1-BCE3-3477EB8F28EB}");
+extern const base::UUID BBTreesInWarehouseUID =   boost::uuids::string_generator()("{230D961F-642A-4D54-919E-84C0F653158C}");
+extern const base::UUID BBTreeToPlantPositionID = boost::uuids::string_generator()("{FDA92EFC-67B9-4CB0-B225-BB31A0D7D1C5}");
+extern const base::UUID BBTreeToChopUID =         boost::uuids::string_generator()("{29AC3857-F712-4F77-B364-74A8582578AB}");
+extern const base::UUID BBTreePopulationLimitID = boost::uuids::string_generator()("{CD35478D-180D-4CED-AE2B-DBB022F140B7}");
+extern const base::UUID BBChoppedTreesLimitID =   boost::uuids::string_generator()("{F295989C-9CBC-4B46-9CE5-EBA1F8892DAF}");
 
 BLACKBOARD_TYPE(Forest,              TreeVector, BBForestUID);
 BLACKBOARD_TYPE(TreesInWarehouse,    TreeVector, BBTreesInWarehouseUID);

@@ -2,6 +2,7 @@
 
 #include "AIFwdDeclarations.hpp"
 
+#include "UUID.hpp"
 #include "IReferenceCounted.hpp"
 
 #include <boost/intrusive_ptr.hpp>
@@ -32,7 +33,7 @@ class IBlackboard : public virtual base::IReferenceCounted {
         virtual void SetValue(IBlackboardValuePtr value) = 0;
 
         //! \brief Returns all values matching by type-ID.
-        virtual IBlackboardValuePtr GetValue(const UUID& semanticTypeID) const = 0;
+        virtual IBlackboardValuePtr GetValue(const base::UUID& semanticTypeID) const = 0;
 };
 
 typedef boost::intrusive_ptr<IBlackboard> IBlackboardPtr;

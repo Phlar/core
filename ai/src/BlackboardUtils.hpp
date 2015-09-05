@@ -2,6 +2,8 @@
 
 #include "AIFwdDeclarations.hpp"
 
+#include "UUID.hpp"
+
 #include "IBlackboard.hpp"
 #include "BlackboardValue.hpp"
 
@@ -14,14 +16,14 @@ namespace ai {
 namespace support {
 
 
-template<typename T, const UUID& SID>
+template<typename T, const base::UUID& SID>
 struct SemanticTypeTrait {
     typedef T type;
-    static const UUID semanticID;
+    static const base::UUID semanticID;
 };
 
-template<typename T, const UUID& SID>
-const UUID SemanticTypeTrait<T, SID>::semanticID = SID;
+template<typename T, const base::UUID& SID>
+const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 
 
 template<typename T>
@@ -32,7 +34,7 @@ boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
         (new BlackboardValue<T::type>(defaultValue, T::semanticID));
 }
 
-IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const UUID& semanticID) {
+IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
 
     if(!blackboard) {
         throw std::invalid_argument("Invalid blackboard to read value from.");
@@ -56,7 +58,7 @@ T& castBlackboardValueToType(IBlackboardValuePtr blackBoardValue) {
 }
 
 template<typename T>
-T& getTypedValue(IBlackboardPtr blackboard, const UUID& semanticID) {
+T& getTypedValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
 
     if(!blackboard) {
         throw std::invalid_argument("Invalid blackboard to read value from.");

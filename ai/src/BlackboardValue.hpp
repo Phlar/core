@@ -2,6 +2,7 @@
 
 #include "IBlackboardValue.hpp"
 
+#include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
 #include <boost/uuid/random_generator.hpp>
@@ -22,7 +23,7 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
 
     public:
 
-        BlackboardValue(const T& value, const UUID& typeID)
+        BlackboardValue(const T& value, const base::UUID& typeID)
         : m_value(value)
         , m_typeID(typeID) {
 
@@ -32,12 +33,12 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
 
         //!@{
         //! Implemented from IBlackboardValue
-        UUID GetTypeID() const override {
+        base::UUID GetTypeID() const override {
           
             return m_typeID;
         };
 
-        UUID GetID() const override {
+        base::UUID GetID() const override {
 
             return m_id;
         }
@@ -61,8 +62,8 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
         //! Enforce using not a default c'tor
         BlackboardValue();
 
-        UUID m_id;
-        UUID m_typeID;
+        base::UUID m_id;
+        base::UUID m_typeID;
         T    m_value;
 };
 

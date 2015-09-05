@@ -4,6 +4,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 #include "AIFactory.hpp"
 #include "IBlackboard.hpp"
@@ -19,13 +20,13 @@ namespace core {
 namespace ai {
 namespace testing {
 
-const UUID UUIDTypeA = boost::uuids::string_generator()("{11111111-2222-3333-4444-555555555555}");
-const UUID UUIDTypeB = boost::uuids::string_generator()("{22222222-3333-4444-5555-666666666666}");
-const UUID UUIDTypeC = boost::uuids::string_generator()("{33333333-4444-5555-6666-777777777777}");
+const base::UUID UUIDTypeA = boost::uuids::string_generator()("{11111111-2222-3333-4444-555555555555}");
+const base::UUID UUIDTypeB = boost::uuids::string_generator()("{22222222-3333-4444-5555-666666666666}");
+const base::UUID UUIDTypeC = boost::uuids::string_generator()("{33333333-4444-5555-6666-777777777777}");
 
-const UUID UUIDTaskA = boost::uuids::string_generator()("{AAAAAAAA-1111-2222-3333-444444444444}");
-const UUID UUIDTaskB = boost::uuids::string_generator()("{BBBBBBBB-1111-2222-3333-444444444444}");
-const UUID UUIDTaskC = boost::uuids::string_generator()("{CCCCCCCC-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskA = boost::uuids::string_generator()("{AAAAAAAA-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskB = boost::uuids::string_generator()("{BBBBBBBB-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskC = boost::uuids::string_generator()("{CCCCCCCC-1111-2222-3333-444444444444}");
 
 
 
@@ -33,19 +34,19 @@ class BlackboardTestValue : public support::BlackboardValue<int> {
     
     public:
 
-        BlackboardTestValue(int value, const UUID& typeID)
+        BlackboardTestValue(int value, const base::UUID& typeID)
         : support::BlackboardValue<int>(value, typeID) {
         }
 
         ~BlackboardTestValue() {
         }
 
-        void SetTypeID(const UUID& typeID) {
+        void SetTypeID(const base::UUID& typeID) {
 
             m_typeID = typeID;
         }
 
-        void SetID(const UUID& id) {
+        void SetID(const base::UUID& id) {
 
             m_id = id;
         }
@@ -102,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE(AddingInvalidValueShouldThrow, AIBlackboardFixture) {
 BOOST_FIXTURE_TEST_CASE(AddingValueWithInvalidTypeIDShouldThrow, AIBlackboardFixture) {
 
     // Modify a value from the fixture thus its type-ID becomes "empty"
-    valueA_1->SetTypeID(UUID());
+    valueA_1->SetTypeID(base::UUID());
     BOOST_CHECK_THROW(blackboard->SetValue(valueA_1), std::invalid_argument);
 }
 
