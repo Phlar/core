@@ -39,7 +39,10 @@ foreach(lib ${Boost_LIBRARIES})
         message(STATUS ${lib})
 endforeach()
 
-#Resolve turle mock
+# Add 'BOOST_ALL_DYN_LINK' to all projects enforcing dynamic linkage of boost libraries.
+add_definitions(-DBOOST_ALL_DYN_LINK)
+
+#Resolve turtle mock
 set(TURTLE_ROOT D:/Devel/3rdParty/turtle-1.2.6)
 include_directories(${TURTLE_ROOT}/include)
 

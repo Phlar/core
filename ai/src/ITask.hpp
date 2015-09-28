@@ -6,7 +6,10 @@
 #include "IReferenceCounted.hpp"
 
 #include <boost/intrusive_ptr.hpp>
+
+#pragma warning (disable: 4251) // 
 #include <boost/coroutine/asymmetric_coroutine.hpp>
+#pragma warning (default: 4251)
 
 namespace aw {
 namespace core {

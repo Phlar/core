@@ -6,7 +6,6 @@
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
-#include <boost/coroutine/asymmetric_coroutine.hpp>
 
 namespace aw {
 namespace core {
