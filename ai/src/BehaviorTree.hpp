@@ -5,7 +5,7 @@
 
 #include "InterfaceImpl.hpp"
 
-#pragma warning (disable: 4251) // 
+#pragma warning (disable: 4251)
 #include <boost/coroutine/asymmetric_coroutine.hpp>
 #pragma warning (default: 4251)
 
