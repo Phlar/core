@@ -12,7 +12,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 
 //! \brief Service that manages all possible scripting resolvers.
 //! When executing a script the service takes care about dispatching
@@ -44,7 +44,7 @@ class ScriptingService : public base::InterfaceImpl<base::IService> {
         std::set<IScriptResolverPtr> m_resolvers;
 };
 
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw
 

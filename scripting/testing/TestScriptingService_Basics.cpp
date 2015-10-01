@@ -13,7 +13,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 namespace testing {
 
 namespace {
@@ -121,6 +121,6 @@ BOOST_FIXTURE_TEST_CASE(TestContextRetrievalFileNotExisting, ScriptingFixture) {
 
 
 } // namespace testing
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw

@@ -9,7 +9,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 
 //! \brief Represents an script resolver of a certain kind.
 //! Provides and creates script contexts.
@@ -21,12 +21,12 @@ class IScriptResolver : public virtual base::IReferenceCounted {
         //! by this resolver / interpreter.
         virtual bool IsFileSupported(const boost::filesystem::path& scriptPath) = 0;
 
-        //! \brief Loads the scrips and returns a context for later execution.
+        //! \brief Loads the script and returns a context for later execution.
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) = 0;
 };
 typedef boost::intrusive_ptr<IScriptResolver> IScriptResolverPtr;
 
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw
 

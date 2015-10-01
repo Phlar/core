@@ -6,7 +6,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 
 // Variant of arguments that get passsed to script resolvers as function parameters.
 typedef boost::variant<int16_t,
@@ -14,7 +14,7 @@ typedef boost::variant<int16_t,
                        std::string, 
                        aw::core::ai::IBlackboardPtr> Argument;
 
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw
 

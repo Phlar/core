@@ -8,7 +8,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 namespace testing {
 
 class TestScriptContext : public base::InterfaceImpl<IScriptContext> {};
@@ -22,6 +22,6 @@ MOCK_BASE_CLASS(MockScriptContext, TestScriptContext) {
 typedef boost::intrusive_ptr<MockScriptContext> MockScriptContextPtr;
 
 } // namespace testing	
-} // namespace scriptingservice	
+} // namespace scripting
 } // namespace core	
 } // namespace aw

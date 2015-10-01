@@ -8,7 +8,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 
 //! \brief Script context denotes a single script instance.
 class IScriptContext : public virtual base::IReferenceCounted {
@@ -23,6 +23,6 @@ class IScriptContext : public virtual base::IReferenceCounted {
 };
 typedef boost::intrusive_ptr<IScriptContext> IScriptContextPtr;
 
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw

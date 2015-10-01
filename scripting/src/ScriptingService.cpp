@@ -8,7 +8,7 @@
 
 namespace aw {
 namespace core {
-namespace scriptingservice {
+namespace scripting {
 
 const base::UUID ScriptingService::serviceID = boost::uuids::string_generator()("{237C7009-A671-4509-99E9-C9AC6C0BB78F}");
 
@@ -62,6 +62,6 @@ IScriptContextPtr ScriptingService::GetContext(const boost::filesystem::path& sc
     return IScriptContextPtr();
 }
 
-} // namespace scriptingservice
+} // namespace scripting
 } // namespace core
 } // namespace aw
