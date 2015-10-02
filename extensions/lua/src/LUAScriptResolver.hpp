@@ -21,6 +21,10 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         virtual bool IsFileSupported(const boost::filesystem::path& scriptPath);
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath);
         //@}
+
+    protected:
+
+        static const char* m_supportedFileExtension;
 };
 
 } // namespace lua

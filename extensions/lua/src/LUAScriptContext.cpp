@@ -1,19 +1,144 @@
 #include "LUAScriptContext.hpp"
 
+#pragma warning(disable: 4099)
+#include <lua.hpp>
+#include <lauxlib.h>
+#pragma warning(default: 4099)
+
+#include <iostream>
+#include <sstream>
 
 namespace aw {
 namespace core {
 namespace scripting {
 namespace lua {
 
-LUAScriptContext::LUAScriptContext() {
+LUAScriptContext::LUAScriptContext(const boost::filesystem::path& scriptPath)
+: m_luaState(nullptr)
+, m_scriptPath(scriptPath) {
+
+    // Todo: Duplicated somewhere else for sure!
+    boost::system::error_code errorCode;
+    if(!boost::filesystem::exists(scriptPath, errorCode) || errorCode) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error while checking for LUA script-file '"
+            << scriptPath.string() << "'";
+
+        if(errorCode) {
+            errorMessage << " (error code: " << errorCode << ")";
+        }
+        throw std::invalid_argument(errorMessage.str());
+    }
+
+    m_luaState = luaL_newstate();
+    if(!m_luaState) {
+        throw std::runtime_error("Error setting up LUA state object.");
+    }
 }
 
 LUAScriptContext::~LUAScriptContext() {
+
+    if(m_luaState) {
+        lua_close(m_luaState);
+    }
 }
 
-void LUAScriptContext::ExecuteScript(const std::string& /*functionName*/,
-                                     const std::vector<Argument>& /*params*/) {
+void LUAScriptContext::ExecuteScript(const std::string& functionName,
+                                     const ArgumentVector& params) {
+
+    // Todo: Check whether these cannot be loaded from within LUA code.
+    luaL_openlibs(m_luaState);
+
+    // Load and compile the script.
+    loadScriptFile();
+
+    // Though the file is loaded and compiled the global table entries
+    // (function names, variables) are not known to LUA yet. This does
+    // not matter in case of executing the script "from the beginning"
+    // however trying to run a specific function using lua_pcall will
+    // fail with "attempt to call a nil value". In that case we have 
+    // to run the script as it is in order to make the global table
+    // aware of the names.
+    // (Todo: Check whether this really is the way to go as it obviously
+    // has drawbacks (performance, executing anything "free".)
+    if(!functionName.empty()) {
+        executeScript(std::string(), ArgumentVector());
+    }
+    
+    executeScript(functionName, params);
+}
+
+void LUAScriptContext::loadScriptFile() {
+
+    if(luaL_loadfile(m_luaState, m_scriptPath.string().c_str())) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error loading LUA script-file '"
+                     << m_scriptPath.string() << "': "
+                     << lua_tostring(m_luaState, -1);
+        lua_pop(m_luaState,1);
+
+        throw std::runtime_error(errorMessage.str());
+    }
+}
+
+void LUAScriptContext::executeScript(const std::string& functionName, const ArgumentVector& params) {
+
+    int16_t numParameters = static_cast<int16_t>(params.size());
+
+    if(functionName.empty()) {
+
+        // Executing the script entirely from top down means
+        // not providing any parameters.
+        if(!params.empty()) {
+            // Todo: At least log this!
+            numParameters = 0;
+        }
+    } else {
+
+        // Resolve the function.
+        lua_getglobal(m_luaState, functionName.c_str());
+
+        // If function got resolved properly, the stack's top element
+        // now is of type 'LUA_TFUNCTION'.
+        const int topType = lua_type(m_luaState, lua_gettop(m_luaState));
+        if(topType != LUA_TFUNCTION) {
+
+            std::stringstream errorMessage;
+            errorMessage << "Error retrieving function '"
+                         << functionName << "' in file '"
+                         << m_scriptPath.string() << "'"
+                         << " (top of the stack type: "
+                         << topType << ")";
+
+            throw std::runtime_error(errorMessage.str());
+        }
+
+        // Push all parameters onto the LUA stack.
+        pushArguments(params);
+    }
+
+    const int result = lua_pcall(m_luaState, numParameters, 0, 0);
+    if(result) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error while executing (";
+        if(functionName.empty()) {
+            errorMessage << "entire script)";
+        } else {
+            errorMessage << functionName << ")";
+        }
+        errorMessage << " in file '" << m_scriptPath.string() 
+                     << "' (error-code: " << result << ")"
+                     << lua_tostring(m_luaState, -1);
+        lua_pop(m_luaState,1);
+
+        throw std::runtime_error(errorMessage.str());
+    }
+}
+
+void LUAScriptContext::pushArguments(const ArgumentVector& /*params*/) {
 
 }
 

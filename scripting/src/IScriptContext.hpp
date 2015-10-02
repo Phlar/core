@@ -19,7 +19,7 @@ class IScriptContext : public virtual base::IReferenceCounted {
         //! \param functionName name of the function to invoke.
         //! \param params container of parameters passed.
         virtual void ExecuteScript(const std::string& functionName,
-                                   const std::vector<Argument>& params) = 0;
+                                   const ArgumentVector& params) = 0;
 };
 typedef boost::intrusive_ptr<IScriptContext> IScriptContextPtr;
 
