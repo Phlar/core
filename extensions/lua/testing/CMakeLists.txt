@@ -21,3 +21,7 @@ foreach(testSourceFile ${LUAScript_Test_Sources})
 	add_test(NAME ${testName} COMMAND ${testName})	
 
 endforeach(testSourceFile)
+
+# Copy all testdata
+file(GLOB LUA_TESTDATA_FILES "./testdata/*.*")
+file(COPY ${LUA_TESTDATA_FILES} DESTINATION ${TESTDATA_DIRECTORY})

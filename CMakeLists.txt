@@ -53,6 +53,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Create a testdata directory.
+set(TESTDATA_DIRECTORY ${CMAKE_BINARY_DIR}/testdata)
+file(MAKE_DIRECTORY ${TESTDATA_DIRECTORY})
+
 add_subdirectory(./base)
 add_subdirectory(./scripting)
 add_subdirectory(./ai)

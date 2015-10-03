@@ -2,11 +2,13 @@
 
 #define BOOST_TEST_MODULE "Test_LUABasics"
 
+#include "Utils.hpp"
 #include "LUAScriptResolver.hpp"
 
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
+#include <iostream>
 #include <vector>
 
 namespace aw {
@@ -20,7 +22,9 @@ struct LUATestFixture {
 
     LUATestFixture()
     : luaResolver()
-    , luaTestFilePath("D:/Devel/core/extensions/lua/testing/testdata/TestFunctions.lua") {
+    , luaTestFilePath(base::utils::GetProcessDirectory() / "../../testdata/TestFunctions.lua") {
+
+        std::cout << aw::core::base::utils::GetProcessDirectory() << std::endl;
     }
 
     IScriptContextPtr getCheckedContext(const boost::filesystem::path& scriptPath) {
