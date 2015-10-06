@@ -1,12 +1,13 @@
 #pragma once
 
 #include "IScriptContext.hpp"
+#include "LUATypedefs.hpp"
 
 #include "InterfaceImpl.hpp"
 
 #include <boost/filesystem.hpp>
 
-class lua_State;
+struct lua_State;
 
 namespace aw {
 namespace core {
@@ -16,7 +17,8 @@ namespace lua {
 class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
 
     public:
-        LUAScriptContext(const boost::filesystem::path& scriptPath);
+        LUAScriptContext(RegistrationFunctionsPtr registrationFunctions,
+                         const boost::filesystem::path& scriptPath);
         virtual ~LUAScriptContext();
 
         //@{
@@ -26,6 +28,9 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
         //@}
 
     protected:
+
+        //! \brief Create a LUA state object and register all C++ types.
+        void initializeLUAStateObject();
 
         //! \brief Helper loading the script and catching possible syntax errors.
         void loadScriptFile();
@@ -39,6 +44,7 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
 
         lua_State* m_luaState;
         boost::filesystem::path m_scriptPath;
+        RegistrationFunctionsPtr m_registrationFunctions;
 };
 
 } // namespace lua
