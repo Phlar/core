@@ -11,7 +11,8 @@ namespace core {
 namespace scripting {
 
 // Variant of arguments that get passed to script resolvers as function parameters.
-typedef boost::variant<int16_t,
+typedef boost::variant<bool,
+                       int16_t,
                        float,
                        std::string, 
                        aw::core::ai::IBlackboardPtr> Argument;

@@ -5,6 +5,9 @@
 #include <lauxlib.h>
 #pragma warning(default: 4099)
 
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
+
 #include <iostream>
 #include <sstream>
 
@@ -12,6 +15,29 @@ namespace aw {
 namespace core {
 namespace scripting {
 namespace lua {
+
+namespace {
+
+class LUAFunctionParameterVisitor : public boost::static_visitor<void> {
+
+    public:
+        LUAFunctionParameterVisitor(lua_State* luaState)
+        : m_luaState(luaState) {
+        }
+
+        template<class T>
+        void operator()(const T& value) {
+            luabind::object obj(m_luaState, value);
+            obj.push(m_luaState);
+        }
+
+    protected:
+
+        lua_State* m_luaState;        
+};
+
+
+} // namespace anonymous
 
 LUAScriptContext::LUAScriptContext(RegistrationFunctionsPtr registrationFunctions,
                                    const boost::filesystem::path& scriptPath)
@@ -166,8 +192,16 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
     }
 }
 
-void LUAScriptContext::pushArguments(const ArgumentVector& /*params*/) {
+void LUAScriptContext::pushArguments(const ArgumentVector& params) {
 
+    if(params.empty()) {
+        return;
+    }
+
+    LUAFunctionParameterVisitor visitor(m_luaState);
+    for(const Argument& arg : params) {
+        boost::apply_visitor(visitor, arg);
+    }
 }
 
 } // namespace lua

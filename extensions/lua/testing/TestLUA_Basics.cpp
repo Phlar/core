@@ -139,6 +139,17 @@ BOOST_FIXTURE_TEST_CASE(TestCallingTwoFreeFunctionsFromLUA, LUATestFixture) {
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoFreeFunctions", noArgs));
 }
 
+BOOST_FIXTURE_TEST_CASE(TestCallingFunctionWithSimpleParameters, LUATestFixture) {
+
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector twoSimpleArgs;
+
+    twoSimpleArgs.push_back(Argument(static_cast<int16_t>(2)));
+    twoSimpleArgs.push_back(Argument(static_cast<int16_t>(5)));
+
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", twoSimpleArgs));
+}
+
 
 } // namespace testing
 } // namespace lua

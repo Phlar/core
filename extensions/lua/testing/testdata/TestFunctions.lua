@@ -10,4 +10,9 @@ function FuncCallTwoFreeFunctions()
     FreeFunctionNoParamB()
 end
 
+function FuncCallTwoSimpleParameters(a, b)
+    sum = a + b
+    print("\na: " .. a .. "\nb: " .. b .. "\nsum: " .. sum)
+end
+
 print("This should only be seen when executing the entire script.")
