@@ -13,9 +13,16 @@ namespace core {
 namespace scripting {
 namespace lua {
 
-LUAScriptContext::LUAScriptContext(const boost::filesystem::path& scriptPath)
+LUAScriptContext::LUAScriptContext(RegistrationFunctionsPtr registrationFunctions,
+                                   const boost::filesystem::path& scriptPath)
 : m_luaState(nullptr)
-, m_scriptPath(scriptPath) {
+, m_scriptPath(scriptPath)
+, m_registrationFunctions(registrationFunctions) {
+
+    // Todo: Cover by unit-test!
+    if(!registrationFunctions) {
+        throw std::invalid_argument("Error creating LUA-context, invalid registration functions provided.");
+    }
 
     // Todo: Duplicated somewhere else for sure!
     boost::system::error_code errorCode;
@@ -31,10 +38,7 @@ LUAScriptContext::LUAScriptContext(const boost::filesystem::path& scriptPath)
         throw std::invalid_argument(errorMessage.str());
     }
 
-    m_luaState = luaL_newstate();
-    if(!m_luaState) {
-        throw std::runtime_error("Error setting up LUA state object.");
-    }
+    initializeLUAStateObject();
 }
 
 LUAScriptContext::~LUAScriptContext() {
@@ -67,6 +71,28 @@ void LUAScriptContext::ExecuteScript(const std::string& functionName,
     }
     
     executeScript(functionName, params);
+}
+
+
+void LUAScriptContext::initializeLUAStateObject() {
+
+    if(m_luaState) {
+        throw std::runtime_error("Error setting up LUA state object, state object already set up.");
+    }
+
+    m_luaState = luaL_newstate();
+    if(!m_luaState) {
+        throw std::runtime_error("Error setting up LUA state object.");
+    }
+
+    // Execute all registration functions.
+    for(RegistrationFunction& regFnc : (*m_registrationFunctions)) {
+        luabind::module(m_luaState)
+        [
+            regFnc()
+        ];
+    }
+
 }
 
 void LUAScriptContext::loadScriptFile() {
@@ -130,9 +156,11 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
             errorMessage << functionName << ")";
         }
         errorMessage << " in file '" << m_scriptPath.string() 
-                     << "' (error-code: " << result << ")"
+                     << "' (error-code: " << result << ") "
                      << lua_tostring(m_luaState, -1);
         lua_pop(m_luaState,1);
+
+        std::cout << errorMessage.str() << std::endl;
 
         throw std::runtime_error(errorMessage.str());
     }
