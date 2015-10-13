@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IScriptContext.hpp"
-#include "LUATypedefs.hpp"
+#include "LUARegistrationFunctions.hpp"
 
 #include "InterfaceImpl.hpp"
 
@@ -17,7 +17,7 @@ namespace lua {
 class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
 
     public:
-        LUAScriptContext(RegistrationFunctionsPtr registrationFunctions,
+        LUAScriptContext(ConverterFunctionsPtr converterFunctions,
                          const boost::filesystem::path& scriptPath);
         virtual ~LUAScriptContext();
 
@@ -26,6 +26,13 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
         virtual void ExecuteScript(const std::string& functionName,
                                    const ArgumentVector& params);
         //@}
+
+        //! \brief By default LUA runs a mark and sweep garbage collector in the background.
+        //! As the garbage collector cleans at non-deterministic points in time, objects passed
+        //! to LUA also cannot be guaranteed to be deleted when one expects it. As this can lead
+        //! to problems especially when using smart pointers on them the following function
+        //! can be used to force a run of the garbage-collector after invoking LUA code.
+        void ForceGCAfterExecution(bool forceGC = false);
 
     protected:
 
@@ -44,7 +51,9 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
 
         lua_State* m_luaState;
         boost::filesystem::path m_scriptPath;
-        RegistrationFunctionsPtr m_registrationFunctions;
+        ConverterFunctionsPtr m_converterFunctions;
+        bool m_forceGCAfterScriptExecution;
+        static const bool defaultForceGCAfterExecution;
 };
 
 } // namespace lua

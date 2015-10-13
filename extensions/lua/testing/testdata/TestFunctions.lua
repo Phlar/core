@@ -15,4 +15,8 @@ function FuncCallTwoSimpleParameters(a, b)
     print("\na: " .. a .. "\nb: " .. b .. "\nsum: " .. sum)
 end
 
+function FuncCallMethodOfCustomClass(testClass)
+    testClass:MemberFunctionNoParam()
+end
+
 print("This should only be seen when executing the entire script.")

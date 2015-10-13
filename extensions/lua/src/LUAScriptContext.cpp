@@ -33,21 +33,23 @@ class LUAFunctionParameterVisitor : public boost::static_visitor<void> {
 
     protected:
 
-        lua_State* m_luaState;        
+        lua_State* m_luaState;
 };
 
 
 } // namespace anonymous
 
-LUAScriptContext::LUAScriptContext(RegistrationFunctionsPtr registrationFunctions,
+const bool LUAScriptContext::defaultForceGCAfterExecution = false;
+
+LUAScriptContext::LUAScriptContext(ConverterFunctionsPtr converterFunctions,
                                    const boost::filesystem::path& scriptPath)
 : m_luaState(nullptr)
 , m_scriptPath(scriptPath)
-, m_registrationFunctions(registrationFunctions) {
+, m_converterFunctions(converterFunctions)
+, m_forceGCAfterScriptExecution(defaultForceGCAfterExecution) {
 
-    // Todo: Cover by unit-test!
-    if(!registrationFunctions) {
-        throw std::invalid_argument("Error creating LUA-context, invalid registration functions provided.");
+    if(!m_converterFunctions) {
+        throw std::invalid_argument("Error creating LUA-context, invalid converter functions provided.");
     }
 
     // Todo: Duplicated somewhere else for sure!
@@ -99,6 +101,10 @@ void LUAScriptContext::ExecuteScript(const std::string& functionName,
     executeScript(functionName, params);
 }
 
+void LUAScriptContext::ForceGCAfterExecution(bool forceGC) {
+
+    m_forceGCAfterScriptExecution = forceGC;
+}
 
 void LUAScriptContext::initializeLUAStateObject() {
 
@@ -111,14 +117,16 @@ void LUAScriptContext::initializeLUAStateObject() {
         throw std::runtime_error("Error setting up LUA state object.");
     }
 
+    // Make luabind aware of the state.
+    luabind::open(m_luaState);
+
     // Execute all registration functions.
-    for(RegistrationFunction& regFnc : (*m_registrationFunctions)) {
+    for(TypeRegistrationFunction& regFnc : m_converterFunctions->typeRegistrationFunctions) {
         luabind::module(m_luaState)
         [
             regFnc()
         ];
     }
-
 }
 
 void LUAScriptContext::loadScriptFile() {
@@ -172,6 +180,11 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
     }
 
     const int result = lua_pcall(m_luaState, numParameters, 0, 0);
+    
+    if(m_forceGCAfterScriptExecution) {
+        lua_gc(m_luaState, LUA_GCCOLLECT, 0);
+    }
+
     if(result) {
 
         std::stringstream errorMessage;
@@ -186,8 +199,6 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
                      << lua_tostring(m_luaState, -1);
         lua_pop(m_luaState,1);
 
-        std::cout << errorMessage.str() << std::endl;
-
         throw std::runtime_error(errorMessage.str());
     }
 }
@@ -198,9 +209,48 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
         return;
     }
 
-    LUAFunctionParameterVisitor visitor(m_luaState);
+    if(m_converterFunctions->argumentConversionFunctions.empty()) {
+        throw std::runtime_error("No argument conversion function registered.");
+    }
+
+    unsigned short paramIndex = 0;
+    auto errorMessagePrefixCreator = [&paramIndex]() -> std::stringstream {
+        std::stringstream errorMessage;
+        errorMessage << "Error converting parameter at position " 
+                     << paramIndex << ".";
+        return errorMessage;
+    };
+
     for(const Argument& arg : params) {
-        boost::apply_visitor(visitor, arg);
+
+        ++paramIndex;
+        bool result = false;
+
+        for(ArgumentConversionFunction& conversionFnc : m_converterFunctions->argumentConversionFunctions) {
+
+            try {
+                result = conversionFnc(m_luaState, arg);
+                if(result) {
+                    break;
+                }
+            } catch(const std::exception& e) {
+
+                std::stringstream errorMessage = errorMessagePrefixCreator();
+                errorMessage << " - " << e.what();
+                throw std::runtime_error(errorMessage.str());
+            } catch(...) {
+                throw std::runtime_error(errorMessagePrefixCreator().str());
+            }
+        }
+
+        if(!result) {
+
+            // Bad, as there's no functor registered that is capable of pushing the type
+            // to the LUA stack.
+            std::stringstream errorMessage = errorMessagePrefixCreator();
+            errorMessage << " - " << ". No LUA converter registered for the provided type.";
+            throw std::runtime_error(errorMessage.str());
+        }
     }
 }
 

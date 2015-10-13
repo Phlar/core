@@ -2,7 +2,7 @@
 
 #include "../../ai/src/IBlackboard.hpp"
 
-#include <boost/variant.hpp>
+#include <boost/any.hpp>
 
 #include <vector>
 
@@ -11,16 +11,9 @@ namespace core {
 namespace scripting {
 
 // Variant of arguments that get passed to script resolvers as function parameters.
-typedef boost::variant<bool,
-                       int16_t,
-                       float,
-                       std::string, 
-                       aw::core::ai::IBlackboardPtr> Argument;
+typedef boost::any Argument;
 typedef std::vector<Argument> ArgumentVector;
 
 } // namespace scripting
 } // namespace core
 } // namespace aw
-
-
-

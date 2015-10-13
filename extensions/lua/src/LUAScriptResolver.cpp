@@ -12,7 +12,7 @@ namespace lua {
 const char* LUAScriptResolver::m_supportedFileExtension = ".lua";
 
 LUAScriptResolver::LUAScriptResolver()
-: m_registrationFunctions(boost::make_shared<RegistrationFunctions>()) {
+: m_converterFunctions(boost::make_shared<ConverterFunctions>()) {
 }
 
 LUAScriptResolver::~LUAScriptResolver() {
@@ -25,16 +25,25 @@ bool LUAScriptResolver::IsFileSupported(const boost::filesystem::path& scriptPat
 
 IScriptContextPtr LUAScriptResolver::GetContext(const boost::filesystem::path& scriptPath) {
 
-    return IScriptContextPtr(new LUAScriptContext(m_registrationFunctions, scriptPath));
+    return IScriptContextPtr(new LUAScriptContext(m_converterFunctions, scriptPath));
 }
 
-void LUAScriptResolver::AddRegistrationFunction(const RegistrationFunction& registrationFunction) {
+void LUAScriptResolver::AddTypeRegistrationFunction(const TypeRegistrationFunction& registrationFunction) {
 
     if(!registrationFunction) {
-        throw std::invalid_argument("Error adding LUA registration function, invalid functor.");
+        throw std::invalid_argument("Error adding LUA type/function registration function, invalid functor.");
     }
 
-    m_registrationFunctions->push_back(registrationFunction);
+    m_converterFunctions->typeRegistrationFunctions.push_back(registrationFunction);
+}
+
+void LUAScriptResolver::AddParameterConverterFunction(const ArgumentConversionFunction& converterFunction) {
+
+    if(!converterFunction) {
+        throw std::invalid_argument("Error adding LUA parameter conversion function, invalid functor.");
+    }
+
+    m_converterFunctions->argumentConversionFunctions.push_back(converterFunction);
 }
 
 } // namespace lua

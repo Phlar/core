@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IScriptResolver.hpp"
-#include "LUATypedefs.hpp"
+#include "LUARegistrationFunctions.hpp"
 
 #include "InterfaceImpl.hpp"
 
@@ -27,16 +27,21 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath);
         //@}
 
-        //! \brief Add a LUA registration function.
-        void AddRegistrationFunction(const RegistrationFunction& registrationFunction);
+        //! \brief Add function to register C++ types and functions 
+        //! towards LUA. Registration-functions must return the 
+        //! "exposed data / functions" utilizing the luabind::scope type.
+        void AddTypeRegistrationFunction(const TypeRegistrationFunction& registrationFunction);
+
+        //! \brief Add a converter function from boost::any to luabind::object.
+        void AddParameterConverterFunction(const ArgumentConversionFunction& converterFunction);
 
     protected:
 
         static const char* m_supportedFileExtension;
 
         // When creating a context and the internal LUA state object the listed
-        // functions below get executed.
-        RegistrationFunctionsPtr m_registrationFunctions;
+        // functions (type / function registration) below get executed.
+        ConverterFunctionsPtr m_converterFunctions;
 };
 
 } // namespace lua
