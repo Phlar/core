@@ -1,4 +1,4 @@
- #define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_DYN_LINK
 
 #define BOOST_TEST_MODULE "Test_LUABasics"
 
@@ -60,6 +60,9 @@ void FreeFunctionNoParamB() {
 
 // Class / mock class to be used for testing passing user defined data
 // to LUA. Moreover wrapping that classes into intrusive_ptr should be tested.
+class IMemberFunctionHelperTestClass;
+typedef boost::intrusive_ptr<IMemberFunctionHelperTestClass> IMemberFunctionHelperTestClassPtr;
+
 class IMemberFunctionHelperTestClass : public virtual base::IReferenceCounted {
 
     public:
@@ -67,9 +70,10 @@ class IMemberFunctionHelperTestClass : public virtual base::IReferenceCounted {
         virtual ~IMemberFunctionHelperTestClass() {}
 
         virtual void MemberFunctionNoParam() = 0;
+        virtual void MemberFunction(IMemberFunctionHelperTestClassPtr) = 0;
+
         virtual int GetReferenceCount() const = 0;
 };
-typedef boost::intrusive_ptr<IMemberFunctionHelperTestClass> IMemberFunctionHelperTestClassPtr;
 
 class MemberFunctionHelperTestClass : public base::InterfaceImpl<IMemberFunctionHelperTestClass> {
 
@@ -77,8 +81,6 @@ class MemberFunctionHelperTestClass : public base::InterfaceImpl<IMemberFunction
 
         MemberFunctionHelperTestClass() {}
         virtual ~MemberFunctionHelperTestClass() {}
-
-        virtual void MemberFunctionNoParam() {}
 
         virtual int GetReferenceCount() const {
             return ReferenceCounted::GetRefCount();
@@ -99,6 +101,7 @@ MOCK_BASE_CLASS(MockMemberFunctionHelperTestClass, MemberFunctionHelperTestClass
         }
 
     MOCK_METHOD(MemberFunctionNoParam, 0);
+    MOCK_METHOD(MemberFunction, 1, void(IMemberFunctionHelperTestClassPtr));
 };
 typedef boost::intrusive_ptr<MockMemberFunctionHelperTestClass> MockMemberFunctionHelperTestClassPtr;
 
@@ -224,7 +227,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionPushTypeRegistrationAfterContextR
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args));
 }
 
-BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
+BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
 
     // Test calling back a C++ member function from LUA.
     // Verify no data is kept by LUA after execution.
@@ -249,6 +252,38 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
         // Expectation is one call back to C++ as well as the destruction of the object
         // i.e. nothing is kept by LUA any longer.
         MOCK_EXPECT(mockClass->MemberFunctionNoParam).once();
+        MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
+
+        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClassNoParam", args));
+    }
+
+    // Verify all expectations towards Turtle.
+    mock::verify();
+}
+
+BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
+
+    auto registerClass = []() -> luabind::scope {
+        return luabind::class_<IMemberFunctionHelperTestClass, IMemberFunctionHelperTestClassPtr>("IMemberFunctionHelperTestClass")
+            .def("MemberFunction", &IMemberFunctionHelperTestClass::MemberFunction);
+    };
+
+    {
+        BOOST_CHECK_NO_THROW(luaResolver.AddTypeRegistrationFunction(registerClass));
+        IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+        ArgumentVector args;
+
+        luaResolver.AddParameterConverterFunction(pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
+
+        MockMemberFunctionHelperTestClassPtr mockClass(new MockMemberFunctionHelperTestClass());
+        args.push_back(Argument(IMemberFunctionHelperTestClassPtr(mockClass)));
+
+        MOCK_EXPECT(mockClass->MemberFunction).once().calls(
+            [&mockClass](IMemberFunctionHelperTestClassPtr fromLUA) {
+
+                // Check whether the LUA passes back the correct 'instance'.
+                BOOST_CHECK_EQUAL(fromLUA, mockClass);
+            });
         MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
 
         BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClass", args));
