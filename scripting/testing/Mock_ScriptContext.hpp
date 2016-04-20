@@ -17,7 +17,7 @@ MOCK_BASE_CLASS(MockScriptContext, TestScriptContext) {
 
     public:
 
-        MOCK_METHOD(ExecuteScript, 2);
+        MOCK_METHOD(ExecuteScript, 3);
 };
 typedef boost::intrusive_ptr<MockScriptContext> MockScriptContextPtr;
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "LUAScriptResolver.hpp"
+#include "Arguments.hpp"
+
 #include <boost/any.hpp>
 
 #include <luabind/scope.hpp>
@@ -44,6 +47,14 @@ bool pushToLUAStack(lua_State* luaState, const boost::any& argument) {
         throw std::runtime_error("Unknown exception caught when pushing argument to LUA stack.");
     }
     return true;
+}
+
+template <class T>
+registerPushToLUAFunction(LUAScriptResolver& resolver, const ) {
+
+    void RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
+        const PushToLUAFunction& fnc);
+
 }
 
 

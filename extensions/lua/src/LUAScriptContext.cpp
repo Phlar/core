@@ -77,7 +77,8 @@ LUAScriptContext::~LUAScriptContext() {
 }
 
 void LUAScriptContext::ExecuteScript(const std::string& functionName,
-                                     const ArgumentVector& params) {
+                                     const ArgumentVector& params,
+                                     const ReturnValuesHolder& results) {
 
     // Todo: Check whether these cannot be loaded from within LUA code.
     luaL_openlibs(m_luaState);
@@ -95,10 +96,10 @@ void LUAScriptContext::ExecuteScript(const std::string& functionName,
     // (Todo: Check whether this really is the way to go as it obviously
     // has drawbacks (performance, executing anything "free".)
     if(!functionName.empty()) {
-        executeScript(std::string(), ArgumentVector());
+        executeScript(std::string(), ArgumentVector(), ReturnValuesHolder::Create());
     }
     
-    executeScript(functionName, params);
+    executeScript(functionName, params, results);
 }
 
 void LUAScriptContext::ForceGCAfterExecution(bool forceGC) {
@@ -143,7 +144,7 @@ void LUAScriptContext::loadScriptFile() {
     }
 }
 
-void LUAScriptContext::executeScript(const std::string& functionName, const ArgumentVector& params) {
+void LUAScriptContext::executeScript(const std::string& functionName, const ArgumentVector& params, const ReturnValuesHolder& results) {
 
     int16_t numParameters = static_cast<int16_t>(params.size());
 
@@ -179,8 +180,8 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         pushArguments(params);
     }
 
-    const int result = lua_pcall(m_luaState, numParameters, 0, 0);
-    
+    const int result = lua_pcall(m_luaState, numParameters, results.Size(), 0);
+
     if(m_forceGCAfterScriptExecution) {
         lua_gc(m_luaState, LUA_GCCOLLECT, 0);
     }
@@ -201,6 +202,20 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
 
         throw std::runtime_error(errorMessage.str());
     }
+
+    fetchReturnValuesFromLUA(results);
+
+
+    // Everything seems run well - so check whether there's a return value present.
+    std::cout << "*****************************************************************" << std::endl
+              << "Number of elements on the stack: " << lua_gettop(m_luaState) << std::endl;
+
+    while (lua_gettop(m_luaState))
+    {
+        std::cout << "type: " << lua_type(m_luaState, lua_gettop(m_luaState)) << std::endl;
+        lua_pop(m_luaState, 1);
+    }
+    std::cout << "*****************************************************************" << std::endl;
 }
 
 void LUAScriptContext::pushArguments(const ArgumentVector& params) {
@@ -209,7 +224,7 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
         return;
     }
 
-    if(m_converterFunctions->argumentConversionFunctions.empty()) {
+    if(m_converterFunctions->toLUAConversionFunctions.empty()) {
         throw std::runtime_error("No argument conversion function registered.");
     }
 
@@ -225,6 +240,10 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
 
         ++paramIndex;
         bool result = false;
+
+        // todo: Replace iterating over a plain container by a lookup.
+
+        const boost::typeindex::type_index paramType(boost::typeindex::type_info<Argument>());
 
         for(ArgumentConversionFunction& conversionFnc : m_converterFunctions->argumentConversionFunctions) {
 
@@ -252,6 +271,11 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
             throw std::runtime_error(errorMessage.str());
         }
     }
+}
+
+void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& /*results*/) {
+    
+
 }
 
 } // namespace lua

@@ -8,6 +8,7 @@
 #include "luabind/scope.hpp"
 
 #include <boost/shared_ptr.hpp>
+#include <boost/type_index.hpp>
 
 
 namespace aw {
@@ -32,8 +33,22 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         //! "exposed data / functions" utilizing the luabind::scope type.
         void AddTypeRegistrationFunction(const TypeRegistrationFunction& registrationFunction);
 
+
+        /*
         //! \brief Add a converter function from boost::any to luabind::object.
         void AddParameterConverterFunction(const ArgumentConversionFunction& converterFunction);
+
+        //! \brief Register a converter function to be used when fetching back values from LUA.
+        void RegisterFromLUAConverterFunction(const FromLUAConversionFunction& fnc);
+        */
+
+
+        void RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
+                                       const PushToLUAFunction& fnc);
+
+        void RegisterFetchFromLUAFunction(const boost::typeindex::type_index& regType,
+                                          const FetchFromLUAFunction& fnc);
+
 
     protected:
 

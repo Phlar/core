@@ -138,6 +138,7 @@ struct LUATestFixture {
 };
 
 
+/*
 BOOST_FIXTURE_TEST_CASE(TestLUASimpleFunctionWithoutParameters, LUATestFixture) {
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
@@ -291,6 +292,22 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
 
     // Verify all expectations towards Turtle.
     mock::verify();
+}
+*/
+
+BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
+
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector args;
+    ReturnValuesHolder results = ReturnValuesHolder::Create();
+
+    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnNothing", args, ReturnValuesHolder(0)));
+    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnString", args, ReturnValuesHolder(1)));
+//     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnInt", args, ReturnValuesHolder(1)));
+    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringInt", args, ReturnValuesHolder(2)));
+    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringIntString", args, ReturnValuesHolder(2)));
+
+
 }
 
 } // namespace testing

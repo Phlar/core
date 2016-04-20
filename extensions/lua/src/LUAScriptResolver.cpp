@@ -9,6 +9,38 @@ namespace core {
 namespace scripting {
 namespace lua {
 
+
+namespace {
+
+const char* toLUARegistrationErrorString = "Error registering function to pushing to LUA";
+const char* fromLUARegistrationErrorString = "Error registering function to fetching from LUA";
+
+template <class Container, class Function>
+registerConverterFunction(const boost::typeindex::type_index& index, const Function& function,
+                          Container& container, const char* errorMessage) {
+
+    assert(errorMessage);
+
+    if(!function) {
+
+        std::stringstream errorMessage;
+        errorMessage << errorMessage << ": " << "invalid converter function provided.";
+        throw std::invalid_argument(errorMessage.str());
+    }
+
+    auto insertResult = container.insert(std::make_pair(index, function));
+    if(!insertResult.second) {
+
+        std::stringstream errorMessage;
+        errorMessage << errorMessage << ": " 
+                     << "converter function already registered for type ("
+                     << index.pretty_name() << ").";
+        throw std::runtime_error(errorMessage.str());
+    }
+}
+
+} // namespace anonymous
+
 const char* LUAScriptResolver::m_supportedFileExtension = ".lua";
 
 LUAScriptResolver::LUAScriptResolver()
@@ -37,13 +69,16 @@ void LUAScriptResolver::AddTypeRegistrationFunction(const TypeRegistrationFuncti
     m_converterFunctions->typeRegistrationFunctions.push_back(registrationFunction);
 }
 
-void LUAScriptResolver::AddParameterConverterFunction(const ArgumentConversionFunction& converterFunction) {
+void LUAScriptResolver::RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
+                                                  const PushToLUAFunction& fnc) {
 
-    if(!converterFunction) {
-        throw std::invalid_argument("Error adding LUA parameter conversion function, invalid functor.");
-    }
+    registerConverterFunction(regType, fnc, m_converterFunctions->toLUAConversionFunctions, toLUARegistrationErrorString);
+}
 
-    m_converterFunctions->argumentConversionFunctions.push_back(converterFunction);
+void LUAScriptResolver::RegisterFetchFromLUAFunction(const boost::typeindex::type_index& regType,
+                                                    const FetchFromLUAFunction& fnc) {
+
+    registerConverterFunction(regType, fnc, m_converterFunctions->fromLUAConversionFunctions, fromLUARegistrationErrorString);
 }
 
 } // namespace lua
