@@ -17,7 +17,7 @@ typedef std::vector<Argument> ArgumentVector;
 // Return type also is of type 'any'.
 typedef boost::any ReturnValue;
 
-//! \brief A mere thin wrapper around a std::vector of results from a script's 
+//! \brief A mere thin wrapper around a std::vector of results from a script's
 //! execution as a "const vector" cannot be passed into the script-execution
 //! function without hitting the chance of getting modified in size.
 class ReturnValuesHolder {
@@ -70,7 +70,7 @@ class ReturnValuesHolder {
 
             m_returnValues.swap(holder.m_returnValues);
         }
-        
+
         ReturnValuesHolder& operator= (ReturnValuesHolder&& holder) {
 
             if(this != &holder) {

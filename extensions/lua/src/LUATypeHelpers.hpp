@@ -49,13 +49,16 @@ bool pushToLUAStack(lua_State* luaState, const boost::any& argument) {
     return true;
 }
 
-template <class T>
-registerPushToLUAFunction(LUAScriptResolver& resolver, const ) {
 
+/*
+template <class T>
+void registerPushToLUAFunction(LUAScriptResolver& resolver, const ) {
+
+    /*
     void RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
         const PushToLUAFunction& fnc);
-
-}
+        */
+//}
 
 
 } // namespace lua

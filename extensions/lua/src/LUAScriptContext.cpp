@@ -242,13 +242,12 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
         bool result = false;
 
         // todo: Replace iterating over a plain container by a lookup.
+        //const boost::typeindex::type_index paramType(boost::typeindex::type_info<Argument>());
 
-        const boost::typeindex::type_index paramType(boost::typeindex::type_info<Argument>());
-
-        for(ArgumentConversionFunction& conversionFnc : m_converterFunctions->argumentConversionFunctions) {
+        for(const auto& conversionFncEntry : m_converterFunctions->toLUAConversionFunctions) {
 
             try {
-                result = conversionFnc(m_luaState, arg);
+                result = conversionFncEntry.second(m_luaState, arg);
                 if(result) {
                     break;
                 }

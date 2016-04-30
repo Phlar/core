@@ -16,7 +16,7 @@ const char* toLUARegistrationErrorString = "Error registering function to pushin
 const char* fromLUARegistrationErrorString = "Error registering function to fetching from LUA";
 
 template <class Container, class Function>
-registerConverterFunction(const boost::typeindex::type_index& index, const Function& function,
+void registerConverterFunction(const boost::typeindex::type_index& index, const Function& function,
                           Container& container, const char* errorMessage) {
 
     assert(errorMessage);

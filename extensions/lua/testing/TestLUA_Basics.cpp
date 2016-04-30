@@ -138,19 +138,16 @@ struct LUATestFixture {
 };
 
 
-/*
 BOOST_FIXTURE_TEST_CASE(TestLUASimpleFunctionWithoutParameters, LUATestFixture) {
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
-    ArgumentVector args;
-    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncNoParam", args));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncNoParam", ArgumentVector(), ReturnValuesHolder::Create()));
 }
 
 BOOST_FIXTURE_TEST_CASE(TestLUAUnknownFunctionShouldThrow, LUATestFixture) {
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
-    ArgumentVector args;
-    BOOST_CHECK_THROW(ctx->ExecuteScript("GarbageFunction", args), std::runtime_error);
+    BOOST_CHECK_THROW(ctx->ExecuteScript("GarbageFunction", ArgumentVector(), ReturnValuesHolder::Create()), std::runtime_error);
 }
 
 BOOST_FIXTURE_TEST_CASE(TestAddingTypeRegistrationFunctions, LUATestFixture) {
@@ -168,8 +165,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingSingleFreeFunctionFromLUA, LUATestFixture) {
     // Expect one call back to C++ code.
     MOCK_EXPECT(freeFunctionsTestClass->FunctionNoParamA).once();
 
-    ArgumentVector args;
-    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallSingleFreeFunction", args));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallSingleFreeFunction", ArgumentVector(), ReturnValuesHolder::Create()));
 }
 
 
@@ -186,8 +182,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingTwoFreeFunctionsFromLUA, LUATestFixture) {
     MOCK_EXPECT(freeFunctionsTestClass->FunctionNoParamA).once();
     MOCK_EXPECT(freeFunctionsTestClass->FunctionNoParamB).once();
 
-    ArgumentVector args;
-    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoFreeFunctions", args));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoFreeFunctions", ArgumentVector(), ReturnValuesHolder::Create()));
 }
 
 BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithUnresolverParametersShouldThrow, LUATestFixture) {
@@ -198,9 +193,10 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithUnresolverParametersShouldThr
     args.push_back(Argument(static_cast<int16_t>(2)));
     args.push_back(Argument(static_cast<int16_t>(5)));
     
-    BOOST_CHECK_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args), std::runtime_error);
+    BOOST_CHECK_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()), std::runtime_error);
 }
 
+/*
 BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithSimpleParameters, LUATestFixture) {
 
     luaResolver.AddParameterConverterFunction(pushToLUAStack<int16_t>);
@@ -293,7 +289,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
     // Verify all expectations towards Turtle.
     mock::verify();
 }
-*/
+/*
 
 BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
 
@@ -306,9 +302,9 @@ BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
 //     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnInt", args, ReturnValuesHolder(1)));
     // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringInt", args, ReturnValuesHolder(2)));
     // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringIntString", args, ReturnValuesHolder(2)));
-
-
 }
+
+*/
 
 } // namespace testing
 } // namespace lua
