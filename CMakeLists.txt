@@ -27,7 +27,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 message(STATUS "BoostDir: ${BOOST_ROOT}")
 #find_package(Boost 1.57 REQUIRED)
-find_package(Boost 1.57 COMPONENTS system date_time chrono serialization filesystem program_options random thread regex unit_test_framework)
+find_package(Boost 1.57 COMPONENTS system date_time chrono serialization filesystem program_options random thread regex unit_test_framework context coroutine)
 
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
