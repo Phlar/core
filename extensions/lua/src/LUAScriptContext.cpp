@@ -239,42 +239,42 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
     for(const Argument& arg : params) {
 
         ++paramIndex;
-        bool result = false;
 
-        // todo: Replace iterating over a plain container by a lookup.
-        //const boost::typeindex::type_index paramType(boost::typeindex::type_info<Argument>());
+        const auto findIter = m_converterFunctions->toLUAConversionFunctions.find(arg.type().hash_code());
 
-        for(const auto& conversionFncEntry : m_converterFunctions->toLUAConversionFunctions) {
-
-            try {
-                result = conversionFncEntry.second(m_luaState, arg);
-                if(result) {
-                    break;
-                }
-            } catch(const std::exception& e) {
-
-                std::stringstream errorMessage = errorMessagePrefixCreator();
-                errorMessage << " - " << e.what();
-                throw std::runtime_error(errorMessage.str());
-            } catch(...) {
-                throw std::runtime_error(errorMessagePrefixCreator().str());
-            }
-        }
-
-        if(!result) {
-
+        if(findIter == m_converterFunctions->toLUAConversionFunctions.end()) {
+            
             // Bad, as there's no functor registered that is capable of pushing the type
             // to the LUA stack.
             std::stringstream errorMessage = errorMessagePrefixCreator();
             errorMessage << " - " << ". No LUA converter registered for the provided type.";
             throw std::runtime_error(errorMessage.str());
         }
+
+        bool conversionResult = false;
+        try {
+
+            // Though the lookup claims the converter should be correct, the converter itself knows best...
+            conversionResult = findIter->second(m_luaState, arg);
+
+        } catch(const std::exception& e) {
+
+            std::stringstream errorMessage = errorMessagePrefixCreator();
+            errorMessage << " - " << e.what();
+            throw std::runtime_error(errorMessage.str());
+        } catch(...) {
+            throw std::runtime_error(errorMessagePrefixCreator().str());
+        }
+
+        if(!conversionResult) {
+            std::stringstream errorMessage = errorMessagePrefixCreator();
+            errorMessage << " Converter found for type [" << arg.type().name() << "] however conversion function returned an error";
+            throw std::runtime_error(errorMessage.str());
+        }
     }
 }
 
 void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& /*results*/) {
-    
-
 }
 
 } // namespace lua

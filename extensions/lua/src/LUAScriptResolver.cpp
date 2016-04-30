@@ -4,6 +4,8 @@
 
 #include <boost/make_shared.hpp>
 
+#include <iostream>
+
 namespace aw {
 namespace core {
 namespace scripting {
@@ -16,8 +18,8 @@ const char* toLUARegistrationErrorString = "Error registering function to pushin
 const char* fromLUARegistrationErrorString = "Error registering function to fetching from LUA";
 
 template <class Container, class Function>
-void registerConverterFunction(const boost::typeindex::type_index& index, const Function& function,
-                          Container& container, const char* errorMessage) {
+void registerTypeConverterFunction(const boost::typeindex::type_info& typeInfo, const Function& function,
+                                   Container& container, const char* errorMessage) {
 
     assert(errorMessage);
 
@@ -28,13 +30,13 @@ void registerConverterFunction(const boost::typeindex::type_index& index, const 
         throw std::invalid_argument(errorMessage.str());
     }
 
-    auto insertResult = container.insert(std::make_pair(index, function));
+    auto insertResult = container.insert(std::make_pair(typeInfo.hash_code(), function));
     if(!insertResult.second) {
 
         std::stringstream errorMessage;
         errorMessage << errorMessage << ": " 
                      << "converter function already registered for type ("
-                     << index.pretty_name() << ").";
+                     << typeInfo.name() << ").";
         throw std::runtime_error(errorMessage.str());
     }
 }
@@ -69,16 +71,16 @@ void LUAScriptResolver::AddTypeRegistrationFunction(const TypeRegistrationFuncti
     m_converterFunctions->typeRegistrationFunctions.push_back(registrationFunction);
 }
 
-void LUAScriptResolver::RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
-                                                  const PushToLUAFunction& fnc) {
+void LUAScriptResolver::RegisterPushTypeToLUAFunction(const boost::typeindex::type_info& regType,
+                                                      const PushToLUAFunction& fnc) {
 
-    registerConverterFunction(regType, fnc, m_converterFunctions->toLUAConversionFunctions, toLUARegistrationErrorString);
+    registerTypeConverterFunction(regType, fnc, m_converterFunctions->toLUAConversionFunctions, toLUARegistrationErrorString);
 }
 
-void LUAScriptResolver::RegisterFetchFromLUAFunction(const boost::typeindex::type_index& regType,
-                                                    const FetchFromLUAFunction& fnc) {
+void LUAScriptResolver::RegisterFetchTypeFromLUAFunction(const boost::typeindex::type_info& regType,
+                                                        const FetchFromLUAFunction& fnc) {
 
-    registerConverterFunction(regType, fnc, m_converterFunctions->fromLUAConversionFunctions, fromLUARegistrationErrorString);
+    registerTypeConverterFunction(regType, fnc, m_converterFunctions->fromLUAConversionFunctions, fromLUARegistrationErrorString);
 }
 
 } // namespace lua

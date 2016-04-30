@@ -196,10 +196,9 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithUnresolverParametersShouldThr
     BOOST_CHECK_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()), std::runtime_error);
 }
 
-/*
 BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithSimpleParameters, LUATestFixture) {
 
-    luaResolver.AddParameterConverterFunction(pushToLUAStack<int16_t>);
+    luaResolver.RegisterPushTypeToLUAFunction(typeid(int16_t), pushToLUAStack<int16_t>);
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
     ArgumentVector args;
@@ -207,7 +206,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionWithSimpleParameters, LUATestFixt
     args.push_back(Argument(static_cast<int16_t>(2)));
     args.push_back(Argument(static_cast<int16_t>(5)));
 
-    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()));
 }
 
 BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionPushTypeRegistrationAfterContextRetrieval, LUATestFixture) {
@@ -216,12 +215,12 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionPushTypeRegistrationAfterContextR
     ArgumentVector args;
 
     // Register the 'push'-function after creating the context - this should not harm at all.
-    luaResolver.AddParameterConverterFunction(pushToLUAStack<int16_t>);
+    luaResolver.RegisterPushTypeToLUAFunction(typeid(int16_t), pushToLUAStack<int16_t>);
 
     args.push_back(Argument(static_cast<int16_t>(2)));
     args.push_back(Argument(static_cast<int16_t>(5)));
 
-    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()));
 }
 
 BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
@@ -240,7 +239,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
         ArgumentVector args;
 
         // Register the intrusive-pointer wrapped interface.
-        luaResolver.AddParameterConverterFunction(pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
+        luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
 
         // Create an instance to be passed back to LUA.
         MockMemberFunctionHelperTestClassPtr mockClass(new MockMemberFunctionHelperTestClass());
@@ -251,7 +250,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
         MOCK_EXPECT(mockClass->MemberFunctionNoParam).once();
         MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
 
-        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClassNoParam", args));
+        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClassNoParam", args, ReturnValuesHolder::Create()));
     }
 
     // Verify all expectations towards Turtle.
@@ -270,7 +269,7 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
         IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
         ArgumentVector args;
 
-        luaResolver.AddParameterConverterFunction(pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
+        luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
 
         MockMemberFunctionHelperTestClassPtr mockClass(new MockMemberFunctionHelperTestClass());
         args.push_back(Argument(IMemberFunctionHelperTestClassPtr(mockClass)));
@@ -283,14 +282,15 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
             });
         MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
 
-        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClass", args));
+        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClass", args, ReturnValuesHolder::Create()));
     }
 
     // Verify all expectations towards Turtle.
     mock::verify();
 }
-/*
 
+
+/*
 BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
@@ -303,7 +303,6 @@ BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
     // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringInt", args, ReturnValuesHolder(2)));
     // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringIntString", args, ReturnValuesHolder(2)));
 }
-
 */
 
 } // namespace testing

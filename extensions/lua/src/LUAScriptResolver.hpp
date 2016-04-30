@@ -34,21 +34,14 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         void AddTypeRegistrationFunction(const TypeRegistrationFunction& registrationFunction);
 
 
-        /*
-        //! \brief Add a converter function from boost::any to luabind::object.
-        void AddParameterConverterFunction(const ArgumentConversionFunction& converterFunction);
+        //@{
+        //! \brief Register converters that convert a value to / from LUA.
+        void RegisterPushTypeToLUAFunction(const boost::typeindex::type_info& regType,
+                                           const PushToLUAFunction& fnc);
 
-        //! \brief Register a converter function to be used when fetching back values from LUA.
-        void RegisterFromLUAConverterFunction(const FromLUAConversionFunction& fnc);
-        */
-
-
-        void RegisterPushToLUAFunction(const boost::typeindex::type_index& regType,
-                                       const PushToLUAFunction& fnc);
-
-        void RegisterFetchFromLUAFunction(const boost::typeindex::type_index& regType,
-                                          const FetchFromLUAFunction& fnc);
-
+        void RegisterFetchTypeFromLUAFunction(const boost::typeindex::type_info& regType,
+                                              const FetchFromLUAFunction& fnc);
+        //@}
 
     protected:
 
