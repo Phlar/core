@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(TestHolderNoContent) {
 
 BOOST_AUTO_TEST_CASE(TestHolderDifferentTypes) {
 
-    ReturnValuesHolder holder = ReturnValuesHolder::Create<int32_t, float, std::string>()   ;
+    ReturnValuesHolder holder = ReturnValuesHolder::Create<int32_t, float, std::string>();
     BOOST_REQUIRE_EQUAL(holder.Size(), 3);
 
     ReturnValue firstReturn, secondReturn, thirdReturn;

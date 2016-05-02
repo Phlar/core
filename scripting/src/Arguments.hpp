@@ -79,7 +79,7 @@ class ReturnValuesHolder {
             return *this;
         }
 
-        void SetValue(uint8_t index, const ReturnValue& value) {
+        void SetValue(uint8_t index, const ReturnValue& value) const {
 
             verifyIndex(index);
 
@@ -94,15 +94,34 @@ class ReturnValuesHolder {
             m_returnValues[index] = std::unique_ptr<ReturnValue>(new ReturnValue(value));
         }
 
-        const ReturnValue& GetValue(uint8_t index) {
+        const ReturnValue& GetValue(uint8_t index) const {
 
             verifyIndex(index);
             return *m_returnValues[index];
         }
 
+        template<typename T>
+        const T& GetTypedValue(uint8_t index) const {
+
+            const ReturnValue& retVal = GetValue(index);
+            const T* val = boost::any_cast<T>(&retVal);
+            if(!val) {
+
+                std::stringstream errorMessage;
+                errorMessage << "Error retrieving typed value at index " << index << ".";
+                throw std::runtime_error(errorMessage.str());
+            }
+            return *val;
+        }
+
         uint8_t Size() const {
 
             return static_cast<uint8_t>(m_returnValues.size());
+        }
+
+        bool Empty() const {
+
+            return (Size() == 0);
         }
 
     protected:
@@ -111,20 +130,20 @@ class ReturnValuesHolder {
         : m_returnValues(size) {
         }
 
-        void verifyIndex(uint8_t index) {
+        void verifyIndex(uint8_t index) const {
 
             if(index >= m_returnValues.size()) {
 
                 std::stringstream errorMessage;
                 errorMessage << "Error accessing return value at index "
-                    << index << ", " << m_returnValues.size() 
-                    << " elements accessible.";
+                             << index << ", " << m_returnValues.size() 
+                             << " elements accessible.";
 
                 throw std::out_of_range(errorMessage.str());
             }
         }
 
-        std::vector<std::unique_ptr<ReturnValue>> m_returnValues;
+        mutable std::vector<std::unique_ptr<ReturnValue>> m_returnValues;
 };
 
 
