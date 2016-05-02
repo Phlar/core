@@ -78,7 +78,7 @@ void LUAScriptResolver::RegisterPushTypeToLUAFunction(const boost::typeindex::ty
 }
 
 void LUAScriptResolver::RegisterFetchTypeFromLUAFunction(const boost::typeindex::type_info& regType,
-                                                        const FetchFromLUAFunction& fnc) {
+                                                         const FetchFromLUAFunction& fnc) {
 
     registerTypeConverterFunction(regType, fnc, m_converterFunctions->fromLUAConversionFunctions, fromLUARegistrationErrorString);
 }

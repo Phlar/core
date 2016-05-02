@@ -289,21 +289,54 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunction, LUATestFixture) {
     mock::verify();
 }
 
-
-/*
-BOOST_FIXTURE_TEST_CASE(TestReturnValuesFromLUA, LUATestFixture) {
+BOOST_FIXTURE_TEST_CASE(TestReturnBuiltinValuesFromLUA, LUATestFixture) {
 
     IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
     ArgumentVector args;
-    ReturnValuesHolder results = ReturnValuesHolder::Create();
 
-    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnNothing", args, ReturnValuesHolder(0)));
-    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnString", args, ReturnValuesHolder(1)));
-//     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnInt", args, ReturnValuesHolder(1)));
-    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringInt", args, ReturnValuesHolder(2)));
-    // BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnStringIntString", args, ReturnValuesHolder(2)));
+    // Register converter functions.
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(bool), popFromLUAStack<bool>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(std::string), popFromLUAStack<std::string>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(int16_t), popFromLUAStack<int16_t>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(float), popFromLUAStack<float>));
+
+
+    // Check a single boolean.
+    ReturnValuesHolder returnedBool = ReturnValuesHolder::Create<bool>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnBool", args, returnedBool));
+    bool resultBool = false;
+    BOOST_REQUIRE_NO_THROW(resultBool = returnedBool.GetTypedValue<bool>(0));
+    BOOST_CHECK_EQUAL(resultBool, true);
+
+    // Check a sample string.
+    ReturnValuesHolder returnedString = ReturnValuesHolder::Create<std::string>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnString", args, returnedString));
+    std::string resultString = "";
+    BOOST_REQUIRE_NO_THROW(resultString = returnedString.GetTypedValue<std::string>(0));
+    BOOST_CHECK_EQUAL(resultString, "foo");
+
+    // Check a number.
+    ReturnValuesHolder returnedInt = ReturnValuesHolder::Create<int16_t>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnInt", args, returnedInt));
+    int16_t resultInt = 0;
+    BOOST_REQUIRE_NO_THROW(resultInt = returnedInt.GetTypedValue<int16_t>(0));
+    BOOST_CHECK_EQUAL(resultInt, 42);
+
+    // Check a floating point number.
+    ReturnValuesHolder returnedFloat = ReturnValuesHolder::Create<float>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnFloat", args, returnedFloat));
+    float resultFloat = 0.0f;
+    BOOST_REQUIRE_NO_THROW(resultFloat = returnedFloat.GetTypedValue<float>(0));
+    BOOST_CHECK_CLOSE(resultFloat, 123.456, 0.001);
 }
-*/
+
+// Todo: 
+//        - Test case for multiple arguments.
+//        - Test case for custom class instance.
+//        - Test case for type mismatch. (?)
+//        - Negative test case for missing converters back from LUA.
+//        - Exception handling in callback (C++) from within LUA. (C++ -> LUA -> C++ throwing exception)
+
 
 } // namespace testing
 } // namespace lua

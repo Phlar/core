@@ -147,14 +147,17 @@ void LUAScriptContext::loadScriptFile() {
 void LUAScriptContext::executeScript(const std::string& functionName, const ArgumentVector& params, const ReturnValuesHolder& results) {
 
     int16_t numParameters = static_cast<int16_t>(params.size());
+    int16_t numReturnValue = static_cast<int16_t>(results.Size());
+    const bool runEntireFile = functionName.empty();
 
-    if(functionName.empty()) {
+    if(runEntireFile) {
 
         // Executing the script entirely from top down means
         // not providing any parameters.
         if(!params.empty()) {
             // Todo: At least log this!
             numParameters = 0;
+            numReturnValue = 0;
         }
     } else {
 
@@ -180,7 +183,7 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         pushArguments(params);
     }
 
-    const int result = lua_pcall(m_luaState, numParameters, results.Size(), 0);
+    const int result = lua_pcall(m_luaState, numParameters, results.Size(), results.Size());
 
     if(m_forceGCAfterScriptExecution) {
         lua_gc(m_luaState, LUA_GCCOLLECT, 0);
@@ -203,19 +206,13 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         throw std::runtime_error(errorMessage.str());
     }
 
-    fetchReturnValuesFromLUA(results);
-
-
-    // Everything seems run well - so check whether there's a return value present.
-    std::cout << "*****************************************************************" << std::endl
-              << "Number of elements on the stack: " << lua_gettop(m_luaState) << std::endl;
-
-    while (lua_gettop(m_luaState))
-    {
-        std::cout << "type: " << lua_type(m_luaState, lua_gettop(m_luaState)) << std::endl;
-        lua_pop(m_luaState, 1);
+    // Retrieve expected return values from LUA - in case of a function was called.
+    // todo: Clarify if that's true - can "execution of a file" return something?
+    if(!runEntireFile) {
+        fetchReturnValuesFromLUA(results);
     }
-    std::cout << "*****************************************************************" << std::endl;
+
+    // todo: Check whether LUA stack is the same as before execution?
 }
 
 void LUAScriptContext::pushArguments(const ArgumentVector& params) {
@@ -274,7 +271,52 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
     }
 }
 
-void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& /*results*/) {
+void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& results) {
+
+    if(results.Empty()) {
+        return;
+    }
+
+    if(m_converterFunctions->fromLUAConversionFunctions.empty()) {
+        throw std::runtime_error("No argument conversion function registered.");
+    }
+
+    auto errorMessagePrefixCreator = [](uint8_t index) -> std::stringstream {
+        std::stringstream errorMessage;
+        errorMessage << "Error converting value at position " 
+                     << index << ".";
+        return errorMessage;
+    };
+
+    for(uint8_t i=0; i<results.Size(); ++i) {
+
+        const ReturnValue& retVal = results.GetValue(i);
+
+        const auto findIter = m_converterFunctions->fromLUAConversionFunctions.find(retVal.type().hash_code());
+
+        if(findIter == m_converterFunctions->fromLUAConversionFunctions.end()) {
+
+            // Bad, as there's no functor registered that is capable of poping the type
+            // from the LUA stack.
+            std::stringstream errorMessage;
+            errorMessage << "No LUA converter registered for the provided type ["
+                         << retVal.type().name() << "].";
+            throw std::runtime_error(errorMessage.str());
+        }
+
+        try {
+
+            results.SetValue(i, findIter->second(m_luaState));
+
+        } catch(const std::exception& e) {
+
+            std::stringstream errorMessage = errorMessagePrefixCreator(i);
+            errorMessage << " - " << e.what();
+            throw std::runtime_error(errorMessage.str());
+        } catch(...) {
+            throw std::runtime_error(errorMessagePrefixCreator(i).str());
+        }
+    }
 }
 
 } // namespace lua
