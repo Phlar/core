@@ -377,7 +377,6 @@ BOOST_FIXTURE_TEST_CASE(TestReturnCountMismatchShouldThrow, LUATestFixture) {
 
 // Todo: 
 //        - Test case for custom class instance.
-//        - Test case for type mismatch. (?)
 //        - Negative test case for missing converters back from LUA.
 //        - Exception handling in callback (C++) from within LUA. (C++ -> LUA -> C++ throwing exception)
 
