@@ -5,11 +5,16 @@
 #include <lauxlib.h>
 #pragma warning(default: 4099)
 
+#pragma warning(disable: 4512)
+#include <boost/scope_exit.hpp>
+#pragma warning(default: 4512)
+
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
 
 #include <iostream>
 #include <sstream>
+
 
 namespace aw {
 namespace core {
@@ -151,6 +156,35 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
     const bool runEntireFile = functionName.empty();
     const int stackSizeBefore = lua_gettop(m_luaState);
 
+
+#pragma warning(disable: 4003 4512)
+    // Ensure LUA stack is of same size as before after execution or in case of an abort.
+    BOOST_SCOPE_EXIT(&stackSizeBefore, this_) {
+
+        if(!this_->m_luaState) {
+            std::cout << "Cannot clean up LUA stack - invalid LUA state object." << std::endl;
+            return;
+        }
+
+        // todo: Debug log!
+        const int stackSizeNow = lua_gettop(this_->m_luaState);
+        const int elementsToPop = stackSizeNow - stackSizeBefore;
+
+        if(elementsToPop < 0) {
+            std::cout << "Error cleaning LUA stack. Less elements on stack (" << stackSizeNow
+                      << ") than before (" << stackSizeBefore << ") - possible stack corruption." << std::endl;
+        } else if(elementsToPop == 0) {
+            std::cout << "No need to clean LUA stack as its stack count (" << stackSizeNow 
+                      << ") was not changed during exectution." << std::endl;
+        } else {
+
+            lua_pop(this_->m_luaState, elementsToPop);
+            std::cout << "Cleaning up LUA stack of " << elementsToPop << " elements. (before: " 
+                      << stackSizeBefore << ", now: " << lua_gettop(this_->m_luaState) << ")" << std::endl;
+        }
+    } BOOST_SCOPE_EXIT_END
+#pragma warning(default: 4003 4512)
+
     if(runEntireFile) {
 
         // Executing the script entirely from top down means
@@ -214,7 +248,7 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
 
         std::stringstream errorMessage;
         errorMessage << "Error while executing (" << functionName << ") - expected "
-                     << numReturnValues << " return values, got " << stackSizeAfter - stackSizeBefore + 1 << ".";
+                     << numReturnValues << " return values, got " << stackSizeAfter << ".";
 
         throw std::runtime_error(errorMessage.str());
     }
