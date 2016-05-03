@@ -147,8 +147,9 @@ void LUAScriptContext::loadScriptFile() {
 void LUAScriptContext::executeScript(const std::string& functionName, const ArgumentVector& params, const ReturnValuesHolder& results) {
 
     int16_t numParameters = static_cast<int16_t>(params.size());
-    int16_t numReturnValue = static_cast<int16_t>(results.Size());
+    int16_t numReturnValues = static_cast<int16_t>(results.Size());
     const bool runEntireFile = functionName.empty();
+    const int stackSizeBefore = lua_gettop(m_luaState);
 
     if(runEntireFile) {
 
@@ -157,7 +158,7 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         if(!params.empty()) {
             // Todo: At least log this!
             numParameters = 0;
-            numReturnValue = 0;
+            numReturnValues = 0;
         }
     } else {
 
@@ -183,12 +184,14 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         pushArguments(params);
     }
 
-    const int result = lua_pcall(m_luaState, numParameters, results.Size(), results.Size());
+    const int result = lua_pcall(m_luaState, numParameters, LUA_MULTRET, 0);
+    const int stackSizeAfter = lua_gettop(m_luaState);
 
     if(m_forceGCAfterScriptExecution) {
         lua_gc(m_luaState, LUA_GCCOLLECT, 0);
     }
 
+    // Error during execution, e.g. function could not be resolved.
     if(result) {
 
         std::stringstream errorMessage;
@@ -202,6 +205,16 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
                      << "' (error-code: " << result << ") "
                      << lua_tostring(m_luaState, -1);
         lua_pop(m_luaState,1);
+
+        throw std::runtime_error(errorMessage.str());
+    }
+
+    // Number of returned elements mismatch.
+    if(!runEntireFile && ((stackSizeAfter - stackSizeBefore) != numReturnValues)) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error while executing (" << functionName << ") - expected "
+                     << numReturnValues << " return values, got " << stackSizeAfter - stackSizeBefore + 1 << ".";
 
         throw std::runtime_error(errorMessage.str());
     }
@@ -288,7 +301,7 @@ void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& result
         return errorMessage;
     };
 
-    for(uint8_t i=0; i<results.Size(); ++i) {
+    for(uint8_t i=results.Size(); i--;) {
 
         const ReturnValue& retVal = results.GetValue(i);
 

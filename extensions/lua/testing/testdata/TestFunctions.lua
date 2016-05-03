@@ -42,4 +42,8 @@ function FuncReturnFloat()
     return 123.456
 end
 
+function FuncReturnBoolStringInt()
+    return true, "foobar", 42
+end
+
 print("This should only be seen when executing the entire script.")

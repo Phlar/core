@@ -60,14 +60,13 @@ boost::any popFromLUAStack(lua_State* luaState) {
 
     // We must have at least one element on the stack.
     if(lua_gettop(luaState) < 1) {
-            throw std::runtime_error("Error when trying to fetch element from LUA stack - stack must have at least one element.");
+        throw std::runtime_error("Error when trying to fetch element from LUA stack - stack must have at least one element.");
     }
 
     try {
 
         // Get the topmost element...
-        luabind::object stackObject(luabind::from_stack(luaState, 0));
-
+        luabind::object stackObject(luabind::from_stack(luaState, -1));
         // ...and remove it from the stack.
         lua_pop(luaState, 1);
 

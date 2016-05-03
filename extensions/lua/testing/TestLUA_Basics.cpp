@@ -330,8 +330,37 @@ BOOST_FIXTURE_TEST_CASE(TestReturnBuiltinValuesFromLUA, LUATestFixture) {
     BOOST_CHECK_CLOSE(resultFloat, 123.456, 0.001);
 }
 
+BOOST_FIXTURE_TEST_CASE(TestReturnMultipleValuesFromLUA, LUATestFixture) {
+
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector args;
+
+    // Register converter functions.
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(bool), popFromLUAStack<bool>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(std::string), popFromLUAStack<std::string>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(int16_t), popFromLUAStack<int16_t>));
+
+    ReturnValuesHolder returnValues = ReturnValuesHolder::Create<bool, std::string, int16_t>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnBoolStringInt", args, returnValues));
+
+    bool resultBool = false;
+    std::string resultString = "";
+    float resultInt = 0;
+
+    BOOST_REQUIRE_NO_THROW(resultBool = returnValues.GetTypedValue<bool>(0));
+    BOOST_CHECK_EQUAL(resultBool, true);
+
+    BOOST_REQUIRE_NO_THROW(resultString = returnValues.GetTypedValue<std::string>(1));
+    BOOST_CHECK_EQUAL(resultString, "foobar");
+
+    BOOST_REQUIRE_NO_THROW(resultInt = returnValues.GetTypedValue<int16_t>(2));
+    BOOST_CHECK_EQUAL(resultInt, 42);
+}
+
+
 // Todo: 
 //        - Test case for multiple arguments.
+//        - Test case number of returned paramenters mismatch.
 //        - Test case for custom class instance.
 //        - Test case for type mismatch. (?)
 //        - Negative test case for missing converters back from LUA.
