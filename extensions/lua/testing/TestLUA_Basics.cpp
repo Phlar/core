@@ -80,7 +80,11 @@ class MemberFunctionHelperTestClass : public base::InterfaceImpl<IMemberFunction
     public:
 
         MemberFunctionHelperTestClass() {}
-        virtual ~MemberFunctionHelperTestClass() {}
+        virtual ~MemberFunctionHelperTestClass() {
+        }
+
+        virtual void MemberFunctionNoParam() {};
+        virtual void MemberFunction(IMemberFunctionHelperTestClassPtr) {};
 
         virtual int GetReferenceCount() const {
             return ReferenceCounted::GetRefCount();
@@ -223,6 +227,10 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionPushTypeRegistrationAfterContextR
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: This test is broken as it does not prove destruction of the class instance properly. The instance
+// should be desctroyed without having to release the entire context!!!
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
 
     // Test calling back a C++ member function from LUA.
@@ -374,9 +382,38 @@ BOOST_FIXTURE_TEST_CASE(TestReturnCountMismatchShouldThrow, LUATestFixture) {
     BOOST_CHECK_THROW(ctx->ExecuteScript("FuncReturnBoolStringInt", args, tooManyValuesHolder), std::runtime_error);
 }
 
+BOOST_FIXTURE_TEST_CASE(TestReturnCustomClassInstance, LUATestFixture) {
 
-// Todo: 
-//        - Test case for custom class instance.
+    auto registerClass = []() -> luabind::scope {
+        return luabind::class_<IMemberFunctionHelperTestClass, IMemberFunctionHelperTestClassPtr>("IMemberFunctionHelperTestClass")
+            .def("MemberFunction", &IMemberFunctionHelperTestClass::MemberFunction)
+            .def("GetReferenceCount", &IMemberFunctionHelperTestClass::GetReferenceCount);
+    };
+
+    BOOST_CHECK_NO_THROW(luaResolver.AddTypeRegistrationFunction(registerClass));
+    
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector args;
+
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>));
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), popFromLUAStack<IMemberFunctionHelperTestClassPtr>));
+
+    // The instance the test is all about...
+    IMemberFunctionHelperTestClassPtr classInstanceToLUA(new MemberFunctionHelperTestClass());
+    args.push_back(classInstanceToLUA);
+
+    ReturnValuesHolder returnValues = ReturnValuesHolder::Create<IMemberFunctionHelperTestClassPtr>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnInAsOut", args, returnValues));
+
+    // ...get it back from LUA
+    IMemberFunctionHelperTestClassPtr classInstanceFromLUA;
+    BOOST_REQUIRE_NO_THROW(classInstanceFromLUA = returnValues.GetTypedValue<IMemberFunctionHelperTestClassPtr>(0));
+
+    BOOST_CHECK_EQUAL(classInstanceFromLUA, classInstanceToLUA);
+}
+
+
+// Todo:
 //        - Negative test case for missing converters back from LUA.
 //        - Exception handling in callback (C++) from within LUA. (C++ -> LUA -> C++ throwing exception)
 
