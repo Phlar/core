@@ -172,7 +172,6 @@ BOOST_FIXTURE_TEST_CASE(TestCallingSingleFreeFunctionFromLUA, LUATestFixture) {
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallSingleFreeFunction", ArgumentVector(), ReturnValuesHolder::Create()));
 }
 
-
 BOOST_FIXTURE_TEST_CASE(TestCallingTwoFreeFunctionsFromLUA, LUATestFixture) {
 
     // This test ensures that split up registration works, i.e. two free functions get registered
@@ -227,10 +226,6 @@ BOOST_FIXTURE_TEST_CASE(TestCallingFreeFunctionPushTypeRegistrationAfterContextR
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallTwoSimpleParameters", args, ReturnValuesHolder::Create()));
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: This test is broken as it does not prove destruction of the class instance properly. The instance
-// should be desctroyed without having to release the entire context!!!
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
 
     // Test calling back a C++ member function from LUA.
@@ -241,24 +236,33 @@ BOOST_FIXTURE_TEST_CASE(TestCallingBackMemberFunctionNoParams, LUATestFixture) {
             .def("MemberFunctionNoParam", &IMemberFunctionHelperTestClass::MemberFunctionNoParam);
     };
 
+    BOOST_CHECK_NO_THROW(luaResolver.AddTypeRegistrationFunction(registerClass));
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+
+    // Register the intrusive-pointer wrapped interface.
+    luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
+
     {
-        BOOST_CHECK_NO_THROW(luaResolver.AddTypeRegistrationFunction(registerClass));
-        IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
-        ArgumentVector args;
-
-        // Register the intrusive-pointer wrapped interface.
-        luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>);
-
         // Create an instance to be passed back to LUA.
         MockMemberFunctionHelperTestClassPtr mockClass(new MockMemberFunctionHelperTestClass());
-        args.push_back(Argument(IMemberFunctionHelperTestClassPtr(mockClass)));
 
-        // Expectation is one call back to C++ as well as the destruction of the object
-        // i.e. nothing is kept by LUA any longer.
-        MOCK_EXPECT(mockClass->MemberFunctionNoParam).once();
-        MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
+        BOOST_CHECK_EQUAL(mockClass->GetReferenceCount(), 1);
 
-        BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClassNoParam", args, ReturnValuesHolder::Create()));
+        {
+            ArgumentVector args;
+            args.push_back(Argument(IMemberFunctionHelperTestClassPtr(mockClass)));
+
+            // Expectation is one call back to C++ as well as the destruction of the object
+            // i.e. nothing is kept by LUA any longer.
+            MOCK_EXPECT(mockClass->MemberFunctionNoParam).once();
+            MOCK_EXPECT(MockMemberFunctionHelperTestClass::destructor).once();
+
+            BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncCallMethodOfCustomClassNoParam", args, ReturnValuesHolder::Create()));
+
+            BOOST_CHECK(mockClass->GetReferenceCount() > 1);
+        }
+
+        BOOST_CHECK_EQUAL(mockClass->GetReferenceCount(), 1);
     }
 
     // Verify all expectations towards Turtle.

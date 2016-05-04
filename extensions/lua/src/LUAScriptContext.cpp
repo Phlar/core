@@ -44,7 +44,7 @@ class LUAFunctionParameterVisitor : public boost::static_visitor<void> {
 
 } // namespace anonymous
 
-const bool LUAScriptContext::defaultForceGCAfterExecution = false;
+const bool LUAScriptContext::defaultForceGCAfterExecution = true;
 
 LUAScriptContext::LUAScriptContext(ConverterFunctionsPtr converterFunctions,
                                    const boost::filesystem::path& scriptPath)
@@ -182,6 +182,11 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
             std::cout << "Cleaning up LUA stack of " << elementsToPop << " elements. (before: " 
                       << stackSizeBefore << ", now: " << lua_gettop(this_->m_luaState) << ")" << std::endl;
         }
+
+        if(this_->m_forceGCAfterScriptExecution) {
+            lua_gc(this_->m_luaState, LUA_GCCOLLECT, 0);
+        }
+
     } BOOST_SCOPE_EXIT_END
 #pragma warning(default: 4003 4512)
 
@@ -220,10 +225,6 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
 
     const int result = lua_pcall(m_luaState, numParameters, LUA_MULTRET, 0);
     const int stackSizeAfter = lua_gettop(m_luaState);
-
-    if(m_forceGCAfterScriptExecution) {
-        lua_gc(m_luaState, LUA_GCCOLLECT, 0);
-    }
 
     // Error during execution, e.g. function could not be resolved.
     if(result) {
