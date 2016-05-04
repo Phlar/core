@@ -58,6 +58,7 @@ set(TESTDATA_DIRECTORY ${CMAKE_BINARY_DIR}/testdata)
 file(MAKE_DIRECTORY ${TESTDATA_DIRECTORY})
 
 add_subdirectory(./base)
+add_subdirectory(./logging)
 add_subdirectory(./scripting)
 add_subdirectory(./ai)
 add_subdirectory(./extensions)
