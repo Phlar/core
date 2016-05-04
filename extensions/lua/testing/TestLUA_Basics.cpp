@@ -71,6 +71,7 @@ class IMemberFunctionHelperTestClass : public virtual base::IReferenceCounted {
 
         virtual void MemberFunctionNoParam() = 0;
         virtual void MemberFunction(IMemberFunctionHelperTestClassPtr) = 0;
+        virtual void MemberFunctionThrows() = 0;
 
         virtual int GetReferenceCount() const = 0;
 };
@@ -85,6 +86,9 @@ class MemberFunctionHelperTestClass : public base::InterfaceImpl<IMemberFunction
 
         virtual void MemberFunctionNoParam() {};
         virtual void MemberFunction(IMemberFunctionHelperTestClassPtr) {};
+        virtual void MemberFunctionThrows() {
+            throw std::runtime_error("Exception thrown from MemberFunctionHelperTestClass::MemberFunctionThrows.");
+        };
 
         virtual int GetReferenceCount() const {
             return ReferenceCounted::GetRefCount();
@@ -434,9 +438,28 @@ BOOST_FIXTURE_TEST_CASE(TestMissingConverterShouldThrow, LUATestFixture) {
     BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnBool", args, valueHolder));
 }
 
-// Todo:
-//        - Exception handling in callback (C++) from within LUA. (C++ -> LUA -> C++ throwing exception)
+BOOST_FIXTURE_TEST_CASE(TestThrowingExceptionFromCppCallback, LUATestFixture) {
 
+    auto registerClass = []() -> luabind::scope {
+        return luabind::class_<IMemberFunctionHelperTestClass, IMemberFunctionHelperTestClassPtr>("IMemberFunctionHelperTestClass")
+            .def("MemberFunction", &IMemberFunctionHelperTestClass::MemberFunction)
+            .def("GetReferenceCount", &IMemberFunctionHelperTestClass::GetReferenceCount)
+            .def("MemberFunctionThrows", &IMemberFunctionHelperTestClass::MemberFunctionThrows);
+    };
+
+    BOOST_CHECK_NO_THROW(luaResolver.AddTypeRegistrationFunction(registerClass));
+    
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector args;
+
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterPushTypeToLUAFunction(typeid(IMemberFunctionHelperTestClassPtr), pushToLUAStack<IMemberFunctionHelperTestClassPtr>));
+
+    IMemberFunctionHelperTestClassPtr classInstanceToLUA(new MemberFunctionHelperTestClass());
+    args.push_back(classInstanceToLUA);
+
+    ReturnValuesHolder returnValues = ReturnValuesHolder::Create<IMemberFunctionHelperTestClassPtr>();
+    BOOST_REQUIRE_THROW(ctx->ExecuteScript("FuncCallbackFunctionThrows", args, returnValues), std::runtime_error);
+}
 
 } // namespace testing
 } // namespace lua

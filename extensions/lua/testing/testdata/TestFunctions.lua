@@ -50,4 +50,8 @@ function FuncReturnInAsOut(a)
     return a
 end
 
+function FuncCallbackFunctionThrows(a)
+    a:MemberFunctionThrows()
+end
+
 print("This should only be seen when executing the entire script.")
