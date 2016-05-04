@@ -259,8 +259,6 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
     if(!runEntireFile) {
         fetchReturnValuesFromLUA(results);
     }
-
-    // todo: Check whether LUA stack is the same as before execution?
 }
 
 void LUAScriptContext::pushArguments(const ArgumentVector& params) {

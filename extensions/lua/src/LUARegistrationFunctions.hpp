@@ -27,7 +27,6 @@ typedef boost::unordered_map<TypeHash, PushToLUAFunction> PushToLUAFunctions;
 typedef boost::function<boost::any(lua_State*)> FetchFromLUAFunction;
 typedef boost::unordered_map<TypeHash, FetchFromLUAFunction> FetchFromLUAFunctions;
 
-//! \todo Instead of a plain vector use a map instead for all registered type-conversion functions.
 struct ConverterFunctions {
 
     // Container of functors that register all types to LUA - i.e. make the visible to the LUA context.
