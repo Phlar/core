@@ -2,6 +2,7 @@
 
 #include "IService.hpp"
 #include "IScriptResolver.hpp"
+#include "IScriptingService.hpp"
 
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
@@ -14,10 +15,7 @@ namespace aw {
 namespace core {
 namespace scripting {
 
-//! \brief Service that manages all possible scripting resolvers.
-//! When executing a script the service takes care about dispatching
-//! it to the appropriate resolver for execution.
-class ScriptingService : public base::InterfaceImpl<base::IService> {
+class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingService> {
 
     public:
 
@@ -31,10 +29,10 @@ class ScriptingService : public base::InterfaceImpl<base::IService> {
         //@}
 
         //! \brief Adds a resolver for a certain kind of scripts.
-        void AddResolver(IScriptResolverPtr resolver);
+        virtual void AddResolver(IScriptResolverPtr resolver);
 
         //! \brief Tries to find a matching resolver.
-        IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
+        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
 
         static const base::UUID serviceID;
 
