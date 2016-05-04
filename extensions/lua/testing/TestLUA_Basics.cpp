@@ -416,9 +416,25 @@ BOOST_FIXTURE_TEST_CASE(TestReturnCustomClassInstance, LUATestFixture) {
     BOOST_CHECK_EQUAL(classInstanceFromLUA, classInstanceToLUA);
 }
 
+BOOST_FIXTURE_TEST_CASE(TestMissingConverterShouldThrow, LUATestFixture) {
+
+    IScriptContextPtr ctx = getCheckedContext(luaTestFilePath);
+    ArgumentVector args;
+
+    // No converter registered at all.
+    ReturnValuesHolder valueHolder = ReturnValuesHolder::Create<bool>();
+    BOOST_CHECK_THROW(ctx->ExecuteScript("FuncReturnBool", args, valueHolder), std::runtime_error);
+
+    // Wrong converter registered.
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(int16_t), popFromLUAStack<int16_t>));
+    BOOST_CHECK_THROW(ctx->ExecuteScript("FuncReturnBool", args, valueHolder), std::runtime_error);
+
+    // Register the correct converter now should run fine.
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(bool), popFromLUAStack<bool>));
+    BOOST_CHECK_NO_THROW(ctx->ExecuteScript("FuncReturnBool", args, valueHolder));
+}
 
 // Todo:
-//        - Negative test case for missing converters back from LUA.
 //        - Exception handling in callback (C++) from within LUA. (C++ -> LUA -> C++ throwing exception)
 
 
