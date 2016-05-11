@@ -4,7 +4,6 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-#include <string>
 
 namespace aw {
 namespace core {

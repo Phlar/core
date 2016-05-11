@@ -24,6 +24,15 @@ base::UUID ScriptingService::GetServiceID() const {
     return serviceID;
 }
 
+void ScriptingService::CreateService(base::ServiceLocatorPtr serviceLocator) {
+
+    if(!serviceLocator) {
+        throw std::invalid_argument("Invalid service locator to register service to.");
+    }
+
+
+}
+
 void ScriptingService::AddResolver(IScriptResolverPtr resolver) {
 
     if(!resolver) {

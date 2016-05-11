@@ -1,0 +1,38 @@
+#pragma once
+
+#include "ServiceLocator.hpp"
+#include "UUID.hpp"
+#include "IReferenceCounted.hpp"
+
+#include "InterfaceImpl.hpp"
+
+#include <boost/intrusive_ptr.hpp>
+#include <boost/noncopyable.hpp>
+
+namespace aw {
+namespace core {
+namespace base {
+
+class IService;
+typedef boost::intrusive_ptr<IService> IServicePtr;
+
+
+//! \brief Interface describing a service.
+class IService : public virtual base::IReferenceCounted,
+                 public boost::noncopyable {
+
+    public:
+
+        //! \brief Returns the unique ID of the service.
+        virtual UUID GetServiceID() const = 0;
+
+        //! \brief Issue construction and registration of a new service.
+        virtual void CreateService(ServiceLocatorPtr serviceLocator) = 0;
+
+
+        static IServicePtr Create();
+};
+
+} // namespace base
+} // namespace core
+} // namespace aw

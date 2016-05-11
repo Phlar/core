@@ -173,7 +173,7 @@ TaskResult plantTree(IBlackboardPtr blackboard) {
     return TaskResult::TASK_RESULT_PASSED;
 }
 
-} // anonymous namespace
+} // namespace anonymous
 
 BOOST_AUTO_TEST_CASE(SampleApplication) {
 

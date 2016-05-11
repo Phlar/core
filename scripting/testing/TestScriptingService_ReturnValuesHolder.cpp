@@ -22,7 +22,7 @@ const boost::any anyFloat =       float();
 const boost::any anyString =      std::string();
 const boost::any anyCustomClass = SomeClassPtr();
 
-} // anonymous namespace
+} // namespace anonymous
 
 
 BOOST_AUTO_TEST_CASE(TestHolderNoContent) {

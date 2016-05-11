@@ -21,7 +21,7 @@ void validateRoot(ITaskPtr root) {
     }
 }
 
-} // anonymous namespace
+} // namespace anonymous
 
 
 BehaviorTree::BehaviorTree()

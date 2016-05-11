@@ -12,7 +12,7 @@ namespace aw {
 namespace core {
 namespace scripting {
 
-    //! \brief Service that manages all possible scripting resolvers.
+//! \brief Service that manages all possible scripting resolvers.
 //! When executing a script the service takes care about dispatching
 //! it to the appropriate resolver for execution.
 class IScriptingService : virtual base::IService {

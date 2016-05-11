@@ -1,50 +1,36 @@
 #pragma once
-/*
-#include "IService.hpp"
-#include "IScriptResolver.hpp"
-#include "IScriptingService.hpp"
+
+#include "ILogger.hpp"
 
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
 #include <boost/filesystem.hpp>
 
-#include <set>
 
 namespace aw {
 namespace core {
-namespace scripting {
+namespace logging {
 
-class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingService> {
+class FileLogger : public base::InterfaceImpl<core::logging::ILogger> {
 
     public:
 
-        ScriptingService();
+        //! \brief Specify a file to log to by either providing a file name only or
+        //! an entire absolute path of the log file. In case of file name only
+        //! the directory the file will be put to is the preant process' directory.
+        FileLogger(const boost::filesystem::path& fileName);
 
-        virtual ~ScriptingService();
+        virtual ~FileLogger();
 
-        //@{
-        //! Implementations of IService
-        virtual base::UUID GetServiceID() const;
-        //@}
-
-        //! \brief Adds a resolver for a certain kind of scripts.
-        virtual void AddResolver(IScriptResolverPtr resolver);
-
-        //! \brief Tries to find a matching resolver.
-        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
-
-        static const base::UUID serviceID;
+        virtual void Log(const char* message);
 
     protected:
 
-        // All registered interpreters.
-        std::set<IScriptResolverPtr> m_resolvers;
+        // Absolute file-path to the log-file.
+        boost::filesystem::path m_absoluteFilePath;
 };
 
 } // namespace scripting
 } // namespace core
 } // namespace aw
-
-*/
-

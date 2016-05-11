@@ -1,5 +1,7 @@
 #include "LoggingService.hpp"
 
+#include "FileLogger.hpp"
+
 #include <boost/assign.hpp>
 #include <boost/format.hpp>
 #include <boost/date_time.hpp>
@@ -34,7 +36,9 @@ base::UUID LoggingService::GetServiceID() const {
     return serviceID;
 }
 
-void LoggingService::CreateFileLogger(const boost::filesystem::path& /*fileName*/) {
+void LoggingService::CreateFileLogger(const boost::filesystem::path& fileName) {
+
+    m_loggers.push_back(ILoggerPtr(new FileLogger(fileName)));
 }
 
 void LoggingService::Log(LogLevel logLevel, const char* message) {

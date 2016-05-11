@@ -42,7 +42,7 @@ struct ScopedFile {
         boost::filesystem::path scopedFilePath;
 };
 
-} // anonymous namespace
+} // namespace anonymous
 
 
 struct ScriptingFixture {

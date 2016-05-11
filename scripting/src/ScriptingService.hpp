@@ -1,9 +1,10 @@
 #pragma once
 
-#include "IService.hpp"
 #include "IScriptResolver.hpp"
 #include "IScriptingService.hpp"
 
+#include "IService.hpp"
+#include "ServiceLocator.hpp"
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
@@ -26,6 +27,7 @@ class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingS
         //@{
         //! Implementations of IService
         virtual base::UUID GetServiceID() const;
+        virtual void CreateService(base::ServiceLocatorPtr serviceLocator);
         //@}
 
         //! \brief Adds a resolver for a certain kind of scripts.
