@@ -2,22 +2,23 @@
 
 #define BOOST_TEST_MODULE "Test_AISequencer"
 
-#include "AIFactory.hpp"
 #include "ISequencer.hpp"
 
 #include "Mock_AIAction.hpp"
 
 #include <boost/test/unit_test.hpp>
 
+#include "AIServiceFixture.hpp"
+
 namespace aw {
 namespace core {
 namespace ai {
 namespace testing {
 
-BOOST_AUTO_TEST_CASE(TestSequencerExecution) {
 
-    AIFactory aiFactory;
-    ISequencerPtr sequencer = aiFactory.createSequencer();
+BOOST_FIXTURE_TEST_CASE(TestSequencerExecution, AIServiceFixture) {
+
+    ISequencerPtr sequencer = aiService->createSequencer();
     BOOST_REQUIRE(sequencer);
 
     boost::intrusive_ptr<MockAIAction> mockAction(new MockAIAction());
