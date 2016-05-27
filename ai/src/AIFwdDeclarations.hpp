@@ -1,10 +1,7 @@
 #pragma once
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/function.hpp>
 
-#include <list>
-#include <vector>
 
 namespace aw {
 namespace core {

@@ -10,7 +10,6 @@ namespace aw {
 namespace core {
 namespace scripting {
 
-const base::UUID ScriptingService::serviceID = boost::uuids::string_generator()("{237C7009-A671-4509-99E9-C9AC6C0BB78F}");
 
 ScriptingService::ScriptingService()
 : m_resolvers() {
@@ -21,16 +20,7 @@ ScriptingService::~ScriptingService() {
 
 base::UUID ScriptingService::GetServiceID() const {
 
-    return serviceID;
-}
-
-void ScriptingService::CreateService(base::ServiceLocatorPtr serviceLocator) {
-
-    if(!serviceLocator) {
-        throw std::invalid_argument("Invalid service locator to register service to.");
-    }
-
-
+    return ID_SCRIPTING_SERVICE;
 }
 
 void ScriptingService::AddResolver(IScriptResolverPtr resolver) {

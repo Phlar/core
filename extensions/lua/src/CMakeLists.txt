@@ -6,7 +6,7 @@ message(STATUS "Found source files for library: " ${LuaScripting_Sources})
 
 include_directories(.)
 add_library(LibLuaScripting STATIC ${LuaScripting_Sources} ${LuaScripting_Headers})
-target_link_libraries(LibLuaScripting LibBaseCore LibScriptingService LibAICore)
+target_link_libraries(LibLuaScripting LibBase LibScriptingService LibAIService)
 #set_target_properties(LibLuaScripting PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # LUA dependency

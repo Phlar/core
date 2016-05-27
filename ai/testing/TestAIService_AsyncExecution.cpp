@@ -2,8 +2,6 @@
 
 #define BOOST_TEST_MODULE "Test_AIAsyncExecution"
 
-#include "AIFactory.hpp"
-
 #include "IBehaviorTree.hpp"
 #include "ISelector.hpp"
 
@@ -14,6 +12,9 @@
 
 #include <vector>
 #include <ostream>
+
+
+#include "AIServiceFixture.hpp"
 
 #pragma warning( disable: 4702 )
 
@@ -36,12 +37,12 @@ namespace testing {
 //                   /       \
 //        failingAction     succeedingAction
 
-struct AIAsyncFixture {
+struct AIAsyncFixture : public AIServiceFixture{
 
     AIAsyncFixture() {
 
-        BOOST_CHECK_NO_THROW(selectorA = aiFactory.createSelector());
-        BOOST_CHECK_NO_THROW(selectorB = aiFactory.createSelector());
+        BOOST_CHECK_NO_THROW(selectorA = aiService->createSelector());
+        BOOST_CHECK_NO_THROW(selectorB = aiService->createSelector());
         BOOST_REQUIRE(selectorA);
         BOOST_REQUIRE(selectorB);
 
@@ -111,8 +112,6 @@ struct AIAsyncFixture {
         BOOST_CHECK_NO_THROW(selectorB->AddTask(task));
         BOOST_CHECK_EQUAL(selectorB->GetNumTasks(), 2);
     }
-
-    AIFactory  aiFactory;
 
     ISelectorPtr selectorA;
     ISelectorPtr selectorB;

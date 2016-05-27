@@ -1,10 +1,9 @@
 #pragma once
 
-#include "IScriptResolver.hpp"
 #include "IScriptingService.hpp"
+#include "IScriptResolver.hpp"
 
 #include "IService.hpp"
-#include "ServiceLocator.hpp"
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
 
@@ -25,9 +24,8 @@ class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingS
         virtual ~ScriptingService();
 
         //@{
-        //! Implementations of IService
+        //! Implementations of IService.
         virtual base::UUID GetServiceID() const;
-        virtual void CreateService(base::ServiceLocatorPtr serviceLocator);
         //@}
 
         //! \brief Adds a resolver for a certain kind of scripts.
@@ -35,8 +33,6 @@ class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingS
 
         //! \brief Tries to find a matching resolver.
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
-
-        static const base::UUID serviceID;
 
     protected:
 

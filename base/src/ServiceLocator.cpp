@@ -2,9 +2,9 @@
 
 #include "IService.hpp"
 
-
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/thread/lock_guard.hpp>
 #include <boost/uuid/uuid_io.hpp>
 

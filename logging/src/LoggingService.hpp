@@ -25,17 +25,15 @@ class LoggingService : public base::InterfaceImpl<core::logging::ILoggingService
         virtual ~LoggingService();
 
         //@{
-        //! Implementations of IService
+        //! Implementations of IService.
         virtual base::UUID GetServiceID() const;
         //@}
 
-        virtual void CreateFileLogger(const boost::filesystem::path& fileName) = 0;
+        virtual void CreateFileLogger(const boost::filesystem::path& fileName);
 
-        virtual void Log(LogLevel logLevel, const char* message) = 0;
+        virtual void Log(LogLevel logLevel, const char* message);
 
     protected:
-
-        static const base::UUID serviceID;
 
         // All registered interpreters.
         std::list<ILoggerPtr> m_loggers;

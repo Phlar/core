@@ -6,4 +6,4 @@ message(STATUS "Found source files for library: " ${ScriptingService_Sources})
 
 include_directories(.)
 add_library(LibScriptingService ${ScriptingService_Sources} ${ScriptingService_Headers})
-target_link_libraries(LibBaseCore)
+target_link_libraries(LibBase)

@@ -7,6 +7,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/intrusive_ptr.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 #include <string>
 
@@ -15,14 +16,16 @@ namespace core {
 namespace logging {
 
 
-    //! \brief Service storing all installed loggers and dispatches
+static const base::UUID ID_LOGGING_SERVICE = boost::uuids::string_generator()("{81BAA624-EA55-4E98-A73D-4F8883103970}");
+
+//! \brief Service storing all installed loggers and dispatches
 //! a log call to all of them in order of registration.
-class ILoggingService : virtual base::IService {
+class ILoggingService : public virtual base::IService {
 
     public:
 
         //@{
-        //! Implementations of IService
+        //! Implementations of IService.
         virtual base::UUID GetServiceID() const = 0;
         //@}
 

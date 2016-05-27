@@ -16,7 +16,7 @@ foreach(testSourceFile ${LUAScript_Test_Sources})
 	add_executable(${testName} ${testSourceFile})
 	
 	#Link to boost' unit-test framework
-	target_link_libraries(${testName} ${Boost_LIBRARIES} LibBaseCore LibScriptingService LibLuaScripting)
+	target_link_libraries(${testName} ${Boost_LIBRARIES} LibBase LibScriptingService LibLuaScripting)
 	
 	add_test(NAME ${testName} COMMAND ${testName})	
 

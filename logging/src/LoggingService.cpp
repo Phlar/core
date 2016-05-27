@@ -15,8 +15,6 @@ namespace core {
 namespace logging {
 
 
-const base::UUID LoggingService::serviceID = boost::uuids::string_generator()("{81BAA624-EA55-4E98-A73D-4F8883103970}");
-
 // Beauty of the initializer list due to ambiguity, see here:
 // http://stackoverflow.com/questions/16211410/ambiguity-when-using-boostassignlist-of-to-construct-a-stdvector
 LoggingService::LoggingService()
@@ -33,7 +31,7 @@ LoggingService::~LoggingService() {
 
 base::UUID LoggingService::GetServiceID() const {
 
-    return serviceID;
+    return ID_LOGGING_SERVICE;
 }
 
 void LoggingService::CreateFileLogger(const boost::filesystem::path& fileName) {

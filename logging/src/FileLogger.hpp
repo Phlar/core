@@ -31,6 +31,6 @@ class FileLogger : public base::InterfaceImpl<core::logging::ILogger> {
         boost::filesystem::path m_absoluteFilePath;
 };
 
-} // namespace scripting
+} // namespace logging
 } // namespace core
 } // namespace aw
