@@ -10,10 +10,10 @@ namespace ai {
 
 void RegisterService(base::ServiceLocatorPtr serviceLocator) {
 
-	if(!serviceLocator) {
-		throw std::invalid_argument("Invalid service-locator to register AI service to.");
-	}
-	
+    if(!serviceLocator) {
+        throw std::invalid_argument("Invalid service-locator to register AI service to.");
+    }
+
     serviceLocator->RegisterService(IAIServicePtr(new AIService()));
 }
 

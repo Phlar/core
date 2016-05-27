@@ -77,6 +77,9 @@ struct AIAsyncFixture : public AIServiceFixture{
         BOOST_CHECK_NO_THROW(asyncTree->SetRoot(selectorA));
     }
 
+    ~AIAsyncFixture() {
+    }
+
     // Return numSteps + 1(state before executing anything) states during asynchronous execution.
     std::vector<BehaviorTreeState> executeAsync(IBehaviorTreePtr tree, int numSteps) {
 
