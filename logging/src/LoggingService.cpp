@@ -34,7 +34,7 @@ base::UUID LoggingService::GetServiceID() const {
     return ID_LOGGING_SERVICE;
 }
 
-void LoggingService::CreateFileLogger(const boost::filesystem::path& fileName) {
+void LoggingService::CreateFileLogger(const std::string& fileName) {
 
     m_loggers.push_back(ILoggerPtr(new FileLogger(fileName)));
 }
@@ -48,29 +48,32 @@ void LoggingService::Log(LogLevel logLevel, const char* message) {
     // Build up the logging message like:
     // Log-level [ThreadID] 12:23:012 Actual message.
 
-    static boost::posix_time::time_facet *timeFacet = new boost::posix_time::time_facet("%d-%b-%Y %H:%M:%S");
+    // Passing '0' to the facet's constructor means the locale itself will take care
+    // about destruction. http://stackoverflow.com/questions/5330459/ownership-deleteing-the-facet-in-a-locale-stdlocale
+    boost::posix_time::time_facet *timeFacet = new boost::posix_time::time_facet();
+    timeFacet->format("%d-%b-%Y %H:%M:%S");
 
     std::stringstream logLine;
     logLine.imbue(std::locale(logLine.getloc(), timeFacet));
 
-    logLine << m_readableLogLevel[logLevel] 
-            << "[" << boost::this_thread::get_id() << "]"
-            << boost::posix_time::second_clock::local_time()
+    logLine << m_readableLogLevel[logLevel] << "  "
+            << "[" << boost::this_thread::get_id() << "]" << "  "
+            << boost::posix_time::second_clock::local_time() << "    "
             << message;
 
-    const char* cMessage = logLine.str().c_str();
+    const std::string& strLine = logLine.str();
 
     for(auto logger : m_loggers) {
 
         try {
-            logger->Log(cMessage);
+            logger->Log(strLine.c_str());
         } catch(const std::exception& e) {
 
             std::cerr << "Exception caught while logging message (" 
-                      << cMessage << "), error: " << e.what() << std::endl;
+                      << strLine << "), error: " << e.what() << std::endl;
         } catch( ... ) {
 
-            std::cerr << "Unknown exception caught while logging message (" << cMessage << ")" << std::endl;
+            std::cerr << "Unknown exception caught while logging message (" << strLine << ")" << std::endl;
         }
     }
 }

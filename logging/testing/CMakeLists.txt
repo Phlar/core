@@ -15,7 +15,7 @@ foreach(testSourceFile ${LoggingService_Test_Sources})
 	add_executable(${testName} ${testSourceFile})
 	
 	#Link to boost' unit-test framework
-	target_link_libraries(${testName} ${Boost_LIBRARIES} LibBase)
+	target_link_libraries(${testName} ${Boost_LIBRARIES} LibBase LibLoggingService)
 
 	add_test(NAME ${testName} COMMAND ${testName})
 

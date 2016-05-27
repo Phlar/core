@@ -29,7 +29,7 @@ class LoggingService : public base::InterfaceImpl<core::logging::ILoggingService
         virtual base::UUID GetServiceID() const;
         //@}
 
-        virtual void CreateFileLogger(const boost::filesystem::path& fileName);
+        virtual void CreateFileLogger(const std::string& fileName);
 
         virtual void Log(LogLevel logLevel, const char* message);
 

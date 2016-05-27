@@ -30,7 +30,7 @@ class ILoggingService : public virtual base::IService {
         //@}
 
         //! \brief Create and register simple file logger.
-        virtual void CreateFileLogger(const boost::filesystem::path& fileName) = 0;
+        virtual void CreateFileLogger(const std::string& fileName) = 0;
 
         //! \brief Passes a message to all registered loggers in the order of their construction.
         virtual void Log(LogLevel logLevel, const char* message) = 0;
