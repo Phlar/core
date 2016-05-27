@@ -2,7 +2,6 @@
 
 #define BOOST_TEST_MODULE "Test_AISampleApplication"
 
-#include "AIFactory.hpp"
 #include "ISequencer.hpp"
 #include "ISelector.hpp"
 #include "IAction.hpp"
@@ -19,6 +18,7 @@
 #include <iostream>
 
 
+#include "AIServiceFixture.hpp"
 
 
 struct ScopedLog
@@ -35,7 +35,6 @@ struct ScopedLog
 #define LOG_METHOD ScopedLog slog(__FUNCTION__);
 
 
-
 namespace aw {
 namespace core {
 namespace ai {
@@ -50,8 +49,6 @@ namespace {
 
 // Use a global random generator.
 std::mt19937 randomGenerator;
-
-AIFactory aiFactory;
 
 // Application specific data.
 typedef std::pair<float, float> Position;
@@ -175,19 +172,19 @@ TaskResult plantTree(IBlackboardPtr blackboard) {
 
 } // namespace anonymous
 
-BOOST_AUTO_TEST_CASE(SampleApplication) {
+BOOST_FIXTURE_TEST_CASE(SampleApplication, AIServiceFixture) {
 
 
-    IConditionPtr enoughTreesInForestCondition  = aiFactory.createCondition(enoughTreesAvailable);
-    IConditionPtr enoughTreesChoppedCondition   = aiFactory.createCondition(enoughTreesCollected);
-    IActionPtr    selectTreeToChopAction        = aiFactory.createAction(selectTreeToChop);
-    IActionPtr    chopTreeAction                = aiFactory.createAction(chopTree);
-    IActionPtr    plantTreeAction               = aiFactory.createAction(plantTree);
+    IConditionPtr enoughTreesInForestCondition  = aiService->createCondition(enoughTreesAvailable);
+    IConditionPtr enoughTreesChoppedCondition   = aiService->createCondition(enoughTreesCollected);
+    IActionPtr    selectTreeToChopAction        = aiService->createAction(selectTreeToChop);
+    IActionPtr    chopTreeAction                = aiService->createAction(chopTree);
+    IActionPtr    plantTreeAction               = aiService->createAction(plantTree);
 
-    ISequencerPtr sequencer1 = aiFactory.createSequencer();
-    ISequencerPtr sequencer2 = aiFactory.createSequencer();
+    ISequencerPtr sequencer1 = aiService->createSequencer();
+    ISequencerPtr sequencer2 = aiService->createSequencer();
 
-    IBlackboardPtr blackboard = aiFactory.createBlackboard();
+    IBlackboardPtr blackboard = aiService->createBlackboard();
 
     sequencer1->AddTask(plantTreeAction);
     sequencer1->AddTask(sequencer2);

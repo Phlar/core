@@ -5,7 +5,6 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
-#include "AIFactory.hpp"
 #include "IAction.hpp"
 
 #include "TaskContainer.hpp"
@@ -13,6 +12,8 @@
 #include "InterfaceImpl.hpp"
 
 #include "Mock_AIAction.hpp"
+#include "AIServiceFixture.hpp"
+
 
 namespace aw {
 namespace core {
@@ -40,12 +41,12 @@ class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskCo
         }
 };
 
-struct AIBasicsFixture {
+struct AIBasicsFixture : public AIServiceFixture {
 
     AIBasicsFixture() {
 
-        BOOST_CHECK_NO_THROW(validAction = aiFactory.createAction(ActionFnc()));
-        BOOST_CHECK_NO_THROW(validCondition = aiFactory.createCondition(ConditionFnc()));
+        BOOST_CHECK_NO_THROW(validAction = aiService->createAction(ActionFnc()));
+        BOOST_CHECK_NO_THROW(validCondition = aiService->createCondition(ConditionFnc()));
 
         BOOST_REQUIRE(validAction);
         BOOST_REQUIRE(validCondition);
@@ -57,7 +58,6 @@ struct AIBasicsFixture {
         BOOST_REQUIRE(taskContainer);
     }
 
-    AIFactory aiFactory;
     IActionPtr validAction;
     IConditionPtr validCondition;
 
@@ -119,7 +119,7 @@ BOOST_FIXTURE_TEST_CASE(TestRemoveUnknownTasks, AIBasicsFixture) {
     BOOST_CHECK_EQUAL(taskContainer->GetNumTasks(), 2);
 
     // Remove a valid task which is not listed.
-    IActionPtr notListedAction = aiFactory.createAction(ActionFnc());
+    IActionPtr notListedAction = aiService->createAction(ActionFnc());
     BOOST_REQUIRE(notListedAction);
     BOOST_CHECK_NO_THROW(taskContainer->RemoveTasks(notListedAction));
     BOOST_CHECK_EQUAL(taskContainer->GetNumTasks(), 2);

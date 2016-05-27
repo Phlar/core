@@ -2,7 +2,6 @@
 
 #define BOOST_TEST_MODULE "Test_AIDecorators"
 
-#include "AIFactory.hpp"
 #include "Action.hpp"
 #include "IAction.hpp"
 #include "IBlackboard.hpp"
@@ -13,6 +12,9 @@
 #include "RepeaterUtils.hpp"
 
 #include <boost/test/unit_test.hpp>
+
+#include "AIServiceFixture.hpp"
+
 
 namespace aw {
 namespace core {
@@ -51,16 +53,14 @@ class TestAction : public impl::Action, public boost::noncopyable {
 typedef boost::intrusive_ptr<TestAction> TestActionPtr;
 
 
-BOOST_AUTO_TEST_CASE(TestInverter) {
+BOOST_FIXTURE_TEST_CASE(TestInverter, AIServiceFixture) {
 
-    AIFactory aiFactory;
-
-    IBlackboardPtr blackboard = aiFactory.createBlackboard();
+    IBlackboardPtr blackboard = aiService->createBlackboard();
 
     TaskResult resultToReturn = TaskResult::TASK_RESULT_FAILED;
     IActionPtr testAction = boost::intrusive_ptr<IAction>(new TestAction(resultToReturn));
 
-    IInverterPtr inverter = aiFactory.createInverter();
+    IInverterPtr inverter = aiService->createInverter();
     inverter->SetDecoratedTask(testAction);
     BOOST_CHECK_EQUAL(inverter->GetDecoratedTask(), testAction);
 
@@ -75,11 +75,9 @@ BOOST_AUTO_TEST_CASE(TestInverter) {
     BOOST_CHECK(result == TaskResult::TASK_RESULT_FAILED);
 }
 
-BOOST_AUTO_TEST_CASE(TestRepeaterCounter) {
+BOOST_FIXTURE_TEST_CASE(TestRepeaterCounter, AIServiceFixture) {
 
-    AIFactory aiFactory;
-
-    IBlackboardPtr blackboard = aiFactory.createBlackboard();
+    IBlackboardPtr blackboard = aiService->createBlackboard();
 
     // Leaf action
     TaskResult resultToReturn = TaskResult::TASK_RESULT_PASSED;
@@ -92,7 +90,7 @@ BOOST_AUTO_TEST_CASE(TestRepeaterCounter) {
     BOOST_REQUIRE_NO_THROW(repeaterCondition = std::move(
         std::unique_ptr<RepeatConditionCounter>(new RepeatConditionCounter(timesToRunAction))));
 
-    IRepeaterPtr repeater = aiFactory.createRepeater();
+    IRepeaterPtr repeater = aiService->createRepeater();
     repeater->SetRepeatCondition(std::move(repeaterCondition));
     repeater->SetDecoratedTask(testAction);
 

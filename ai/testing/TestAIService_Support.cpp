@@ -6,10 +6,11 @@
 
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
-#include "AIFactory.hpp"
 #include "IBlackboard.hpp"
 
 #include "BlackboardUtils.hpp"
+
+#include "AIServiceFixture.hpp"
 
 #include <boost/assign.hpp>
 #include <boost/intrusive_ptr.hpp>
@@ -30,14 +31,13 @@ BLACKBOARD_TYPE(IntVectorValue, std::vector<int>, UUIDSemanticTypeA);
 BLACKBOARD_TYPE(StringValue,    std::string,      UUIDSemanticTypeB);
 
 
-struct AIBlackboardFixture {
+struct AIBlackboardFixture : public AIServiceFixture {
 
     AIBlackboardFixture()
     {
-        blackboard = aiFactory.createBlackboard();
+        blackboard = aiService->createBlackboard();
     }
 
-    AIFactory aiFactory;
     IBlackboardPtr blackboard;
 };
 

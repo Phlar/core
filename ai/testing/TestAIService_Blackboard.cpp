@@ -6,10 +6,11 @@
 
 #include "UUID.hpp"
 #include "InterfaceImpl.hpp"
-#include "AIFactory.hpp"
 #include "IBlackboard.hpp"
 
 #include "BlackboardValue.hpp"
+
+#include "AIServiceFixture.hpp"
 
 #include <boost/assign.hpp>
 #include <boost/intrusive_ptr.hpp>
@@ -54,14 +55,14 @@ class BlackboardTestValue : public support::BlackboardValue<int> {
 typedef boost::intrusive_ptr<BlackboardTestValue> BlackboardTestValuePtr;
 
 
-struct AIBlackboardFixture {
+struct AIBlackboardFixture : public AIServiceFixture {
 
     AIBlackboardFixture()
     : valueA_1(new BlackboardTestValue(10, UUIDTypeA))
     , valueB_1(new BlackboardTestValue(20, UUIDTypeB))
     , valueC_1(new BlackboardTestValue(30, UUIDTypeC)) {
 
-        blackboard = aiFactory.createBlackboard();
+        blackboard = aiService->createBlackboard();
         BOOST_REQUIRE(blackboard);
     }
 
@@ -69,7 +70,6 @@ struct AIBlackboardFixture {
     BlackboardTestValuePtr valueB_1;
     BlackboardTestValuePtr valueC_1;
 
-    AIFactory aiFactory;
     IBlackboardPtr blackboard;
 };
 
