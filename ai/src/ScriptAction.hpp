@@ -6,6 +6,10 @@
 #include "Action.hpp"
 #include "InterfaceImpl.hpp"
 
+#include "IScriptContext.hpp"
+
+#include <memory>
+
 
 namespace aw {
 namespace core {
@@ -18,6 +22,39 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Act
 
         ScriptAction();
         virtual ~ScriptAction();
+
+        //@{
+        //! Implementations of IScriptAction.
+        virtual void SetScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+        //@}
+
+    protected:
+
+        // Override the execute function from the Action class.
+        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+
+
+        // Merely some storage of script specific properties.
+        struct ScriptProperties {
+
+            public:
+
+                ScriptProperties(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+
+                // Actually load the script - i.e. validate its location and retrieve the appropriate context.
+                void resolveScript();
+
+                bool m_delayLoad;
+                boost::filesystem::path m_scriptFilePath;
+                std::string m_scriptFunction;
+                scripting::IScriptContextPtr m_scriptContext;
+
+            protected:
+                ScriptProperties();
+        };
+        
+        std::unique_ptr<ScriptProperties> m_scriptProperties;
+
 };
 typedef boost::intrusive_ptr<ScriptAction> ScriptActionPtr;
 
