@@ -19,6 +19,9 @@ typedef boost::intrusive_ptr<ITaskContainer> ITaskContainerPtr;
 class IAction;
 typedef boost::intrusive_ptr<IAction> IActionPtr;
 
+class IScriptAction;
+typedef boost::intrusive_ptr<IScriptAction> IScriptActionPtr;
+
 class ICondition;
 typedef boost::intrusive_ptr<ICondition> IConditionPtr;
 
