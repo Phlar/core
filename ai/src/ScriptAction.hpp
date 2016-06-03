@@ -44,9 +44,8 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Act
                 // Actually load the script - i.e. validate its location and retrieve the appropriate context.
                 void resolveScript();
 
-                bool m_delayLoad;
-                boost::filesystem::path m_scriptFilePath;
-                std::string m_scriptFunction;
+                boost::filesystem::path m_filePath;
+                std::string m_functionName;
                 scripting::IScriptContextPtr m_scriptContext;
 
             protected:
