@@ -15,7 +15,7 @@ foreach(testSourceFile ${AIService_Test_Sources})
 	add_executable(${testName} ${testSourceFile})
 	
 	#Link to boost' unit-test framework
-	target_link_libraries(${testName} ${Boost_LIBRARIES} LibAIService)
+	target_link_libraries(${testName} ${Boost_LIBRARIES} LibAIService LibScriptingService)
 	
 	add_test(NAME ${testName} COMMAND ${testName})
 
