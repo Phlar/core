@@ -9,7 +9,7 @@ namespace ai {
 namespace impl {
 
 Action::Action(const ActionFnc& action)
-: m_action(action) {
+: RunnableTask(action, RunnableTask::RunnableTaskType::RUNNABLE_TASK_ACTION) {
 }
 
 Action::~Action() {
@@ -17,20 +17,13 @@ Action::~Action() {
 
 void Action::SetAction(const ActionFnc& action) {
 
-    //! Todo: Log in case of an empty functor passed.
-    //        "TASK_RESULT_PASSED" will be always returned in that case.
-    m_action = action;
+    SetRunnableTaskFunction(action);
 }
 
-TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
+TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
-    if(m_action) {
-        return m_action(blackboard);
-    }
-
-    return TaskResult::TASK_RESULT_PASSED;
+    return RunnableTask::evaluate(blackboard, yield);
 }
-
 
 } // namespace impl
 } // namespace ai

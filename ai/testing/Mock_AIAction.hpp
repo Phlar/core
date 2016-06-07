@@ -31,8 +31,8 @@ class TestAction : public impl::Action {
 
         virtual TaskResult testEvaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
 
-            if(m_action) {
-                return m_action(blackboard);
+            if(m_runnableFunction) {
+                return m_runnableFunction(blackboard);
             } else {
                 return TaskResult::TASK_RESULT_FAILED;
             }

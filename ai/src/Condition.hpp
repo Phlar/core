@@ -3,7 +3,7 @@
 #include "AIFwdDeclarations.hpp"
 #include "ICondition.hpp"
 
-#include "Task.hpp"
+#include "RunnableTask.hpp"
 #include "InterfaceImpl.hpp"
 
 
@@ -12,14 +12,17 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class Condition : public base::InterfaceImpl<ICondition>, public Task {
+class Condition : public base::InterfaceImpl<ICondition>, public RunnableTask {
 
     public:
 
         Condition(const ConditionFnc& condition);
         virtual ~Condition();
 
+        //@{
+        //! \brief Implementation of IAction.
         void SetCondition(const ConditionFnc& condition) override;
+        //@}
 
     protected:
 
@@ -27,8 +30,6 @@ class Condition : public base::InterfaceImpl<ICondition>, public Task {
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! evaluation function provided.
         TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
-
-        ConditionFnc m_condition;
 };
 
 } // namespace impl

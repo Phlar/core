@@ -21,7 +21,7 @@ namespace core {
 namespace ai {
 namespace testing {
 
-class TestAction : public impl::Action, public boost::noncopyable {
+class TestAction : public impl::Action {
 
     public:
 

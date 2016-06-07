@@ -44,12 +44,8 @@ struct TestFixture : public AIServiceFixture {
 
 
 
-/*
-BOOST_FIXTURE_TEST_CASE(TestEmptyContainer, AIBasicsFixture) {
-
-    BOOST_CHECK_EQUAL(taskContainer->GetNumTasks(), 0);
+BOOST_FIXTURE_TEST_CASE(BasicTest, TestFixture) {
 }
-*/
 
 
 } // namespace testing
