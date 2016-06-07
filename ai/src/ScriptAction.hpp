@@ -35,7 +35,7 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Act
 
 
         // Merely some storage of script specific properties.
-        struct ScriptProperties {
+        struct ScriptProperties : public boost::noncopyable {
 
             public:
 
@@ -44,8 +44,11 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Act
                 // Actually load the script - i.e. validate its location and retrieve the appropriate context.
                 void resolveScript();
 
-                boost::filesystem::path m_filePath;
-                std::string m_functionName;
+                // Helper building a error message.
+                std::stringstream buildErrorMessage(const std::string& reason) const;
+
+                const boost::filesystem::path m_filePath;
+                const std::string m_functionName;
                 scripting::IScriptContextPtr m_scriptContext;
 
             protected:
