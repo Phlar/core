@@ -20,7 +20,7 @@ RunnableTask::RunnableTask()
 RunnableTask::~RunnableTask() {
 }
 
-void RunnableTask::SetRunnableTaskFunction(const RunnableTaskFnc& runnableFunction) {
+void RunnableTask::setRunnableTaskFunction(const RunnableTaskFnc& runnableFunction) {
 
     //! Todo: Log in case of an empty functor passed.
     //        "TASK_RESULT_PASSED" will be always returned in that case.

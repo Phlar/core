@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AIFwdDeclarations.hpp"
-#include "IScriptAction.hpp"
+#include "IScriptCondition.hpp"
 
 #include "RunnableScriptTask.hpp"
 #include "InterfaceImpl.hpp"
@@ -12,13 +12,14 @@ namespace core {
 namespace ai {
 namespace impl {
 
-class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::RunnableScriptTask {
+class ScriptCondition : public base::InterfaceImpl<IScriptCondition>, public impl::RunnableScriptTask {
 
     public:
 
-        ScriptAction();
-        ScriptAction(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
-        virtual ~ScriptAction();
+        ScriptCondition();
+        ScriptCondition(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+
+        virtual ~ScriptCondition();
 
         //@{
         //! Implementations of IScriptAction.
@@ -30,7 +31,7 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Run
         // Override the execute function from the Action class.
         TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
-typedef boost::intrusive_ptr<ScriptAction> ScriptActionPtr;
+typedef boost::intrusive_ptr<ScriptCondition> ScriptConditionPtr;
 
 } // namespace impl
 } // namespace ai

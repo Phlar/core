@@ -25,6 +25,9 @@ typedef boost::intrusive_ptr<IScriptAction> IScriptActionPtr;
 class ICondition;
 typedef boost::intrusive_ptr<ICondition> IConditionPtr;
 
+class IScriptCondition;
+typedef boost::intrusive_ptr<IScriptCondition> IScriptConditionPtr;
+
 class ISequencer;
 typedef boost::intrusive_ptr<ISequencer> ISequencerPtr;
 

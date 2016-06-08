@@ -39,7 +39,8 @@ class RunnableTask : public Task, public boost::noncopyable {
         //!  function provided.
         TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 
-        void SetRunnableTaskFunction(const RunnableTaskFnc& runnableFunction);
+        //! \brief Define the function to executte.
+        void setRunnableTaskFunction(const RunnableTaskFnc& runnableFunction);
 
         RunnableTaskFnc m_runnableFunction;
         const RunnableTaskType m_runnableTaskType;

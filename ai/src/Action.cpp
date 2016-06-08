@@ -17,7 +17,7 @@ Action::~Action() {
 
 void Action::SetAction(const ActionFnc& action) {
 
-    SetRunnableTaskFunction(action);
+    setRunnableTaskFunction(action);
 }
 
 TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
