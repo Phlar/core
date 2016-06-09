@@ -5,21 +5,82 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Utils.hpp"
+#include "InterfaceImpl.hpp"
 
 #include "IBehaviorTree.hpp"
 #include "IScriptAction.hpp"
 #include "InitScriptingService.hpp"
 
+#include "IScriptContext.hpp"
+#include "IScriptResolver.hpp"
 #include "IScriptingService.hpp"
 
 #include "AIServiceFixture.hpp"
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <turtle/mock.hpp>
+
+
+#pragma warning(disable: 4512)
+#include <boost/scope_exit.hpp>
+#pragma warning(default: 4512)
+
 namespace aw {
 namespace core {
 namespace ai {
 namespace testing {
+
+namespace {
+
+// Helper ensuring a file exists - if not it will be created.
+void ensureFileExistence(const boost::filesystem::path& filePath) {
+
+    bool fileExists = false;
+    BOOST_REQUIRE_NO_THROW(fileExists = boost::filesystem::exists(filePath));
+    if(!fileExists) {
+
+        std::ofstream outStream;
+        BOOST_REQUIRE_NO_THROW(outStream.open(filePath.string()));
+    }
+}
+
+// Helper ensuring a file is removed - if not it will be removed.
+void ensureFileRemoval(const boost::filesystem::path& filePath) {
+
+    bool fileExists = false;
+    BOOST_REQUIRE_NO_THROW(fileExists = boost::filesystem::exists(filePath));
+    if(fileExists) {
+        BOOST_REQUIRE_NO_THROW(boost::filesystem::remove(filePath));
+    }
+}
+
+
+MOCK_BASE_CLASS(MockScriptResolver, base::InterfaceImpl<scripting::IScriptResolver>) {
+
+    public:
+
+        MockScriptResolver() {
+        }
+
+        MOCK_METHOD(IsFileSupported, 1, bool(const boost::filesystem::path&));
+        MOCK_METHOD(GetContext, 1, scripting::IScriptContextPtr(const boost::filesystem::path&));
+};
+typedef boost::intrusive_ptr<MockScriptResolver> MockScriptResolverPtr;
+
+MOCK_BASE_CLASS(MockScriptContext, base::InterfaceImpl<scripting::IScriptContext>) {
+
+    public:
+
+        MockScriptContext() {
+        }
+
+        MOCK_METHOD(ExecuteScript, 3);
+};
+typedef boost::intrusive_ptr<MockScriptContext> MockScriptContextPtr;
+
+
+} // namespace anonymous
 
 struct TestFixture : public AIServiceFixture {
 
@@ -54,7 +115,6 @@ struct TestFixture : public AIServiceFixture {
     }
 
     virtual ~TestFixture() {
-        BOOST_TEST_MESSAGE("teardown");
     }
 
 
@@ -110,6 +170,34 @@ BOOST_FIXTURE_TEST_CASE(SetScriptTaskWithDelayedInvalidFileShouldThrow, TestFixt
     BehaviorTreeState executionState = BehaviorTreeState::STATE_NOT_RUN;
     BOOST_CHECK_NO_THROW(executionState = behaviorTree->ExecuteSync());
     BOOST_CHECK(executionState == BehaviorTreeState::STATE_FAILED);
+}
+
+BOOST_FIXTURE_TEST_CASE(MissingScriptResolverShouldThrow, TestFixture) {
+
+    // Set up a file no resolver is registered for.
+    const boost::filesystem::path scriptFilePath = base::utils::GetProcessDirectory()  / "../../testdata/SomeScriptFile.foo";
+    ensureFileExistence(scriptFilePath);
+
+    // Ensure all files are removed in case of an error.
+#pragma warning(disable: 4003 4512)
+    BOOST_SCOPE_EXIT(&scriptFilePath) {
+
+        ensureFileRemoval(scriptFilePath);
+
+    } BOOST_SCOPE_EXIT_END
+#pragma warning(default: 4003 4512)
+
+    // Create a scripting-task.
+    IScriptActionPtr scriptAction = nullptr;
+    BOOST_CHECK_THROW(scriptAction = aiService->createScriptAction(scriptFilePath, "foo", false), std::exception);
+}
+
+BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
+
+    // Register a mocked script resolver returning a mocked script context.
+    MockScriptResolverPtr mockedResolver = MockScriptResolverPtr(new MockScriptResolver());
+
+
 }
 
 
