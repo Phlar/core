@@ -126,6 +126,9 @@ struct AIAsyncFixture : public AIServiceFixture{
     IBehaviorTreePtr asyncTree;
 };
 
+// todo: Add test-case for IBehaviorTree::SetRoot(nullptr) showing the previously attached
+//       root gets released properly.
+
 BOOST_FIXTURE_TEST_CASE(TestExceptionOnInvalidRoot, AIAsyncFixture) {
 
     // Synchronous case

@@ -22,7 +22,7 @@ namespace impl {
 //! Similar to generators / coroutines in other languages execution
 //! of an Task::evaluate() function will be suspended at user defined
 //! places inside the function thus returning the execution context
-//! back to the caller. On the next call of "BahviourTree::EvaluateOneTick()"
+//! back to the caller. On the next call of "BahviorTree::EvaluateOneTick()"
 //! execution will resume at the previously suspended location.
 //! \note Execution may not be triggered from threads different from
 //! the thread the tree was constructed at!
@@ -34,7 +34,7 @@ class BehaviorTree : public base::InterfaceImpl<IBehaviorTree> {
         virtual ~BehaviorTree();
 
         //@{
-        //! Implementations of IBehviourTree
+        //! Implementations of IBehviorTree
         void SetRoot(ITaskPtr rootTask);
         BehaviorTreeState ExecuteAsync();
         void ResetAsyncExecution();

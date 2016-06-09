@@ -31,7 +31,7 @@ class IAIService : public virtual base::IService {
         //@}
 
         //@{
-        //! \brief Creator functions for all behaviour-tree related elements.
+        //! \brief Creator functions for all behavior-tree related elements.
         virtual IActionPtr          createAction() const = 0;
         virtual IActionPtr          createAction(const ActionFnc& action) const = 0;
         virtual IScriptActionPtr    createScriptAction() const = 0;

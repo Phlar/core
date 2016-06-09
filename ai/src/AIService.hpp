@@ -25,7 +25,7 @@ class AIService : public base::InterfaceImpl<core::ai::IAIService> {
         //@}
 
         //@{
-        //! Creators for behaviour tree elements.
+        //! Creators for behavior tree elements.
 
         virtual IActionPtr          createAction() const;
         virtual IActionPtr          createAction(const ActionFnc& action) const;
