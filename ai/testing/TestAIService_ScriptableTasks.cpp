@@ -194,12 +194,51 @@ BOOST_FIXTURE_TEST_CASE(MissingScriptResolverShouldThrow, TestFixture) {
 
 BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
 
+    const boost::filesystem::path scriptFilePath = base::utils::GetProcessDirectory()  / "../../testdata/SomeScriptFile.foo";
+    const std::string functionName = "FooBar";
+
+    ensureFileExistence(scriptFilePath);
+
+    // Ensure all files are removed in case of an error.
+#pragma warning(disable: 4003 4512)
+    BOOST_SCOPE_EXIT(&scriptFilePath) {
+
+        ensureFileRemoval(scriptFilePath);
+
+    } BOOST_SCOPE_EXIT_END
+#pragma warning(default: 4003 4512)
+
     // Register a mocked script resolver returning a mocked script context.
-    MockScriptResolverPtr mockedResolver = MockScriptResolverPtr(new MockScriptResolver());
+    MockScriptResolverPtr mockResolver = MockScriptResolverPtr(new MockScriptResolver());
+    MockScriptContextPtr mockContext = MockScriptContextPtr(new MockScriptContext());
+    BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(mockResolver));
 
+    MOCK_EXPECT(mockResolver->IsFileSupported).returns(true);
+    MOCK_EXPECT(mockResolver->GetContext).calls([&scriptFilePath, &mockContext](const boost::filesystem::path& passedScriptFilePath) {
 
+        BOOST_CHECK_EQUAL(passedScriptFilePath, scriptFilePath);
+        return mockContext;
+    });
+
+    MOCK_EXPECT(mockContext->ExecuteScript).once().calls(
+        [&functionName](const std::string& passedFunctionName, const scripting::ArgumentVector&, const scripting::ReturnValuesHolder& returnValues) {
+
+            BOOST_CHECK_EQUAL(passedFunctionName, functionName);
+            returnValues.SetValue(0, TaskResult::TASK_RESULT_PASSED);
+    });
+
+    // Set up the action and invoke it. Delayed load or immediate processing should not have any difference here.
+    IScriptActionPtr scriptAction = nullptr;
+    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptAction(scriptFilePath, functionName, true));
+    BOOST_REQUIRE(scriptAction);
+
+    BOOST_CHECK_NO_THROW(behaviorTree->SetRoot(scriptAction));
+    BehaviorTreeState result = BehaviorTreeState::STATE_NOT_RUN;
+    BOOST_CHECK_NO_THROW(result = behaviorTree->ExecuteSync());
+    BOOST_CHECK(result == BehaviorTreeState::STATE_FINISHED);
+
+    
 }
-
 
 } // namespace testing
 } // namespace ai
