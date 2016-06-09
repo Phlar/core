@@ -28,7 +28,7 @@ void RunnableScriptTask::ScriptProperties::resolveScript() {
     try {
 
         // Check file's presence.
-        if(boost::filesystem::exists(m_filePath)) {
+        if(!boost::filesystem::exists(m_filePath)) {
 
             std::stringstream errorMessage;
             errorMessage << "File does not exists '" << m_filePath << "'.";
@@ -98,7 +98,7 @@ TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCoroutine
         throw std::runtime_error("Error executing script-task due to invalid script-properties.");
     }
 
-    if(m_scriptProperties->m_scriptContext) {
+    if(!m_scriptProperties->m_scriptContext) {
 
         // No valid context - we assume it's a delayed load.
         //! \todo: Log this!

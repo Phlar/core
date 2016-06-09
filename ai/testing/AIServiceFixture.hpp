@@ -32,6 +32,9 @@ struct AIServiceFixture {
             BOOST_REQUIRE(aiService);
         }
 
+        virtual ~AIServiceFixture() {
+        }
+
     base::ServiceLocatorPtr serviceLocator;
     IAIServicePtr aiService;
 };
