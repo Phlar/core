@@ -236,8 +236,6 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
     BehaviorTreeState result = BehaviorTreeState::STATE_NOT_RUN;
     BOOST_CHECK_NO_THROW(result = behaviorTree->ExecuteSync());
     BOOST_CHECK(result == BehaviorTreeState::STATE_FINISHED);
-
-    
 }
 
 } // namespace testing
