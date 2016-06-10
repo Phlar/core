@@ -9,7 +9,8 @@
 #include "Mock_ScriptContext.hpp"
 #include "Mock_ScriptResolver.hpp"
 
-#include "boost/intrusive_ptr.hpp"
+#include <boost/intrusive_ptr.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 namespace aw {
 namespace core {
@@ -51,13 +52,18 @@ struct ScriptingFixture {
 
         ScriptingFixture() {
 
+            mockResolverID = boost::uuids::string_generator()("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}");
+
             mockScriptResolver = MockScriptResolverPtr(new MockScriptResolver());
+            MOCK_EXPECT(mockScriptResolver->GetResolverID).returns(mockResolverID);
         }
 
         ScriptingService scriptingService;
 
         typedef boost::intrusive_ptr<MockScriptResolver> MockScriptResolverPtr;
         MockScriptResolverPtr mockScriptResolver;
+
+        base::UUID mockResolverID;
 };
 
 

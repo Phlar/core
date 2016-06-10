@@ -2,6 +2,7 @@
 
 #include <boost/format.hpp>
 #include <boost/uuid/string_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 #include <sstream>
 
@@ -29,9 +30,22 @@ void ScriptingService::AddResolver(IScriptResolverPtr resolver) {
         throw std::invalid_argument("Invalid script resolver provided.");
     }
 
-    if(!m_resolvers.insert(resolver).second) {
-        throw std::logic_error("Resolver already registered.");
+    if(!m_resolvers.insert(std::make_pair(resolver->GetResolverID(), resolver)).second) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Resolver '" << resolver->GetResolverID() << "already registered.";
+        throw std::logic_error(errorMessage.str());
     }
+}
+
+IScriptResolverPtr ScriptingService::GetResolver(const base::UUID& resolverID) const {
+
+    auto findIter = m_resolvers.find(resolverID);
+    if(findIter == m_resolvers.end()) {
+        // todo: Log this in debug!
+        return IScriptResolverPtr();
+    }
+    return findIter->second;
 }
 
 IScriptContextPtr ScriptingService::GetContext(const boost::filesystem::path& scriptPath) const {
@@ -52,10 +66,10 @@ IScriptContextPtr ScriptingService::GetContext(const boost::filesystem::path& sc
     }
 
     // Walk all resolvers and take the first matching one.
-    for(const IScriptResolverPtr& resolver : m_resolvers) {
+    for(auto resolverEntry : m_resolvers) {
 
-        if(resolver->IsFileSupported(scriptPath)) {
-            return resolver->GetContext(scriptPath);
+        if(resolverEntry.second->IsFileSupported(scriptPath)) {
+            return resolverEntry.second->GetContext(scriptPath);
         }
     }
     return IScriptContextPtr();

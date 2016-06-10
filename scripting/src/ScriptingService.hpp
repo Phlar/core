@@ -8,8 +8,8 @@
 #include "InterfaceImpl.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/unordered_map.hpp>
 
-#include <set>
 
 namespace aw {
 namespace core {
@@ -26,18 +26,15 @@ class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingS
         //@{
         //! Implementations of IService.
         virtual base::UUID GetServiceID() const;
-        //@}
-
-        //! \brief Adds a resolver for a certain kind of scripts.
         virtual void AddResolver(IScriptResolverPtr resolver);
-
-        //! \brief Tries to find a matching resolver.
+        virtual IScriptResolverPtr GetResolver(const base::UUID& resolverID) const;
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
+        //@}
 
     protected:
 
         // All registered interpreters.
-        std::set<IScriptResolverPtr> m_resolvers;
+        boost::unordered_map<base::UUID, scripting::IScriptResolverPtr> m_resolvers;
 };
 
 } // namespace scripting

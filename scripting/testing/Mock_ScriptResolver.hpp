@@ -17,6 +17,7 @@ MOCK_BASE_CLASS(MockScriptResolver, TestScriptResolver) {
 
     public:
 
+        MOCK_METHOD(GetResolverID, 0);
         MOCK_METHOD(IsFileSupported, 1);
         MOCK_METHOD(GetContext, 1);
 };
