@@ -124,11 +124,6 @@ struct TestFixture : public AIServiceFixture {
     IBehaviorTreePtr behaviorTree; 
 };
 
-// Todo: Write tests for:
-//          Unresolvable file, i.e. no resolver registered to the ScriptingService.
-//          Delaved / immediate resolving of file.
-
-
 
 BOOST_FIXTURE_TEST_CASE(ScriptTaskWithInvalidFileAtConstructionShouldThrow, TestFixture) {
 
