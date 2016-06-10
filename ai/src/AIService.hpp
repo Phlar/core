@@ -26,7 +26,6 @@ class AIService : public base::InterfaceImpl<core::ai::IAIService> {
 
         //@{
         //! Creators for behavior tree elements.
-
         virtual IActionPtr          createAction() const;
         virtual IActionPtr          createAction(const ActionFnc& action) const;
         virtual IScriptActionPtr    createScriptAction() const;
@@ -42,7 +41,6 @@ class AIService : public base::InterfaceImpl<core::ai::IAIService> {
         virtual IRepeaterPtr        createRepeater() const;
         virtual IBehaviorTreePtr    createBehaviorTree() const;
         //@}
-
 };
 
 } // namespace ai
