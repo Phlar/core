@@ -3,6 +3,7 @@
 #include "IScriptContext.hpp"
 
 #include "IReferenceCounted.hpp"
+#include "UUID.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/intrusive_ptr.hpp>
@@ -16,6 +17,9 @@ namespace scripting {
 class IScriptResolver : public virtual base::IReferenceCounted {
 
     public:
+
+        //! \brief Returns the unique identifier of each resolver.
+        virtual base::UUID GetResolverID() const = 0;
 
         //! \brief Checks whether a script file can be executed
         //! by this resolver / interpreter.

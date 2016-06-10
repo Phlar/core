@@ -31,6 +31,9 @@ class IScriptingService : public virtual base::IService {
         //! \brief Adds a resolver for a certain kind of scripts.
         virtual void AddResolver(IScriptResolverPtr resolver) = 0;
 
+        //! \brief Returns a registered resolver matching by ID.
+        virtual IScriptResolverPtr GetResolver(const base::UUID& resolverID) const = 0;
+
         //! \brief Tries to find a matching resolver.
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const = 0;
 };

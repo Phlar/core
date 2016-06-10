@@ -18,6 +18,7 @@
 #include "AIServiceFixture.hpp"
 
 #include <boost/intrusive_ptr.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 #include <turtle/mock.hpp>
 
@@ -55,7 +56,6 @@ void ensureFileRemoval(const boost::filesystem::path& filePath) {
     }
 }
 
-
 MOCK_BASE_CLASS(MockScriptResolver, base::InterfaceImpl<scripting::IScriptResolver>) {
 
     public:
@@ -63,6 +63,7 @@ MOCK_BASE_CLASS(MockScriptResolver, base::InterfaceImpl<scripting::IScriptResolv
         MockScriptResolver() {
         }
 
+        MOCK_METHOD(GetResolverID, 0);
         MOCK_METHOD(IsFileSupported, 1, bool(const boost::filesystem::path&));
         MOCK_METHOD(GetContext, 1, scripting::IScriptContextPtr(const boost::filesystem::path&));
 };
@@ -78,7 +79,6 @@ MOCK_BASE_CLASS(MockScriptContext, base::InterfaceImpl<scripting::IScriptContext
         MOCK_METHOD(ExecuteScript, 3);
 };
 typedef boost::intrusive_ptr<MockScriptContext> MockScriptContextPtr;
-
 
 } // namespace anonymous
 
@@ -123,11 +123,6 @@ struct TestFixture : public AIServiceFixture {
     scripting::IScriptingServicePtr scriptingService;
     IBehaviorTreePtr behaviorTree; 
 };
-
-// Todo: Write tests for:
-//          Unresolvable file, i.e. no resolver registered to the ScriptingService.
-//          Delaved / immediate resolving of file.
-
 
 
 BOOST_FIXTURE_TEST_CASE(ScriptTaskWithInvalidFileAtConstructionShouldThrow, TestFixture) {
@@ -210,6 +205,8 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
 
     // Register a mocked script resolver returning a mocked script context.
     MockScriptResolverPtr mockResolver = MockScriptResolverPtr(new MockScriptResolver());
+    MOCK_EXPECT(mockResolver->GetResolverID).returns(boost::uuids::string_generator()("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}"));
+
     MockScriptContextPtr mockContext = MockScriptContextPtr(new MockScriptContext());
     BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(mockResolver));
 

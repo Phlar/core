@@ -52,6 +52,11 @@ LUAScriptResolver::LUAScriptResolver()
 LUAScriptResolver::~LUAScriptResolver() {
 }
 
+base::UUID LUAScriptResolver::GetResolverID() const {
+
+    return ID_LUA_SCRIPT_RESOLVER;
+}
+
 bool LUAScriptResolver::IsFileSupported(const boost::filesystem::path& scriptPath) {
 
     return (scriptPath.extension().string().c_str() == m_supportedFileExtension);

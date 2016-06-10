@@ -4,17 +4,21 @@
 #include "LUARegistrationFunctions.hpp"
 
 #include "InterfaceImpl.hpp"
+#include "UUID.hpp"
 
 #include "luabind/scope.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/type_index.hpp>
+#include <boost/uuid/string_generator.hpp>
 
 
 namespace aw {
 namespace core {
 namespace scripting {
 namespace lua {
+
+static const base::UUID ID_LUA_SCRIPT_RESOLVER = boost::uuids::string_generator()("{11C42A8B-BC7E-4B10-B193-350B4DB47DF3}");
 
 class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
 
@@ -24,6 +28,7 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
 
         //@{
         //! Implementations of IScriptResolver.
+        virtual base::UUID GetResolverID() const;
         virtual bool IsFileSupported(const boost::filesystem::path& scriptPath);
         virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath);
         //@}
