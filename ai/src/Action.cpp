@@ -20,7 +20,7 @@ void Action::SetAction(const ActionFnc& action) {
     setRunnableTaskFunction(action);
 }
 
-TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
+ITask::TaskResult Action::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     return RunnableTask::evaluate(blackboard, yield);
 }

@@ -35,9 +35,9 @@ class InstanceableTaskContainer : public base::InterfaceImpl<IInstanceableTaskCo
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const override {
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const override {
 
-            return TaskResult::TASK_RESULT_PASSED;
+            return ITask::TaskResult::TASK_RESULT_PASSED;
         }
 };
 

@@ -46,11 +46,11 @@ struct AIAsyncFixture : public AIServiceFixture{
         BOOST_REQUIRE(selectorA);
         BOOST_REQUIRE(selectorB);
 
-        BOOST_CHECK_NO_THROW(failingAction = aiService->createAction([](IBlackboardPtr /*blackboard*/){return TaskResult::TASK_RESULT_FAILED;}));
-        BOOST_CHECK_NO_THROW(succeedingAction = aiService->createAction([](IBlackboardPtr /*blackboard*/){return TaskResult::TASK_RESULT_PASSED;}));
+        BOOST_CHECK_NO_THROW(failingAction = aiService->createAction([](IBlackboardPtr /*blackboard*/){return ITask::TaskResult::TASK_RESULT_FAILED;}));
+        BOOST_CHECK_NO_THROW(succeedingAction = aiService->createAction([](IBlackboardPtr /*blackboard*/){return ITask::TaskResult::TASK_RESULT_PASSED;}));
         BOOST_CHECK_NO_THROW(throwingAction = aiService->createAction([](IBlackboardPtr /*blakboard*/){
             throw std::exception("Error in action.");
-            return TaskResult::TASK_RESULT_PASSED;
+            return ITask::TaskResult::TASK_RESULT_PASSED;
         }));
         BOOST_REQUIRE(failingAction);
         BOOST_REQUIRE(succeedingAction);
@@ -58,7 +58,7 @@ struct AIAsyncFixture : public AIServiceFixture{
 
         BOOST_CHECK_NO_THROW(throwingCondition = aiService->createCondition([](IBlackboardPtr /*blakboard*/){
             throw std::exception("Error in condition.");
-            return TaskResult::TASK_RESULT_PASSED;
+            return ITask::TaskResult::TASK_RESULT_PASSED;
         }));
         BOOST_REQUIRE(throwingCondition);
 

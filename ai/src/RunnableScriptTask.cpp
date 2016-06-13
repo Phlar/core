@@ -92,7 +92,7 @@ RunnableScriptTask::RunnableScriptTask()
 RunnableScriptTask::~RunnableScriptTask() {
 }
 
-TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
+ITask::TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
 
     if(!m_scriptProperties) {
         throw std::runtime_error("Error executing script-task due to invalid script-properties.");
@@ -110,11 +110,11 @@ TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCoroutine
         scripting::ArgumentVector args;
         args.push_back(scripting::Argument(blackboard));
 
-        // \todo: Check about exposing TaskResult to the scripting rather than using plain ints here.
-        scripting::ReturnValuesHolder returnValues = scripting::ReturnValuesHolder::Create<TaskResult>();
+        // \todo: Check about exposing ITask::TaskResult to the scripting rather than using plain ints here.
+        scripting::ReturnValuesHolder returnValues = scripting::ReturnValuesHolder::Create<ITask::TaskResult>();
 
         m_scriptProperties->m_scriptContext->ExecuteScript(m_scriptProperties->m_functionName, args, returnValues);
-        return returnValues.GetTypedValue<TaskResult>(0);
+        return returnValues.GetTypedValue<ITask::TaskResult>(0);
 
     } catch(const std::exception& e) {
 

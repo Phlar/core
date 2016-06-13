@@ -25,7 +25,7 @@ class RunnableTask : public Task, public boost::noncopyable {
             RUNNABLE_TASK_CONDITION
         };
 
-        typedef boost::function<TaskResult(IBlackboardPtr)> RunnableTaskFnc;
+        typedef boost::function<ITask::TaskResult(IBlackboardPtr)> RunnableTaskFnc;
 
         virtual ~RunnableTask();
 
@@ -37,7 +37,7 @@ class RunnableTask : public Task, public boost::noncopyable {
         //! \brief Returns result of the provided function to be run.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //!  function provided.
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 
         //! \brief Define the function to executte.
         void setRunnableTaskFunction(const RunnableTaskFnc& runnableFunction);

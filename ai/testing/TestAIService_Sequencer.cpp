@@ -22,7 +22,7 @@ BOOST_FIXTURE_TEST_CASE(TestSequencerExecution, AIServiceFixture) {
     BOOST_REQUIRE(sequencer);
 
     boost::intrusive_ptr<MockAIAction> mockAction(new MockAIAction());
-    MOCK_EXPECT(mockAction->testEvaluate).exactly(3).returns(TaskResult::TASK_RESULT_PASSED);
+    MOCK_EXPECT(mockAction->testEvaluate).exactly(3).returns(ITask::TaskResult::TASK_RESULT_PASSED);
    
     sequencer->AddTask(mockAction);
     sequencer->AddTask(mockAction);

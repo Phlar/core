@@ -12,7 +12,7 @@ namespace aw {
 namespace core {
 namespace ai {
 
-typedef boost::function<TaskResult(IBlackboardPtr)> ActionFnc;
+typedef boost::function<ITask::TaskResult(IBlackboardPtr)> ActionFnc;
 
 //! \brief 'Leaf' element that triggers a certain action - if set 
 //! Evaluate() will return the action's result. Otherwise TASK_RESULT_PASSED

@@ -30,7 +30,7 @@ class Decorator : public base::InterfaceImpl<IDecorator>, public impl::Task {
 
         //! \brief Helper derived decorators can invoke to execute
         //! decorated tasks down the chain.
-        TaskResult evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const;
+        ITask::TaskResult evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const;
 
         //! Disable direct construction of a decorator itself.
         Decorator(ITaskPtr decoratedTask = ITaskPtr());

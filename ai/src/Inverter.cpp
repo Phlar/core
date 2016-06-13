@@ -14,13 +14,13 @@ Inverter::Inverter() {
 Inverter::~Inverter() {
 }
 
-TaskResult Inverter::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
+ITask::TaskResult Inverter::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
-    TaskResult result = evaluateDecoratedTask(blackboard, yield);
-    if(result == TaskResult::TASK_RESULT_PASSED) {
-        return TaskResult::TASK_RESULT_FAILED;
-    } else if(result == TaskResult::TASK_RESULT_FAILED) {
-        return TaskResult::TASK_RESULT_PASSED;
+    ITask::TaskResult result = evaluateDecoratedTask(blackboard, yield);
+    if(result == ITask::TaskResult::TASK_RESULT_PASSED) {
+        return ITask::TaskResult::TASK_RESULT_FAILED;
+    } else if(result == ITask::TaskResult::TASK_RESULT_FAILED) {
+        return ITask::TaskResult::TASK_RESULT_PASSED;
     }
 
     return result;
