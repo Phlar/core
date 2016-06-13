@@ -16,7 +16,6 @@ namespace core {
 namespace ai {
 
 
-
 class ITask : public virtual base::IReferenceCounted {
 
     public:
