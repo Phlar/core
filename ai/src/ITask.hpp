@@ -16,16 +16,17 @@ namespace core {
 namespace ai {
 
 
-enum class TaskResult {
-
-    TASK_RESULT_FAILED = 0,
-    TASK_RESULT_PASSED,
-    TASK_RESULT_RUNNING
-};
 
 class ITask : public virtual base::IReferenceCounted {
 
     public:
+
+        enum class TaskResult {
+
+            TASK_RESULT_FAILED = 0,
+            TASK_RESULT_PASSED,
+            TASK_RESULT_RUNNING
+        };
 
         typedef boost::coroutines::coroutine<void>::pull_type TaskCoroutinePullType;
 
@@ -38,7 +39,7 @@ class ITask : public virtual base::IReferenceCounted {
         //!                     subtree will be executed at once.
         //! \todo Coroutine handler rather is an implementation detail and should
         //!       not be exposed through the API.
-        virtual TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield = nullptr) const = 0;
+        virtual ITask::TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield = nullptr) const = 0;
 };
 typedef boost::intrusive_ptr<ITask> ITaskPtr;
 

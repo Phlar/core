@@ -221,7 +221,7 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
         [&functionName](const std::string& passedFunctionName, const scripting::ArgumentVector&, const scripting::ReturnValuesHolder& returnValues) {
 
             BOOST_CHECK_EQUAL(passedFunctionName, functionName);
-            returnValues.SetValue(0, TaskResult::TASK_RESULT_PASSED);
+            returnValues.SetValue(0, ITask::TaskResult::TASK_RESULT_PASSED);
     });
 
     // Set up the action and invoke it. Delayed load or immediate processing should not have any difference here.

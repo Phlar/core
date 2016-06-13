@@ -21,7 +21,7 @@ class Inverter : public base::InterfaceImpl<IInverter>, public impl::Decorator {
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
 
 } // namespace impl

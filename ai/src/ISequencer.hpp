@@ -10,7 +10,7 @@ namespace ai {
 
    
 //! \brief Basic sequencer-task which executes its child tasks sequentially until one succeeds. 
-//! In case of no child being attached, Evaluate() returns TaskResult::TASK_RESULT_PASSED.
+//! In case of no child being attached, Evaluate() returns ITask::TaskResult::TASK_RESULT_PASSED.
 class ISequencer : public virtual ITaskContainer {
 };
 typedef boost::intrusive_ptr<ISequencer> ISequencerPtr;

@@ -21,7 +21,7 @@ class Selector : public base::InterfaceImpl<ISelector>, public impl::TaskContain
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
 
 } // namespace impl

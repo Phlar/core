@@ -29,7 +29,7 @@ class ScriptCondition : public base::InterfaceImpl<IScriptCondition>, public imp
     protected:
 
         // Override the execute function from the Action class.
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
 typedef boost::intrusive_ptr<ScriptCondition> ScriptConditionPtr;
 

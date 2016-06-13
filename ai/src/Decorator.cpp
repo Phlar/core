@@ -24,12 +24,12 @@ ITaskPtr Decorator::GetDecoratedTask() const {
     return m_decoratedTask;
 }
 
-TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
+ITask::TaskResult Decorator::evaluateDecoratedTask(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
     
     if(!m_decoratedTask) {
 
         // Log this.
-        return TaskResult::TASK_RESULT_PASSED;
+        return ITask::TaskResult::TASK_RESULT_PASSED;
     }
 
     return m_decoratedTask->Evaluate(blackboard, yield);

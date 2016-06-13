@@ -11,7 +11,7 @@ namespace core {
 namespace ai {
 
 
-typedef boost::function<TaskResult(IBlackboardPtr)> ConditionFnc;
+typedef boost::function<ITask::TaskResult(IBlackboardPtr)> ConditionFnc;
 
 //! \brief 'Leaf' in a behavior tree where a condition is checked.
 //! On calling Evaluate() the condition returns its result - if set.

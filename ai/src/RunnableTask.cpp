@@ -27,13 +27,13 @@ void RunnableTask::setRunnableTaskFunction(const RunnableTaskFnc& runnableFuncti
     m_runnableFunction = runnableFunction;
 }
 
-TaskResult RunnableTask::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
+ITask::TaskResult RunnableTask::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
 
     if(m_runnableFunction) {
         return m_runnableFunction(blackboard);
     }
 
-    return TaskResult::TASK_RESULT_PASSED;
+    return ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
 } // namespace impl

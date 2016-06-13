@@ -97,51 +97,51 @@ BLACKBOARD_TYPE(ChoppedTreesLimit,   uint32_t,   BBChoppedTreesLimitID);
 
 
 // Condition function checking the lower population.
-TaskResult enoughTreesAvailable(IBlackboardPtr blackboard) {
+ITask::TaskResult enoughTreesAvailable(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
     const uint32_t populationLimit = support::getTypedValue<TreePopulationLimit::type>(blackboard, BBTreePopulationLimitID);
     const uint32_t availableTrees = static_cast<uint32_t>(support::getTypedValue<Forest::type>(blackboard, BBForestUID).size());
     
-    return (availableTrees < populationLimit) ? TaskResult::TASK_RESULT_FAILED: TaskResult::TASK_RESULT_PASSED;
+    return (availableTrees < populationLimit) ? ITask::TaskResult::TASK_RESULT_FAILED: ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
-TaskResult enoughTreesCollected(IBlackboardPtr blackboard) {
+ITask::TaskResult enoughTreesCollected(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
     const uint32_t choppedTreesLimit = support::getTypedValue<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);
     const uint32_t choppedTrees = static_cast<uint32_t>(support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size());
 
-    return (choppedTrees <= choppedTreesLimit) ? TaskResult::TASK_RESULT_FAILED: TaskResult::TASK_RESULT_PASSED;
+    return (choppedTrees <= choppedTreesLimit) ? ITask::TaskResult::TASK_RESULT_FAILED: ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
 // Action that selects a tree to chop.
-TaskResult selectTreeToChop(IBlackboardPtr blackboard) {
+ITask::TaskResult selectTreeToChop(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
     const TreeVector& forest = support::getTypedValue<Forest::type>(blackboard, BBForestUID);
     if(forest.empty()) {
-        return TaskResult::TASK_RESULT_FAILED;
+        return ITask::TaskResult::TASK_RESULT_FAILED;
     }
 
     std::uniform_int_distribution<> distribution(0, static_cast<int>(forest.size()) - 1);
     const size_t treeIndex = distribution(randomGenerator);
 
     blackboard->SetValue(support::createBlackBoardValue<TreeToChop>(static_cast<uint8_t>(treeIndex)));
-    return TaskResult::TASK_RESULT_PASSED;
+    return ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
 // Action that chops a tree.
-TaskResult chopTree(IBlackboardPtr blackboard) {
+ITask::TaskResult chopTree(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
     TreeVector& forest = support::getTypedValue<Forest::type>(blackboard, BBForestUID);
     if(forest.empty()) {
-        return TaskResult::TASK_RESULT_FAILED;
+        return ITask::TaskResult::TASK_RESULT_FAILED;
     }
 
     const uint8_t treeIndex = support::getTypedValue<TreeToChop::type>(blackboard, BBTreeToChopUID);
@@ -151,11 +151,11 @@ TaskResult chopTree(IBlackboardPtr blackboard) {
     TreeVector& warehouseTrees = support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID);
     warehouseTrees.push_back(treeToChop);
 
-    return TaskResult::TASK_RESULT_PASSED;
+    return ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
 // Action that plants a new tree.
-TaskResult plantTree(IBlackboardPtr blackboard) {
+ITask::TaskResult plantTree(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
@@ -167,7 +167,7 @@ TaskResult plantTree(IBlackboardPtr blackboard) {
 
     forest.push_back(newTree);
 
-    return TaskResult::TASK_RESULT_PASSED;
+    return ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
 } // namespace anonymous

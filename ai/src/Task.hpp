@@ -20,7 +20,7 @@ class Task : public base::InterfaceImpl<ITask> {
         //!@{
         //! Implementations of ITask interface
         base::UUID GetID() const override;
-        TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult Evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
         //!@}
 
     protected:
@@ -33,7 +33,7 @@ class Task : public base::InterfaceImpl<ITask> {
         virtual void preEvaluate(IBlackboardPtr blackboard) const;
         virtual void postEvaluate(IBlackboardPtr blackboard) const;
 
-        virtual TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const = 0;
+        virtual ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const = 0;
 
     private:
 

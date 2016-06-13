@@ -22,7 +22,7 @@ class Sequencer : public base::InterfaceImpl<ISequencer>, public impl::TaskConta
 
     protected:
 
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
 
 } // namespace impl

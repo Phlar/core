@@ -20,7 +20,7 @@ void Condition::SetCondition(const ConditionFnc& condition) {
     setRunnableTaskFunction(condition);
 }
 
-TaskResult Condition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
+ITask::TaskResult Condition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     return RunnableTask::evaluate(blackboard, yield);
 }

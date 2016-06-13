@@ -29,7 +29,7 @@ class Action : public base::InterfaceImpl<IAction>, public RunnableTask {
         //! \brief Returns result of the provided evaluation function.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
         //! evaluation function provided.
-        TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
+        ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 };
 
 } // namespace impl

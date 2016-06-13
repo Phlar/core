@@ -29,7 +29,7 @@ void ScriptCondition::SetScriptFile(const boost::filesystem::path& filePath, con
     setScriptFile(filePath, functionName, delayLoad);
 }
 
-TaskResult ScriptCondition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
+ITask::TaskResult ScriptCondition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
     return RunnableScriptTask::evaluate(blackboard, yield);
 }
