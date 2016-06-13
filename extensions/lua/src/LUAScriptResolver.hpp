@@ -56,6 +56,7 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         // functions (type / function registration) below get executed.
         ConverterFunctionsPtr m_converterFunctions;
 };
+typedef boost::intrusive_ptr<LUAScriptResolver> LUAScriptResolverPtr;
 
 } // namespace lua
 } // namespace scripting
