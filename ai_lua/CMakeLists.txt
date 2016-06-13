@@ -1,3 +1,4 @@
+include_directories(../ai/src)
 include_directories(../base/src)
 include_directories(../scripting/src)
 include_directories(../extensions/lua/src)
