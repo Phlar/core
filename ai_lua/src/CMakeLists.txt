@@ -6,7 +6,7 @@ message(STATUS "Found source files for library: " ${AILuaExt_Sources})
 
 include_directories(.)
 add_library(LibAILuaExt STATIC ${AILuaExt_Sources} ${AILuaExt_Headers})
-target_link_libraries(LibAILuaExt LibBase LibScriptingService LibAIService)
+target_link_libraries(LibAILuaExt LibBase LibScriptingService LibAIService LibLuaScripting)
 #set_target_properties(LibAILuaExt PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # LUA dependency
