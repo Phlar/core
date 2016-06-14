@@ -5,16 +5,16 @@
 #include "IScriptResolver.hpp"
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 namespace aw {
 namespace core {
 namespace scripting {
 
 
-static const base::UUID ID_SCRIPTING_SERVICE = boost::uuids::string_generator()("{237C7009-A671-4509-99E9-C9AC6C0BB78F}");
+static const base::UUID ID_SCRIPTING_SERVICE = base::utils::CreateUUIDFromString("{237C7009-A671-4509-99E9-C9AC6C0BB78F}");
 
 //! \brief Service that manages all possible scripting resolvers.
 //! When executing a script the service takes care about dispatching

@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include <windows.h>
+
 namespace aw {
 namespace core {
 namespace base {
@@ -43,6 +45,32 @@ boost::filesystem::path GetProcessDirectory() {
     return processDirectory;
 }
 
+base::UUID CreateUUIDFromString(const std::string& uuidString) {
+
+    auto buildErrorMessage = [&uuidString](const std::string& reason) -> std::string {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error creating UUID from string '" << uuidString << "'";
+        if(reason.empty()) {
+            errorMessage << ": Unknown reason.";
+        } else {
+            errorMessage << ": " << reason;
+        }
+        return errorMessage.str();
+    };
+
+    try {
+
+        return boost::uuids::string_generator()(uuidString.c_str());
+
+    } catch(const std::exception& e) {
+
+        throw std::runtime_error(buildErrorMessage(e.what()));
+    } catch( ... ) {
+
+        throw std::runtime_error(buildErrorMessage("Unknown exception caught."));
+    }
+}
 
 } // namespace utils
 } // namespace base

@@ -1,8 +1,12 @@
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include "UUID.hpp"
 
-#include <windows.h>
+#include <boost/filesystem.hpp>
+#include <boost/uuid/string_generator.hpp>
+
+#include <string>
+
 
 namespace aw {
 namespace core {
@@ -14,6 +18,10 @@ boost::filesystem::path GetProcessDirectory();
 
 //! \brief Look up the absolute path of the executable.
 boost::filesystem::path GetProcessFilePath();
+
+//! \brief Convenience creator for UUIDs from a string.
+//! Throws an exception in case of an invalid string prrovided.
+base::UUID CreateUUIDFromString(const std::string& uuidString);
 
 } // namespace utils
 } // namespace base

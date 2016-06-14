@@ -5,6 +5,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 #include "InterfaceImpl.hpp"
 #include "IBlackboard.hpp"
 
@@ -14,20 +15,19 @@
 
 #include <boost/assign.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 namespace aw {
 namespace core {
 namespace ai {
 namespace testing {
 
-const base::UUID UUIDTypeA = boost::uuids::string_generator()("{11111111-2222-3333-4444-555555555555}");
-const base::UUID UUIDTypeB = boost::uuids::string_generator()("{22222222-3333-4444-5555-666666666666}");
-const base::UUID UUIDTypeC = boost::uuids::string_generator()("{33333333-4444-5555-6666-777777777777}");
+const base::UUID UUIDTypeA = base::utils::CreateUUIDFromString("{11111111-2222-3333-4444-555555555555}");
+const base::UUID UUIDTypeB = base::utils::CreateUUIDFromString("{22222222-3333-4444-5555-666666666666}");
+const base::UUID UUIDTypeC = base::utils::CreateUUIDFromString("{33333333-4444-5555-6666-777777777777}");
 
-const base::UUID UUIDTaskA = boost::uuids::string_generator()("{AAAAAAAA-1111-2222-3333-444444444444}");
-const base::UUID UUIDTaskB = boost::uuids::string_generator()("{BBBBBBBB-1111-2222-3333-444444444444}");
-const base::UUID UUIDTaskC = boost::uuids::string_generator()("{CCCCCCCC-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskA = base::utils::CreateUUIDFromString("{AAAAAAAA-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskB = base::utils::CreateUUIDFromString("{BBBBBBBB-1111-2222-3333-444444444444}");
+const base::UUID UUIDTaskC = base::utils::CreateUUIDFromString("{CCCCCCCC-1111-2222-3333-444444444444}");
 
 
 

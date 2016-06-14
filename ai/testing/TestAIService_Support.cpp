@@ -5,6 +5,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 #include "InterfaceImpl.hpp"
 #include "IBlackboard.hpp"
 
@@ -14,7 +15,6 @@
 
 #include <boost/assign.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 #include <boost/shared_ptr.hpp>
 
 namespace aw {
@@ -23,9 +23,9 @@ namespace ai {
 namespace testing {
 
 
-extern const base::UUID UUIDSemanticTypeA = boost::uuids::string_generator()("{11111111-2222-3333-4444-555555555555}");
-extern const base::UUID UUIDSemanticTypeB = boost::uuids::string_generator()("{22222222-2222-3333-4444-555555555555}");
-extern const base::UUID UUIDSemanticTypeC = boost::uuids::string_generator()("{33333333-2222-3333-4444-555555555555}");
+extern const base::UUID UUIDSemanticTypeA = base::utils::CreateUUIDFromString("{11111111-2222-3333-4444-555555555555}");
+extern const base::UUID UUIDSemanticTypeB = base::utils::CreateUUIDFromString("{22222222-2222-3333-4444-555555555555}");
+extern const base::UUID UUIDSemanticTypeC = base::utils::CreateUUIDFromString("{33333333-2222-3333-4444-555555555555}");
 
 BLACKBOARD_TYPE(IntVectorValue, std::vector<int>, UUIDSemanticTypeA);
 BLACKBOARD_TYPE(StringValue,    std::string,      UUIDSemanticTypeB);

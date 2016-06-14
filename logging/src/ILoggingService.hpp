@@ -4,10 +4,10 @@
 #include "ILogger.hpp"
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 #include <string>
 
@@ -16,7 +16,7 @@ namespace core {
 namespace logging {
 
 
-static const base::UUID ID_LOGGING_SERVICE = boost::uuids::string_generator()("{81BAA624-EA55-4E98-A73D-4F8883103970}");
+static const base::UUID ID_LOGGING_SERVICE = base::utils::CreateUUIDFromString("{81BAA624-EA55-4E98-A73D-4F8883103970}");
 
 //! \brief Service storing all installed loggers and dispatches
 //! a log call to all of them in order of registration.

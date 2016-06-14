@@ -5,12 +5,12 @@
 
 #include "InterfaceImpl.hpp"
 #include "UUID.hpp"
+#include "Utils.hpp"
 
 #include "luabind/scope.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/type_index.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 
 namespace aw {
@@ -18,7 +18,7 @@ namespace core {
 namespace scripting {
 namespace lua {
 
-static const base::UUID ID_LUA_SCRIPT_RESOLVER = boost::uuids::string_generator()("{11C42A8B-BC7E-4B10-B193-350B4DB47DF3}");
+static const base::UUID ID_LUA_SCRIPT_RESOLVER = base::utils::CreateUUIDFromString("{11C42A8B-BC7E-4B10-B193-350B4DB47DF3}");
 
 class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
 

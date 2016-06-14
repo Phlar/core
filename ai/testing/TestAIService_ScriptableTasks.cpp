@@ -18,7 +18,6 @@
 #include "AIServiceFixture.hpp"
 
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 #include <turtle/mock.hpp>
 
@@ -205,7 +204,7 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
 
     // Register a mocked script resolver returning a mocked script context.
     MockScriptResolverPtr mockResolver = MockScriptResolverPtr(new MockScriptResolver());
-    MOCK_EXPECT(mockResolver->GetResolverID).returns(boost::uuids::string_generator()("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}"));
+    MOCK_EXPECT(mockResolver->GetResolverID).returns(base::utils::CreateUUIDFromString("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}"));
 
     MockScriptContextPtr mockContext = MockScriptContextPtr(new MockScriptContext());
     BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(mockResolver));

@@ -11,8 +11,6 @@
 #include "Inverter.hpp"
 #include "Repeater.hpp"
 
-#include <boost/uuid/string_generator.hpp>
-
 
 namespace aw {
 namespace core {

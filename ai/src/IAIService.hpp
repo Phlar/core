@@ -3,6 +3,7 @@
 #include "IService.hpp"
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 
 #include "AIFwdDeclarations.hpp"
 #include "IAction.hpp"
@@ -10,7 +11,6 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 
 namespace aw {
@@ -18,7 +18,7 @@ namespace core {
 namespace ai {
 
 
-static const base::UUID ID_AI_SERVICE = boost::uuids::string_generator()("{F9A33C54-0178-4D37-B12A-FA364C52D5F4}");
+static const base::UUID ID_AI_SERVICE = base::utils::CreateUUIDFromString("{F9A33C54-0178-4D37-B12A-FA364C52D5F4}");
 
 //! \brief Service providing all means accessing the AI subsystem.
 class IAIService : public virtual base::IService {

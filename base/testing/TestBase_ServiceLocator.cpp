@@ -2,11 +2,11 @@
 #define BOOST_TEST_MODULE "Test_ServiceLocator"
 
 #include "UUID.hpp"
+#include "Utils.hpp"
 #include "IService.hpp"
 #include "ServiceLocator.hpp"
 
 #include <boost/test/unit_test.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 
 namespace aw {
@@ -28,7 +28,7 @@ class DummyService : public base::InterfaceImpl<base::IService> {
         static const base::UUID serviceID;
 };
 
-const base::UUID DummyService::serviceID = boost::uuids::string_generator()("{11111111-2222-3333-4444-555555555555}");
+const base::UUID DummyService::serviceID = base::utils::CreateUUIDFromString("{11111111-2222-3333-4444-555555555555}\n");
 
 
 BOOST_AUTO_TEST_CASE(TestServiceLocatorLifetime) {
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(GetServices) {
 
     // Trying to retrieve an an unregistered service should throw.
     BOOST_CHECK_THROW(fetchedService = serviceLocator->GetService(
-        boost::uuids::string_generator()("{00000000-0000-0000-0000-000000000000}")),
+        base::utils::CreateUUIDFromString("{00000000-0000-0000-0000-000000000000}")),
         std::exception);
 }
 

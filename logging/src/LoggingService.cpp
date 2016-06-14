@@ -2,11 +2,12 @@
 
 #include "FileLogger.hpp"
 
+#include "Utils.hpp"
+
 #include <boost/assign.hpp>
 #include <boost/format.hpp>
 #include <boost/date_time.hpp>
 #include <boost/thread.hpp>
-#include <boost/uuid/string_generator.hpp>
 
 #include <sstream>
 
