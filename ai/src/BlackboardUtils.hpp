@@ -28,7 +28,7 @@ const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 
 template<typename T>
 boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
-    createBlackBoardValue(typename T::type defaultValue = T::type())
+createBlackBoardValue(typename T::type defaultValue = T::type())
 {
     return boost::intrusive_ptr<BlackboardValue<T::type> >
         (new BlackboardValue<T::type>(defaultValue, T::semanticID));
