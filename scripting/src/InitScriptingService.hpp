@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/shared_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 namespace aw {
 namespace core {
@@ -13,7 +14,10 @@ typedef boost::shared_ptr<ServiceLocator> ServiceLocatorPtr;
 
 namespace scripting {
 
-void RegisterService(base::ServiceLocatorPtr serviceLocator);
+class IScriptingService;
+typedef boost::intrusive_ptr<IScriptingService> IScriptingServicePtr;
+
+IScriptingServicePtr RegisterService(base::ServiceLocatorPtr serviceLocator);
 
 } // namespace scripting
 } // namespace core

@@ -8,13 +8,15 @@ namespace aw {
 namespace core {
 namespace ai {
 
-void RegisterService(base::ServiceLocatorPtr serviceLocator) {
+IAIServicePtr RegisterService(base::ServiceLocatorPtr serviceLocator) {
 
     if(!serviceLocator) {
         throw std::invalid_argument("Invalid service-locator to register AI service to.");
     }
 
+    IAIServicePtr aiService = IAIServicePtr(new AIService());
     serviceLocator->RegisterService(IAIServicePtr(new AIService()));
+    return aiService;
 }
 
 } // namespace ai
