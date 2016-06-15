@@ -19,7 +19,8 @@ MOCK_BASE_CLASS(MockScriptResolver, TestScriptResolver) {
 
         MOCK_METHOD(GetResolverID, 0);
         MOCK_METHOD(IsFileSupported, 1);
-        MOCK_METHOD(GetContext, 1);
+        MOCK_METHOD(GetContextFromFile, 1);
+        MOCK_METHOD(GetContextFromString, 1);
 };
 typedef boost::intrusive_ptr<MockScriptResolver> MockScriptResolverPtr;
 

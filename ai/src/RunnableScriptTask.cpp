@@ -43,7 +43,7 @@ void RunnableScriptTask::ScriptProperties::resolveScript() {
             throw std::runtime_error("Error casting abstract service to scripting-service.");
         }
 
-        m_scriptContext = scriptingService->GetContext(m_filePath);
+        m_scriptContext = scriptingService->GetContextFromFile(m_filePath);
         if(!m_scriptContext) {
             throw std::runtime_error("Invalid script context returned.");
         }

@@ -28,7 +28,7 @@ class ScriptingService : public base::InterfaceImpl<core::scripting::IScriptingS
         virtual base::UUID GetServiceID() const;
         virtual void AddResolver(IScriptResolverPtr resolver);
         virtual IScriptResolverPtr GetResolver(const base::UUID& resolverID) const;
-        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const;
+        virtual IScriptContextPtr GetContextFromFile(const boost::filesystem::path& scriptPath) const;
         //@}
 
     protected:

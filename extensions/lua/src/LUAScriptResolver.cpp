@@ -62,9 +62,54 @@ bool LUAScriptResolver::IsFileSupported(const boost::filesystem::path& scriptPat
     return (scriptPath.extension().string().c_str() == m_supportedFileExtension);
 }
 
-IScriptContextPtr LUAScriptResolver::GetContext(const boost::filesystem::path& scriptPath) {
+IScriptContextPtr LUAScriptResolver::GetContextFromFile(const boost::filesystem::path& filePath) {
 
-    return IScriptContextPtr(new LUAScriptContext(m_converterFunctions, scriptPath));
+    std::string scriptSource;
+
+    boost::system::error_code errorCode;
+    if(!boost::filesystem::exists(filePath, errorCode) || errorCode) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error while checking LUA script-file '"
+            << filePath.string() << "'";
+
+        if(errorCode) {
+            errorMessage << " (error code: " << errorCode << ")";
+        }
+        throw std::invalid_argument(errorMessage.str());
+    }
+
+    try {
+
+        std::ifstream file(filePath.string().c_str());
+        if(!file) {
+            throw std::runtime_error("Invalid file stream.");
+        }
+
+        std::stringstream strStream;
+        strStream << file.rdbuf();
+        scriptSource = strStream.str();
+
+    } catch(const std::exception& e) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Exception caught while reading LUA script-file '"
+            << filePath.string() << "': " << e.what();
+        throw std::runtime_error(errorMessage.str());
+
+    } catch(...) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Unknown exception caught while reading LUA script-file '" << filePath.string();
+        throw std::runtime_error(errorMessage.str());
+    }
+
+    return IScriptContextPtr(new LUAScriptContext(m_converterFunctions, scriptSource));
+}
+
+IScriptContextPtr LUAScriptResolver::GetContextFromString(const std::string& scriptSource) {
+
+    return IScriptContextPtr(new LUAScriptContext(m_converterFunctions, scriptSource));
 }
 
 void LUAScriptResolver::AddTypeRegistrationFunction(const TypeRegistrationFunction& registrationFunction) {

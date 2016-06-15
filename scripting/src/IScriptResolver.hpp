@@ -25,8 +25,11 @@ class IScriptResolver : public virtual base::IReferenceCounted {
         //! by this resolver / interpreter.
         virtual bool IsFileSupported(const boost::filesystem::path& scriptPath) = 0;
 
-        //! \brief Loads the script and returns a context for later execution.
-        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) = 0;
+        //! \brief Loads the script from the specified file and returns a context for later execution.
+        virtual IScriptContextPtr GetContextFromFile(const boost::filesystem::path& scriptPath) = 0;
+
+        // \brief Load a script from a string representation in memory.
+        virtual IScriptContextPtr GetContextFromString(const std::string& scriptSource) = 0;
 };
 typedef boost::intrusive_ptr<IScriptResolver> IScriptResolverPtr;
 

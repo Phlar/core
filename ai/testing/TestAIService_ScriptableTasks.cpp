@@ -65,7 +65,8 @@ MOCK_BASE_CLASS(MockScriptResolver, base::InterfaceImpl<scripting::IScriptResolv
 
         MOCK_METHOD(GetResolverID, 0);
         MOCK_METHOD(IsFileSupported, 1, bool(const boost::filesystem::path&));
-        MOCK_METHOD(GetContext, 1, scripting::IScriptContextPtr(const boost::filesystem::path&));
+        MOCK_METHOD(GetContextFromFile, 1, scripting::IScriptContextPtr(const boost::filesystem::path&));
+        MOCK_METHOD(GetContextFromString, 1, scripting::IScriptContextPtr(const std::string&));
 };
 typedef boost::intrusive_ptr<MockScriptResolver> MockScriptResolverPtr;
 
@@ -211,7 +212,7 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
     BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(mockResolver));
 
     MOCK_EXPECT(mockResolver->IsFileSupported).returns(true);
-    MOCK_EXPECT(mockResolver->GetContext).calls([&scriptFilePath, &mockContext](const boost::filesystem::path& passedScriptFilePath) {
+    MOCK_EXPECT(mockResolver->GetContextFromFile).calls([&scriptFilePath, &mockContext](const boost::filesystem::path& passedScriptFilePath) {
 
         BOOST_CHECK_EQUAL(passedScriptFilePath, scriptFilePath);
         return mockContext;

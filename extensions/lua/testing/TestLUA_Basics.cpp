@@ -128,7 +128,7 @@ struct LUATestFixture {
     IScriptContextPtr getCheckedContext(const boost::filesystem::path& scriptPath) {
 
         IScriptContextPtr ctx;
-        BOOST_REQUIRE_NO_THROW(ctx = luaResolver.GetContext(scriptPath));
+        BOOST_REQUIRE_NO_THROW(ctx = luaResolver.GetContextFromFile(scriptPath));
         BOOST_REQUIRE(ctx);
         return ctx;
     }
@@ -461,6 +461,29 @@ BOOST_FIXTURE_TEST_CASE(TestThrowingExceptionFromCppCallback, LUATestFixture) {
     BOOST_REQUIRE_THROW(ctx->ExecuteScript("FuncCallbackFunctionThrows", args, returnValues), std::runtime_error);
 }
 
+BOOST_FIXTURE_TEST_CASE(TestRunScriptFromStringSource, LUATestFixture) {
+
+    // Invoke a script just returning a simple string.
+    const std::string luaSource = "function FuncReturnString()\n"
+                                  "     return \"FooBar\""
+                                  "end";
+
+    IScriptContextPtr ctx;
+    BOOST_REQUIRE_NO_THROW(ctx = luaResolver.GetContextFromString(luaSource));
+    BOOST_REQUIRE(ctx);
+
+    ArgumentVector args;
+
+    // Register converter functions.
+    BOOST_REQUIRE_NO_THROW(luaResolver.RegisterFetchTypeFromLUAFunction(typeid(std::string), popFromLUAStack<std::string>));
+
+    // Check a sample string.
+    ReturnValuesHolder returnedString = ReturnValuesHolder::Create<std::string>();
+    BOOST_REQUIRE_NO_THROW(ctx->ExecuteScript("FuncReturnString", args, returnedString));
+    std::string resultString = "";
+    BOOST_REQUIRE_NO_THROW(resultString = returnedString.GetTypedValue<std::string>(0));
+    BOOST_CHECK_EQUAL(resultString, "FooBar");
+}
 } // namespace testing
 } // namespace lua
 } // namespace scripting
