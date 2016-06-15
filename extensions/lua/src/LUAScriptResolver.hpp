@@ -30,7 +30,8 @@ class LUAScriptResolver : public base::InterfaceImpl<IScriptResolver> {
         //! Implementations of IScriptResolver.
         virtual base::UUID GetResolverID() const;
         virtual bool IsFileSupported(const boost::filesystem::path& scriptPath);
-        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath);
+        virtual IScriptContextPtr GetContextFromFile(const boost::filesystem::path& scriptPath);
+        virtual IScriptContextPtr GetContextFromString(const std::string& scriptPath);
         //@}
 
         //! \brief Add function to register C++ types and functions 

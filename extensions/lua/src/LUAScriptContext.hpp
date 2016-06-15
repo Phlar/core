@@ -18,7 +18,7 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
 
     public:
         LUAScriptContext(ConverterFunctionsPtr converterFunctions,
-                         const boost::filesystem::path& scriptPath);
+                         const std::string& scriptSource);
         virtual ~LUAScriptContext();
 
         //@{
@@ -40,8 +40,8 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
         //! \brief Create a LUA state object and register all C++ types.
         void initializeLUAStateObject();
 
-        //! \brief Helper loading the script and catching possible syntax errors.
-        void loadScriptFile();
+        //! \brief Helper loading the source and catching possible syntax errors.
+        void loadScriptSource();
 
         //! \brief Helper that checks whether to call a specific function
         //! within the script or to execute the script as is without any arguments.
@@ -56,7 +56,7 @@ class LUAScriptContext : public base::InterfaceImpl<IScriptContext> {
         void fetchReturnValuesFromLUA(const ReturnValuesHolder& results);
 
         lua_State* m_luaState;
-        boost::filesystem::path m_scriptPath;
+        std::string m_scriptSource;
         ConverterFunctionsPtr m_converterFunctions;
         bool m_forceGCAfterScriptExecution;
         static const bool defaultForceGCAfterExecution;

@@ -94,9 +94,9 @@ BOOST_FIXTURE_TEST_CASE(TestContextRetrieval, ScriptingFixture) {
     ScopedFile scriptFile(scriptPath);
 
     MOCK_EXPECT(mockScriptResolver->IsFileSupported).once().returns(true);
-    MOCK_EXPECT(mockScriptResolver->GetContext).once().returns(MockScriptContextPtr(new MockScriptContext()));
+    MOCK_EXPECT(mockScriptResolver->GetContextFromFile).once().returns(MockScriptContextPtr(new MockScriptContext()));
     
-    IScriptContextPtr context = scriptingService.GetContext(scriptPath);
+    IScriptContextPtr context = scriptingService.GetContextFromFile(scriptPath);
     BOOST_CHECK(context);
 }
 
@@ -108,9 +108,9 @@ BOOST_FIXTURE_TEST_CASE(TestContextRetrievalNoValidResolverFound, ScriptingFixtu
     ScopedFile scriptFile(scriptPath);
 
     MOCK_EXPECT(mockScriptResolver->IsFileSupported).once().returns(false);
-    MOCK_EXPECT(mockScriptResolver->GetContext).never();
+    MOCK_EXPECT(mockScriptResolver->GetContextFromFile).never();
 
-    IScriptContextPtr context = scriptingService.GetContext(scriptPath);
+    IScriptContextPtr context = scriptingService.GetContextFromFile(scriptPath);
     BOOST_CHECK(!context);
 }
 
@@ -121,9 +121,9 @@ BOOST_FIXTURE_TEST_CASE(TestContextRetrievalFileNotExisting, ScriptingFixture) {
     const boost::filesystem::path scriptPath("SomeScriptFile.txt");
 
     MOCK_EXPECT(mockScriptResolver->IsFileSupported).never();
-    MOCK_EXPECT(mockScriptResolver->GetContext).never();
+    MOCK_EXPECT(mockScriptResolver->GetContextFromFile).never();
 
-    BOOST_CHECK_THROW(scriptingService.GetContext(scriptPath), std::invalid_argument);
+    BOOST_CHECK_THROW(scriptingService.GetContextFromFile(scriptPath), std::invalid_argument);
 }
 
 

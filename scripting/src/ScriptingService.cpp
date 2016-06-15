@@ -46,7 +46,7 @@ IScriptResolverPtr ScriptingService::GetResolver(const base::UUID& resolverID) c
     return findIter->second;
 }
 
-IScriptContextPtr ScriptingService::GetContext(const boost::filesystem::path& scriptPath) const {
+IScriptContextPtr ScriptingService::GetContextFromFile(const boost::filesystem::path& scriptPath) const {
 
     // Before asking resolvers first check the validity of the file.
     boost::system::error_code errorCode;
@@ -67,7 +67,7 @@ IScriptContextPtr ScriptingService::GetContext(const boost::filesystem::path& sc
     for(auto resolverEntry : m_resolvers) {
 
         if(resolverEntry.second->IsFileSupported(scriptPath)) {
-            return resolverEntry.second->GetContext(scriptPath);
+            return resolverEntry.second->GetContextFromFile(scriptPath);
         }
     }
     return IScriptContextPtr();

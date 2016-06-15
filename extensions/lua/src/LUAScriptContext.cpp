@@ -41,36 +41,20 @@ class LUAFunctionParameterVisitor : public boost::static_visitor<void> {
         lua_State* m_luaState;
 };
 
-
 } // namespace anonymous
 
 const bool LUAScriptContext::defaultForceGCAfterExecution = true;
 
 LUAScriptContext::LUAScriptContext(ConverterFunctionsPtr converterFunctions,
-                                   const boost::filesystem::path& scriptPath)
-: m_luaState(nullptr)
-, m_scriptPath(scriptPath)
+                                   const std::string& scriptSource)
+: m_scriptSource(scriptSource)
+, m_luaState(nullptr)
 , m_converterFunctions(converterFunctions)
 , m_forceGCAfterScriptExecution(defaultForceGCAfterExecution) {
 
     if(!m_converterFunctions) {
         throw std::invalid_argument("Error creating LUA-context, invalid converter functions provided.");
     }
-
-    // Todo: Duplicated somewhere else for sure!
-    boost::system::error_code errorCode;
-    if(!boost::filesystem::exists(scriptPath, errorCode) || errorCode) {
-
-        std::stringstream errorMessage;
-        errorMessage << "Error while checking for LUA script-file '"
-            << scriptPath.string() << "'";
-
-        if(errorCode) {
-            errorMessage << " (error code: " << errorCode << ")";
-        }
-        throw std::invalid_argument(errorMessage.str());
-    }
-
     initializeLUAStateObject();
 }
 
@@ -89,7 +73,7 @@ void LUAScriptContext::ExecuteScript(const std::string& functionName,
     luaL_openlibs(m_luaState);
 
     // Load and compile the script.
-    loadScriptFile();
+    loadScriptSource();
 
     // Though the file is loaded and compiled the global table entries
     // (function names, variables) are not known to LUA yet. This does
@@ -135,13 +119,13 @@ void LUAScriptContext::initializeLUAStateObject() {
     }
 }
 
-void LUAScriptContext::loadScriptFile() {
+void LUAScriptContext::loadScriptSource() {
 
-    if(luaL_loadfile(m_luaState, m_scriptPath.string().c_str())) {
+    if(luaL_loadstring(m_luaState, m_scriptSource.c_str())) {
 
         std::stringstream errorMessage;
-        errorMessage << "Error loading LUA script-file '"
-                     << m_scriptPath.string() << "': "
+        errorMessage << "Error loading LUA script-source'"
+                     << m_scriptSource << "': "
                      << lua_tostring(m_luaState, -1);
         lua_pop(m_luaState,1);
 
@@ -175,7 +159,7 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
                       << ") than before (" << stackSizeBefore << ") - possible stack corruption." << std::endl;
         } else if(elementsToPop == 0) {
             std::cout << "No need to clean LUA stack as its stack count (" << stackSizeNow 
-                      << ") was not changed during exectution." << std::endl;
+                      << ") was not changed during execution." << std::endl;
         } else {
 
             lua_pop(this_->m_luaState, elementsToPop);
@@ -211,8 +195,8 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
 
             std::stringstream errorMessage;
             errorMessage << "Error retrieving function '"
-                         << functionName << "' in file '"
-                         << m_scriptPath.string() << "'"
+                         << functionName << "' from source '"
+                         << m_scriptSource << "'"
                          << " (top of the stack type: "
                          << topType << ")";
 
@@ -236,7 +220,7 @@ void LUAScriptContext::executeScript(const std::string& functionName, const Argu
         } else {
             errorMessage << functionName << ")";
         }
-        errorMessage << " in file '" << m_scriptPath.string() 
+        errorMessage << " from source '" << m_scriptSource
                      << "' (error-code: " << result << ") "
                      << lua_tostring(m_luaState, -1);
         lua_pop(m_luaState,1);

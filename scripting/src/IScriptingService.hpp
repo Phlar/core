@@ -35,7 +35,7 @@ class IScriptingService : public virtual base::IService {
         virtual IScriptResolverPtr GetResolver(const base::UUID& resolverID) const = 0;
 
         //! \brief Tries to find a matching resolver.
-        virtual IScriptContextPtr GetContext(const boost::filesystem::path& scriptPath) const = 0;
+        virtual IScriptContextPtr GetContextFromFile(const boost::filesystem::path& scriptPath) const = 0;
 };
 typedef boost::intrusive_ptr<IScriptingService> IScriptingServicePtr;
 
