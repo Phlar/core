@@ -35,11 +35,13 @@ class IAIService : public virtual base::IService {
         virtual IActionPtr          createAction() const = 0;
         virtual IActionPtr          createAction(const ActionFnc& action) const = 0;
         virtual IScriptActionPtr    createScriptAction() const = 0;
-        virtual IScriptActionPtr    createScriptAction(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const = 0;
+        virtual IScriptActionPtr    createScriptActionFromFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const = 0;
+        virtual IScriptActionPtr    createScriptActionFromString(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) const = 0;
         virtual IConditionPtr       createCondition() const = 0;
         virtual IConditionPtr       createCondition(const ConditionFnc& condition) const = 0;
         virtual IScriptConditionPtr createScriptCondition() const = 0;
-        virtual IScriptConditionPtr createScriptCondition(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const = 0;
+        virtual IScriptConditionPtr createScriptConditionFromFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const = 0;
+        virtual IScriptConditionPtr createScriptConditionFromString(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) const = 0;
         virtual ISequencerPtr       createSequencer() const = 0;
         virtual ISelectorPtr        createSelector() const = 0;
         virtual IBlackboardPtr      createBlackboard() const = 0;

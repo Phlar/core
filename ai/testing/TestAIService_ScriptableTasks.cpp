@@ -129,7 +129,7 @@ struct TestFixture : public AIServiceFixture {
 BOOST_FIXTURE_TEST_CASE(ScriptTaskWithInvalidFileAtConstructionShouldThrow, TestFixture) {
 
     // Try to create a runnable script task by specifying the file to load at construction.
-    BOOST_CHECK_THROW(aiService->createScriptAction(invalidScriptFilePath, "foo", false), std::exception);
+    BOOST_CHECK_THROW(aiService->createScriptActionFromFile(invalidScriptFilePath, "foo", false), std::exception);
 
     // Set up a runnable script task by not defining to immediately load a file.
     IScriptActionPtr scriptAction = nullptr;
@@ -143,7 +143,7 @@ BOOST_FIXTURE_TEST_CASE(ScriptTaskWithDelayedInvalidFileShouldThrow, TestFixture
 
     // Try to create a runnable script task by specifying the file to load at construction.
     IScriptActionPtr scriptAction = nullptr;
-    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptAction(invalidScriptFilePath, "foo", true));
+    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptActionFromFile(invalidScriptFilePath, "foo", true));
     BOOST_REQUIRE(scriptAction);
     BOOST_REQUIRE_NO_THROW(behaviorTree->SetRoot(scriptAction));
 
@@ -185,7 +185,7 @@ BOOST_FIXTURE_TEST_CASE(MissingScriptResolverShouldThrow, TestFixture) {
 
     // Create a scripting-task.
     IScriptActionPtr scriptAction = nullptr;
-    BOOST_CHECK_THROW(scriptAction = aiService->createScriptAction(scriptFilePath, "foo", false), std::exception);
+    BOOST_CHECK_THROW(scriptAction = aiService->createScriptActionFromFile(scriptFilePath, "foo", false), std::exception);
 }
 
 BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
@@ -227,7 +227,7 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
 
     // Set up the action and invoke it. Delayed load or immediate processing should not have any difference here.
     IScriptActionPtr scriptAction = nullptr;
-    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptAction(scriptFilePath, functionName, true));
+    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptActionFromFile(scriptFilePath, functionName, true));
     BOOST_REQUIRE(scriptAction);
 
     BOOST_CHECK_NO_THROW(behaviorTree->SetRoot(scriptAction));
@@ -235,6 +235,57 @@ BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptContext, TestFixture) {
     BOOST_CHECK_NO_THROW(result = behaviorTree->ExecuteSync());
     BOOST_CHECK(result == BehaviorTreeState::STATE_FINISHED);
 }
+
+BOOST_FIXTURE_TEST_CASE(TestEmptyStringScriptShouldThrow, TestFixture) {
+
+    const std::string scriptSource = "";
+    const std::string functionName = "FooBar";
+    const base::UUID  resolverID = base::utils::CreateUUIDFromString("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}");
+
+    IScriptActionPtr scriptAction = nullptr;
+    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptAction());
+    BOOST_REQUIRE(scriptAction);
+
+    BOOST_CHECK_THROW(scriptAction->SetScriptString(scriptSource, resolverID, functionName, false), std::exception);
+}
+
+BOOST_FIXTURE_TEST_CASE(TestReturnOfValidScriptFromStringContext, TestFixture) {
+
+    const std::string scriptSource = "Some script content.";
+    const std::string functionName = "FooBar";
+    const base::UUID resolverID = base::utils::CreateUUIDFromString("{11111111-AAAA-BBBB-CCCC-DDDDDDDDDDDD}");
+
+    // Register a mocked script resolver returning a mocked script context.
+    MockScriptResolverPtr mockResolver = MockScriptResolverPtr(new MockScriptResolver());
+    MOCK_EXPECT(mockResolver->GetResolverID).returns(resolverID);
+
+    MockScriptContextPtr mockContext = MockScriptContextPtr(new MockScriptContext());
+    BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(mockResolver));
+
+    MOCK_EXPECT(mockResolver->GetContextFromString).calls([&scriptSource, &mockContext](const std::string& passedScriptSource) {
+
+        BOOST_CHECK_EQUAL(passedScriptSource, scriptSource);
+        return mockContext;
+    });
+
+    MOCK_EXPECT(mockContext->ExecuteScript).once().calls(
+        [&functionName](const std::string& passedFunctionName, const scripting::ArgumentVector&, const scripting::ReturnValuesHolder& returnValues) {
+
+            BOOST_CHECK_EQUAL(passedFunctionName, functionName);
+            returnValues.SetValue(0, ITask::TaskResult::TASK_RESULT_PASSED);
+    });
+
+    // Set up the action and invoke it.
+    IScriptActionPtr scriptAction = nullptr;
+    BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptActionFromString(scriptSource, resolverID, functionName, true));
+    BOOST_REQUIRE(scriptAction);
+
+    BOOST_CHECK_NO_THROW(behaviorTree->SetRoot(scriptAction));
+    BehaviorTreeState result = BehaviorTreeState::STATE_NOT_RUN;
+    BOOST_CHECK_NO_THROW(result = behaviorTree->ExecuteSync());
+    BOOST_CHECK(result == BehaviorTreeState::STATE_FINISHED);
+}
+
 
 } // namespace testing
 } // namespace ai

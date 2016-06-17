@@ -45,9 +45,18 @@ IScriptActionPtr AIService::createScriptAction() const {
     return IScriptActionPtr(new impl::ScriptAction());
 }
 
-IScriptActionPtr AIService::createScriptAction(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const {
+IScriptActionPtr AIService::createScriptActionFromFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const {
 
-    return IScriptActionPtr(new impl::ScriptAction(filePath, functionName, delayLoad));
+    IScriptActionPtr scriptAction(new impl::ScriptAction());
+    scriptAction->SetScriptFile(filePath, functionName, delayLoad);
+    return scriptAction;
+}
+
+IScriptActionPtr AIService::createScriptActionFromString(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) const {
+
+    IScriptActionPtr scriptAction(new impl::ScriptAction());
+    scriptAction->SetScriptString(scriptSource, resolverID, functionName, delayLoad);
+    return scriptAction;
 }
 
 IConditionPtr AIService::createCondition() const {
@@ -65,9 +74,18 @@ IScriptConditionPtr AIService::createScriptCondition() const {
     return IScriptConditionPtr(new impl::ScriptCondition());
 }
 
-IScriptConditionPtr AIService::createScriptCondition(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const {
+IScriptConditionPtr AIService::createScriptConditionFromFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) const {
 
-    return IScriptConditionPtr(new impl::ScriptCondition(filePath, functionName, delayLoad));
+    IScriptConditionPtr scriptCondition(new impl::ScriptCondition());
+    scriptCondition->SetScriptFile(filePath, functionName, delayLoad);
+    return scriptCondition;
+}
+
+IScriptConditionPtr AIService::createScriptConditionFromString(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) const {
+
+    IScriptConditionPtr scriptCondition(new impl::ScriptCondition());
+    scriptCondition->SetScriptString(scriptSource, resolverID, functionName, delayLoad);
+    return scriptCondition;
 }
 
 ISequencerPtr AIService::createSequencer() const {

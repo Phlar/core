@@ -17,16 +17,17 @@ ScriptAction::ScriptAction()
 : RunnableScriptTask(RunnableScriptTask::RunnableScriptTaskType::RUNNABLE_SCRIPT_TASK_ACTION) {
 }
 
-ScriptAction::ScriptAction(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad)
-: RunnableScriptTask(RunnableScriptTask::RunnableScriptTaskType::RUNNABLE_SCRIPT_TASK_ACTION, filePath, functionName, delayLoad) {
-}
- 
 ScriptAction::~ScriptAction() {
 }
 
 void ScriptAction::SetScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) {
 
-    setScriptFile(filePath, functionName, delayLoad);
+    setScriptFileSource(filePath, functionName, delayLoad);
+}
+
+void ScriptAction::SetScriptString(const std::string scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) {
+
+    setScriptStringSource(scriptSource, resolverID, functionName, delayLoad);
 }
 
 ITask::TaskResult ScriptAction::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {

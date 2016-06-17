@@ -17,17 +17,19 @@ ScriptCondition::ScriptCondition()
 : RunnableScriptTask(RunnableScriptTask::RunnableScriptTaskType::RUNNABLE_SCRIPT_TASK_CONDITION) {
 }
 
-ScriptCondition::ScriptCondition(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad)
-: RunnableScriptTask(RunnableScriptTask::RunnableScriptTaskType::RUNNABLE_SCRIPT_TASK_CONDITION, filePath, functionName, delayLoad) {
-}
-
 ScriptCondition::~ScriptCondition() {
 }
 
 void ScriptCondition::SetScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) {
 
-    setScriptFile(filePath, functionName, delayLoad);
+    setScriptFileSource(filePath, functionName, delayLoad);
 }
+
+void ScriptCondition::SetScriptString(const std::string scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) {
+
+    setScriptStringSource(scriptSource, resolverID, functionName, delayLoad);
+}
+
 
 ITask::TaskResult ScriptCondition::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const {
 
