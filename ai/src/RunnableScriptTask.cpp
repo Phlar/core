@@ -13,17 +13,41 @@ namespace ai {
 namespace impl {
 
 
-RunnableScriptTask::ScriptProperties::ScriptProperties(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad)
-: m_filePath(filePath)
-, m_functionName(functionName)
+RunnableScriptTask::ScriptProperties::ScriptProperties(const std::string& functionName, const std::string& scriptSource)
+: m_functionName(functionName)
+, m_scriptSource(scriptSource)
 , m_scriptContext(scripting::IScriptContextPtr()) {
+}
+
+RunnableScriptTask::ScriptProperties::~ScriptProperties() {
+}
+
+
+RunnableScriptTask::ScriptFileProperties::ScriptFileProperties(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad)
+: ScriptProperties(functionName)
+, m_filePath(filePath) {
 
     if(!delayLoad) {
         resolveScript();
     }
 }
 
-void RunnableScriptTask::ScriptProperties::resolveScript() {
+RunnableScriptTask::ScriptFileProperties::~ScriptFileProperties() {
+}
+
+void RunnableScriptTask::ScriptFileProperties::resolveScript() {
+
+    auto buildErrorMessage = [this](const std::string& reason) -> std::string {
+
+        std::stringstream errorMessage;
+
+        errorMessage << "Error resolving script from file:" << std::endl
+                     << buildPropertiesMessage();
+        if(!reason.empty()) {
+            errorMessage << std::endl << "Reason: " << reason;
+        }
+        return errorMessage.str();
+    };
 
     try {
 
@@ -50,39 +74,99 @@ void RunnableScriptTask::ScriptProperties::resolveScript() {
 
     } catch(const std::exception& e) {
 
-        std::stringstream errorMessage = buildErrorMessage(e.what());
-        throw std::runtime_error(errorMessage.str());
+        throw std::runtime_error(buildErrorMessage(e.what()));
 
     } catch( ... ) {
 
-        std::stringstream errorMessage = buildErrorMessage(std::string("Unknown exception caught."));
-        throw std::runtime_error(errorMessage.str());
+        throw std::runtime_error(buildErrorMessage("Unknown exception caught."));
     }
 }
 
-std::stringstream RunnableScriptTask::ScriptProperties::buildErrorMessage(const std::string& reason) const {
+std::string RunnableScriptTask::ScriptFileProperties::buildPropertiesMessage() {
 
-    std::stringstream errorMessage;
-    errorMessage << "Error resolving script file:" << std::endl
-                 << "\t\tfile: " << m_filePath << std::endl
-                 << "\t\tfunction: " << m_functionName;
-
-    if(!reason.empty()) {
-        errorMessage << std::endl << "\t\tReason: " << reason;
-    }
-    return errorMessage;
+    std::stringstream propertiesMesssage;
+    propertiesMesssage << "file: " << m_filePath << std::endl
+                       << "function: " << m_functionName << std::endl
+                       << "source: " << m_scriptSource;
+    return propertiesMesssage.str();
 }
+
+
+RunnableScriptTask::ScriptStringProperties::ScriptStringProperties(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad)
+: ScriptProperties(functionName, scriptSource)
+, m_resolverID(resolverID) {
+
+    if(!delayLoad) {
+        resolveScript();
+    }
+}
+
+RunnableScriptTask::ScriptStringProperties::~ScriptStringProperties() {
+}
+
+void RunnableScriptTask::ScriptStringProperties::resolveScript() {
+
+    auto buildErrorMessage = [this](const std::string& reason) -> std::string {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error resolving script from string:" << std::endl
+                     << buildPropertiesMessage();
+        if(!reason.empty()) {
+            errorMessage << std::endl << "Reason: " << reason;
+        }
+        return errorMessage.str();
+    };
+
+    try {
+
+        if(m_scriptSource.empty()) {
+
+            throw std::invalid_argument("Script must not be empty.");
+        }
+
+        // Retrieve the script resolver and the appropriate context.
+        base::IServicePtr service = base::ServiceLocator::Instance()->GetService(scripting::ID_SCRIPTING_SERVICE);
+        scripting::IScriptingServicePtr scriptingService = boost::dynamic_pointer_cast<scripting::IScriptingService>(service);
+        if(!scriptingService) {
+
+            throw std::runtime_error("Error casting abstract service to scripting-service.");
+        }
+
+        scripting::IScriptResolverPtr scriptResolver = scriptingService->GetResolver(m_resolverID);
+        if(!scriptResolver) {
+
+            throw std::runtime_error("Error retrieving matching script-resolver.");
+        }
+
+        m_scriptContext = scriptResolver->GetContextFromString(m_scriptSource);
+        if(!m_scriptContext) {
+            throw std::runtime_error("Invalid script context returned.");
+        }
+
+    } catch(const std::exception& e) {
+
+        throw std::runtime_error(buildErrorMessage(e.what()));
+
+    } catch( ... ) {
+
+        throw std::runtime_error(buildErrorMessage("Unknown exception caught."));
+    }
+}
+
+std::string RunnableScriptTask::ScriptStringProperties::buildPropertiesMessage() {
+
+    std::stringstream propertiesMesssage;
+    propertiesMesssage << "source: " << m_scriptSource << std::endl
+                       << "function: " << m_functionName << std::endl
+                       << "resolver id: " << m_resolverID;
+    return propertiesMesssage.str();
+};
+
 
 
 RunnableScriptTask::RunnableScriptTask(RunnableScriptTaskType runnableScriptTaskType)
 : m_runnableScriptTaskType(runnableScriptTaskType)
 , m_scriptProperties(nullptr) {
-}
-
-RunnableScriptTask::RunnableScriptTask(RunnableScriptTaskType runnableScriptTaskType, const boost::filesystem::path& filePath,
-                                       const std::string& functionName, bool delayLoad)
-: m_runnableScriptTaskType(runnableScriptTaskType)
-, m_scriptProperties(new ScriptProperties(filePath, functionName, delayLoad)) {
 }
 
 RunnableScriptTask::RunnableScriptTask()
@@ -93,6 +177,17 @@ RunnableScriptTask::~RunnableScriptTask() {
 }
 
 ITask::TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* /*yield*/) const {
+
+    auto buildErrorMessage = [this](const std::string& resaon) -> std::string {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error executing script:" << std::endl 
+                     << m_scriptProperties->buildPropertiesMessage();
+        if(!resaon.empty()) {
+            errorMessage << std::endl << "Reason: " << resaon;
+        }
+        return errorMessage.str();
+    };
 
     if(!m_scriptProperties) {
         throw std::runtime_error("Error executing script-task due to invalid script-properties.");
@@ -118,22 +213,32 @@ ITask::TaskResult RunnableScriptTask::evaluate(IBlackboardPtr blackboard, TaskCo
 
     } catch(const std::exception& e) {
 
-        throw std::runtime_error(m_scriptProperties->buildErrorMessage(e.what()).str());
+        throw std::runtime_error(buildErrorMessage(e.what()));
 
     } catch( ... ) {
 
-        throw std::runtime_error(m_scriptProperties->buildErrorMessage("Unknown exception caught.").str());
+        throw std::runtime_error(buildErrorMessage("Unknown exception caught."));
     }
 }
 
-void RunnableScriptTask::setScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) {
+void RunnableScriptTask::setScriptFileSource(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad) {
 
     //! \todo Clarify whether to gracefully shut down the previous script first...?
     if(m_scriptProperties) {
         //! \todo Log this!
     }
 
-    m_scriptProperties = std::unique_ptr<ScriptProperties>(new ScriptProperties(filePath, functionName, delayLoad));
+    m_scriptProperties = ScriptPropertiesPtr(new ScriptFileProperties(filePath, functionName, delayLoad));
+}
+
+void RunnableScriptTask::setScriptStringSource(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad) {
+
+    //! \todo Clarify whether to gracefully shut down the previous script first...?
+    if(m_scriptProperties) {
+        //! \todo Log this!
+    }
+
+    m_scriptProperties = ScriptPropertiesPtr(new ScriptStringProperties(scriptSource, resolverID, functionName, delayLoad));
 }
 
 } // namespace impl

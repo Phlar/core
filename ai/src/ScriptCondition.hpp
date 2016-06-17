@@ -17,13 +17,12 @@ class ScriptCondition : public base::InterfaceImpl<IScriptCondition>, public imp
     public:
 
         ScriptCondition();
-        ScriptCondition(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
-
         virtual ~ScriptCondition();
 
         //@{
         //! Implementations of IScriptAction.
         virtual void SetScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+        virtual void SetScriptString(const std::string scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad);
         //@}
 
     protected:

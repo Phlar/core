@@ -37,8 +37,6 @@ class RunnableScriptTask : public Task, public boost::noncopyable {
 
         // Enable construction only from classes down the inheritance chain.
         RunnableScriptTask(RunnableScriptTaskType runnableScriptTaskType);
-        RunnableScriptTask(RunnableScriptTaskType runnableScriptTaskType, const boost::filesystem::path& filePath,
-                           const std::string& functionName, bool delayLoad);
 
         //! \brief Returns result of the provided function to be run.
         //! \return Evaluation result. TASK_RESULT_PASSED in case of no 
@@ -46,32 +44,66 @@ class RunnableScriptTask : public Task, public boost::noncopyable {
         ITask::TaskResult evaluate(IBlackboardPtr blackboard, TaskCoroutinePullType* yield) const override;
 
         //! \brief Specify the file to load and the function to invoke upon execution.
-        void setScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+        void setScriptFileSource(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
 
+        //! \brief Specify the script's source coming from a plain string.
+        void setScriptStringSource(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad);
 
-        // Merely some storage of script specific properties.
-        struct ScriptProperties : public boost::noncopyable {
+        //@{
+        // Holders of specific script-properties. Either a script can be loaded from file or from a plain string source.
+        class ScriptProperties : public boost::noncopyable {
 
             public:
+                ScriptProperties(const std::string& functionName, const std::string& scriptSource = "");
+                virtual ~ScriptProperties();
 
-                ScriptProperties(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+                virtual void resolveScript() = 0;
+                virtual std::string buildPropertiesMessage() = 0;
 
-                // Actually load the script - i.e. validate its location and retrieve the appropriate context.
-                void resolveScript();
-
-                // Helper building a error message.
-                std::stringstream buildErrorMessage(const std::string& reason) const;
-
-                const boost::filesystem::path m_filePath;
                 const std::string m_functionName;
+                std::string m_scriptSource;
                 scripting::IScriptContextPtr m_scriptContext;
 
-            protected:
+            private:
                 ScriptProperties();
         };
+        typedef std::unique_ptr<ScriptProperties> ScriptPropertiesPtr;
+
+        class ScriptFileProperties : public ScriptProperties {
+
+            public:
+                ScriptFileProperties(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+                virtual ~ScriptFileProperties();
+
+                virtual void resolveScript();
+                virtual std::string buildPropertiesMessage();
+
+            protected:
+                const boost::filesystem::path m_filePath;
+
+            private:
+                ScriptFileProperties();
+        };
+
+        class ScriptStringProperties : public ScriptProperties {
+
+            public:
+                ScriptStringProperties(const std::string& scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad);
+                virtual ~ScriptStringProperties();
+
+                virtual void resolveScript();
+                virtual std::string buildPropertiesMessage();
+
+            protected:
+                const base::UUID m_resolverID;
+
+            private:
+                ScriptStringProperties();
+        };
+        //@}
 
         // Holder of the actual script's properties.
-        std::unique_ptr<ScriptProperties> m_scriptProperties;
+        ScriptPropertiesPtr m_scriptProperties;
         
         // Type of action does this node represents.
         const RunnableScriptTaskType m_runnableScriptTaskType;
@@ -87,4 +119,4 @@ typedef boost::intrusive_ptr<RunnableScriptTask> RunnableScriptTaskPtr;
 } // namespace impl
 } // namespace ai
 } // namespace core
-} // namespace aw
+} // namespace 

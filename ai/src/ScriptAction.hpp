@@ -17,12 +17,13 @@ class ScriptAction : public base::InterfaceImpl<IScriptAction>, public impl::Run
     public:
 
         ScriptAction();
-        ScriptAction(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
         virtual ~ScriptAction();
 
         //@{
         //! Implementations of IScriptAction.
         virtual void SetScriptFile(const boost::filesystem::path& filePath, const std::string& functionName, bool delayLoad);
+
+        virtual void SetScriptString(const std::string scriptSource, const base::UUID& resolverID, const std::string& functionName, bool delayLoad);
         //@}
 
     protected:
