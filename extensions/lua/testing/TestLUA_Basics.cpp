@@ -484,6 +484,7 @@ BOOST_FIXTURE_TEST_CASE(TestRunScriptFromStringSource, LUATestFixture) {
     BOOST_REQUIRE_NO_THROW(resultString = returnedString.GetTypedValue<std::string>(0));
     BOOST_CHECK_EQUAL(resultString, "FooBar");
 }
+
 } // namespace testing
 } // namespace lua
 } // namespace scripting

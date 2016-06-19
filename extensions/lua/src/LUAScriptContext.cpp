@@ -70,7 +70,21 @@ void LUAScriptContext::ExecuteScript(const std::string& functionName,
                                      const ReturnValuesHolder& results) {
 
     // Todo: Check whether these cannot be loaded from within LUA code.
-    luaL_openlibs(m_luaState);
+    // Todo: As soon as a script gets executed via an ITask luaL_openlibs()
+    // will crash the application immediately. It boils down the crash is
+    // caused by calling luaopen_package(). Still no clue, what causes it though,
+    // but for now enabling LUA loading packages is disabled...
+    // luaL_openlibs(m_luaState);
+    luaopen_base(m_luaState);
+    luaopen_coroutine(m_luaState);
+    luaopen_table(m_luaState);
+    luaopen_io(m_luaState);
+    luaopen_os(m_luaState);
+    luaopen_string(m_luaState);
+    luaopen_bit32(m_luaState);
+    luaopen_math(m_luaState);
+    luaopen_debug(m_luaState);
+
 
     // Load and compile the script.
     loadScriptSource();
