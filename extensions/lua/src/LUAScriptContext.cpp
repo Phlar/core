@@ -11,6 +11,7 @@
 
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
+#include <boost/unordered_set.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -266,20 +267,28 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
     }
 
     if(m_converterFunctions->toLUAConversionFunctions.empty()) {
-        throw std::runtime_error("No argument conversion function registered.");
+
+        std::stringstream errorMessage;
+
+        errorMessage << "Error pushing arguments to LUA - no argument conversion function(s) registered, following types are provided:" << std::endl;
+        boost::unordered_set<std::string> uniqueTypes;
+        std::transform(params.cbegin(), params.cend(), std::inserter(uniqueTypes, uniqueTypes.end()), [](const Argument& param){return param.type().name();});
+        std::for_each(uniqueTypes.cbegin(), uniqueTypes.cend(), [&errorMessage](const std::string& argType) {errorMessage << argType << std::endl;});
+
+        throw std::runtime_error(std::runtime_error(errorMessage.str()));
     }
 
     unsigned short paramIndex = 0;
     auto errorMessagePrefixCreator = [&paramIndex]() -> std::stringstream {
         std::stringstream errorMessage;
-        errorMessage << "Error converting parameter at position " 
+        errorMessage << "Error converting input-parameter at position " 
                      << paramIndex << ".";
         return errorMessage;
     };
 
     for(const Argument& arg : params) {
 
-        ++paramIndex;
+        // ++paramIndex;
 
         const auto findIter = m_converterFunctions->toLUAConversionFunctions.find(arg.type().hash_code());
 
@@ -288,7 +297,7 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
             // Bad, as there's no functor registered that is capable of pushing the type
             // to the LUA stack.
             std::stringstream errorMessage = errorMessagePrefixCreator();
-            errorMessage << " - " << ". No LUA converter registered for the provided type.";
+            errorMessage << " - " << "No LUA converter registered for the provided type '" << arg.type().name() << "'";
             throw std::runtime_error(errorMessage.str());
         }
 
@@ -312,6 +321,8 @@ void LUAScriptContext::pushArguments(const ArgumentVector& params) {
             errorMessage << " Converter found for type [" << arg.type().name() << "] however conversion function returned an error";
             throw std::runtime_error(errorMessage.str());
         }
+
+        ++paramIndex;
     }
 }
 
@@ -322,12 +333,21 @@ void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& result
     }
 
     if(m_converterFunctions->fromLUAConversionFunctions.empty()) {
-        throw std::runtime_error("No argument conversion function registered.");
+
+        boost::unordered_set<std::string> uniqueTypes;
+        for(uint8_t index = 0; index < results.Size(); ++index) {
+            uniqueTypes.insert(results.GetValueTypeName(index));
+        }
+
+        std::stringstream errorMessage;
+        errorMessage << "Error fetching results from LUA - no conversion function(s) registered, following types are provided:" << std::endl;
+        std::for_each(uniqueTypes.cbegin(), uniqueTypes.cend(), [&errorMessage](const std::string& argType) {errorMessage << argType << std::endl;});
+        throw std::runtime_error(errorMessage.str());
     }
 
     auto errorMessagePrefixCreator = [](uint8_t index) -> std::stringstream {
         std::stringstream errorMessage;
-        errorMessage << "Error converting value at position " 
+        errorMessage << "Error converting output-value at position " 
                      << index << ".";
         return errorMessage;
     };
@@ -343,8 +363,7 @@ void LUAScriptContext::fetchReturnValuesFromLUA(const ReturnValuesHolder& result
             // Bad, as there's no functor registered that is capable of poping the type
             // from the LUA stack.
             std::stringstream errorMessage;
-            errorMessage << "No LUA converter registered for the provided type ["
-                         << retVal.type().name() << "].";
+            errorMessage << "No LUA converter registered for the provided type '" << retVal.type().name() << "'.";
             throw std::runtime_error(errorMessage.str());
         }
 

@@ -114,6 +114,12 @@ class ReturnValuesHolder {
             return *val;
         }
 
+        std::string GetValueTypeName(uint8_t index) const {
+
+            verifyIndex(index);
+            return m_returnValues[index]->type().name();
+        }
+
         uint8_t Size() const {
 
             return static_cast<uint8_t>(m_returnValues.size());

@@ -3,6 +3,8 @@
 #include "Blackboard.hpp"
 #include "Task.hpp"
 
+#include <iostream>
+
 #include <boost/bind.hpp>
 
 
@@ -59,13 +61,15 @@ BehaviorTreeState BehaviorTree::ExecuteAsync() {
         (*m_coroutineHandler)();
         m_state = (*m_coroutineHandler) ? BehaviorTreeState::STATE_RUNNING : BehaviorTreeState::STATE_FINISHED;
 
-    } catch(const std::exception& /*e*/) {
+    } catch(const std::exception& e) {
 
         //! \todo Log me!
+        std::cout << "Exception caught while executing behavior-tree asynchronously: " << e.what() << std::endl;
         m_state = BehaviorTreeState::STATE_FAILED;
     } catch(...) {
 
         //! \todo Same here!
+        std::cout << "Unknown exception caught while executing behavior-tree asynchronously: " << std::endl;
         m_state = BehaviorTreeState::STATE_FAILED;
     }
 
@@ -93,13 +97,15 @@ BehaviorTreeState BehaviorTree::ExecuteSync() {
             m_root->Evaluate(m_blackboard, nullptr);
             m_state = BehaviorTreeState::STATE_FINISHED;
 
-        } catch(const std::exception& /*e*/) {
+        } catch(const std::exception& e) {
 
             //! \todo Log me...
+            std::cout << "Exception caught while executing behavior-tree synchronously: " << e.what() << std::endl;
             m_state = BehaviorTreeState::STATE_FAILED;
         } catch( ... ) {
 
             // ...and me as well!
+            std::cout << "Unknown exception caught while executing behavior-tree synchronously." << std::endl;
             m_state = BehaviorTreeState::STATE_FAILED;
         }
     } else {
