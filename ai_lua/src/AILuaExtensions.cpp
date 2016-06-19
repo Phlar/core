@@ -58,7 +58,7 @@ void exposeAIInterfacesToLUA() {
     });
 
     luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
-        return luabind::class_<aw::core::ai::ITask>("ITask").enum_("TaskResult")
+        return luabind::class_<aw::core::ai::ITask>("ITask").enum_("constants")
             [
                 luabind::value("TASK_RESULT_FAILED", aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED),
                 luabind::value("TASK_RESULT_PASSED", aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED),

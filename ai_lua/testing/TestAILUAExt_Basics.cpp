@@ -8,6 +8,8 @@
 #include "LUAScriptResolver.hpp"
 #include "InitScriptingService.hpp"
 
+#include "LUATypeHelpers.hpp"
+
 #include "IAIService.hpp"
 #include "IBehaviorTree.hpp"
 #include "IBlackboard.hpp"
@@ -44,6 +46,11 @@ struct TestFixture {
         BOOST_REQUIRE_NO_THROW(luaResolver = scripting::lua::LUAScriptResolverPtr(new scripting::lua::LUAScriptResolver()));
         BOOST_REQUIRE(luaResolver);
         BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(luaResolver));
+
+        luaResolver->RegisterPushTypeToLUAFunction(typeid(aw::core::ai::IBlackboardPtr), scripting::lua::pushToLUAStack<aw::core::ai::IBlackboardPtr>);
+
+        luaResolver->RegisterFetchTypeFromLUAFunction(typeid(aw::core::ai::ITask::TaskResult), )
+
 
         // Set up a tree having one action only.
         BOOST_REQUIRE_NO_THROW(behaviorTree = aiService->createBehaviorTree());
@@ -85,13 +92,15 @@ BOOST_FIXTURE_TEST_CASE(TestSample, TestFixture) {
     BOOST_CHECK_NO_THROW(exposeAIInterfacesToLUA());
 
     const std::string scriptSource = "function FirstTest()"
+                                     "    print(\"Returning from LUA-script...\" .. ITask.TASK_RESULT_RUNNING)"
+                                     "    return (ITask.TASK_RESULT_RUNNING)"
                                      "end";
 
     BOOST_CHECK_NO_THROW(scriptAction->SetScriptString(scriptSource, scripting::lua::ID_LUA_SCRIPT_RESOLVER, "FirstTest", false));
 
     BehaviorTreeState executionState = BehaviorTreeState::STATE_NOT_RUN;
     BOOST_CHECK_NO_THROW(executionState = behaviorTree->ExecuteSync());
-    BOOST_CHECK(executionState == BehaviorTreeState::STATE_FAILED);
+    BOOST_CHECK(executionState == BehaviorTreeState::STATE_FINISHED);
 }
 
 
