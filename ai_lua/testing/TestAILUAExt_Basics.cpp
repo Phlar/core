@@ -17,8 +17,12 @@
 #include "IScriptingService.hpp"
 #include "InitAIService.hpp"
 
+#include <boost/any.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+
 
 namespace aw {
 namespace core {
@@ -48,25 +52,12 @@ struct TestFixture {
         BOOST_REQUIRE_NO_THROW(scriptingService->AddResolver(luaResolver));
 
         luaResolver->RegisterPushTypeToLUAFunction(typeid(aw::core::ai::IBlackboardPtr), scripting::lua::pushToLUAStack<aw::core::ai::IBlackboardPtr>);
-
-        luaResolver->RegisterFetchTypeFromLUAFunction(typeid(aw::core::ai::ITask::TaskResult), )
-
-
-        // Set up a tree having one action only.
-        BOOST_REQUIRE_NO_THROW(behaviorTree = aiService->createBehaviorTree());
-        BOOST_REQUIRE(behaviorTree);
-        BOOST_REQUIRE_NO_THROW(scriptAction = aiService->createScriptAction());
-        BOOST_REQUIRE(scriptAction);
-        BOOST_REQUIRE_NO_THROW(behaviorTree->SetRoot(scriptAction));
     }
 
     base::ServiceLocatorPtr serviceLocator;
 
     IAIServicePtr aiService;
     scripting::IScriptingServicePtr scriptingService;
-
-    IBehaviorTreePtr behaviorTree;
-    IScriptActionPtr scriptAction;
 };
 
 BOOST_AUTO_TEST_CASE(TestNoScriptingServiceShouldThrow) {
@@ -87,20 +78,25 @@ BOOST_AUTO_TEST_CASE(TestNoScriptResolverShouldThrow) {
     BOOST_CHECK_THROW(exposeAIInterfacesToLUA(), std::exception);
 }
 
-BOOST_FIXTURE_TEST_CASE(TestSample, TestFixture) {
+BOOST_FIXTURE_TEST_CASE(TestResturnTaskResultFromLUAScript, TestFixture) {
 
     BOOST_CHECK_NO_THROW(exposeAIInterfacesToLUA());
 
-    const std::string scriptSource = "function FirstTest()"
-                                     "    print(\"Returning from LUA-script...\" .. ITask.TASK_RESULT_RUNNING)"
-                                     "    return (ITask.TASK_RESULT_RUNNING)"
+    const std::string scriptSource = "function testFunction()"
+                                     "    print(\"Returning from LUA-script...\" .. ITask.TASK_RESULT_PASSED)"
+                                     "    return (ITask.TASK_RESULT_PASSED)"
                                      "end";
 
-    BOOST_CHECK_NO_THROW(scriptAction->SetScriptString(scriptSource, scripting::lua::ID_LUA_SCRIPT_RESOLVER, "FirstTest", false));
+    IBlackboardPtr blackboard = aiService->createBlackboard();
 
-    BehaviorTreeState executionState = BehaviorTreeState::STATE_NOT_RUN;
-    BOOST_CHECK_NO_THROW(executionState = behaviorTree->ExecuteSync());
-    BOOST_CHECK(executionState == BehaviorTreeState::STATE_FINISHED);
+    IScriptActionPtr scriptAction;
+    BOOST_CHECK_NO_THROW(scriptAction = aiService->createScriptActionFromString(
+                         scriptSource, scripting::lua::ID_LUA_SCRIPT_RESOLVER, "testFunction", false));
+    BOOST_REQUIRE(scriptAction);
+
+    aw::core::ai::ITask::TaskResult result = aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED;
+    BOOST_CHECK_NO_THROW(result = scriptAction->Evaluate(blackboard, nullptr));
+    BOOST_CHECK(result == aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED);
 }
 
 

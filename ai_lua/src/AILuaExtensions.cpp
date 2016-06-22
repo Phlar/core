@@ -6,6 +6,7 @@
 #include "IScriptResolver.hpp"
 
 #include "LUAScriptResolver.hpp"
+#include "LUATypeHelpers.hpp"
 
 #include "IBlackboard.hpp"
 #include "IBlackboardValue.hpp"
@@ -15,6 +16,7 @@
 #include "UUID.hpp"
 #include "Utils.hpp"
 
+#include <boost/any.hpp>
 #include <boost/intrusive_ptr.hpp>
 
 #include <luabind/luabind.hpp>
@@ -23,6 +25,51 @@ namespace aw {
 namespace core {
 namespace ai {
 namespace lua {
+
+namespace {
+
+boost::any convertInt16ToTaskResult(lua_State* luaState, const aw::core::scripting::lua::FetchFromLUAFunction& getIntFromLUA) {
+
+    try {
+
+        const boost::any intValue = getIntFromLUA(luaState);
+        const int16_t* intResult = boost::any_cast<int16_t>(&intValue);
+        if(!intResult) {
+            throw("Error casting to int16_t.");
+        }
+
+        // Prefer an explicit switch / case instead of static_cast because of coming addition to the enum.
+        switch(*intResult) {
+            case aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED: {
+                return aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED;
+            }
+            case aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED: {
+                return aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED;
+            }
+            case aw::core::ai::ITask::TaskResult::TASK_RESULT_RUNNING: {
+                return aw::core::ai::ITask::TaskResult::TASK_RESULT_RUNNING;
+            }
+            default: {
+                std::stringstream errorMessage;
+                errorMessage << "No matching enum found in ITask::TaskResult for " << *intResult;
+                throw std::runtime_error(errorMessage.str());
+            }
+        }
+    } catch(const std::exception& e) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Exception caught while fetching / converting to ITask::TaskResult:" << e.what();
+        throw(std::runtime_error(errorMessage.str()));
+
+    } catch(...) {
+
+        throw(std::runtime_error("Unknown exception caught while fetching / converting to ITask::TaskResult."));
+    }
+}
+
+
+
+} // namespace anonymous
 
 
 void exposeAIInterfacesToLUA() {
@@ -46,7 +93,7 @@ void exposeAIInterfacesToLUA() {
 
     std::string currentlyExposedItem;
 
-    // ...register functors exposing all relevant interfaces:
+    // Register all relevant types that should be usable from LUA scripts.
     luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
         return luabind::def("createBlackBoardValue_uint8", &aw::core::ai::support::createBlackBoardValue<uint8_t>),
                luabind::def("createBlackBoardValue_uint16", &aw::core::ai::support::createBlackBoardValue<uint16_t>),
@@ -68,61 +115,22 @@ void exposeAIInterfacesToLUA() {
 
 
 
+    // Register certain "not out of the box" conversion helpers.
 
-    // IBlackboardValuePtr
-    // base::UUID
-    // AIService
-    luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
-        return luabind::class_<aw::core::ai::IBlackboardValue, aw::core::ai::IBlackboardValuePtr>("IBlackboardValuePtr")
-            .def("GetTypeID", &aw::core::ai::IBlackboardValue::GetTypeID)
-            .def("GetID", &aw::core::ai::IBlackboardValue::GetID);
-    });
-
-    luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
-        return luabind::class_<aw::core::ai::IBlackboard, aw::core::ai::IBlackboardPtr>("IBlackboardPtr")
-            .def("SetValue", &aw::core::ai::IBlackboard::SetValue)
-            .def("GetValue", &aw::core::ai::IBlackboard::GetValue);
-    });
-
-
-
-    /*
-    auto registerClass = []() -> luabind::scope {
-        return luabind::class_<aw::core::ai::IBlackboard, aw::core::ai::IBlackboardPtr>("IMemberFunctionHelperTestClass")
-            .def("MemberFunction", &IMemberFunctionHelperTestClass::MemberFunction)
-            .def("GetReferenceCount", &IMemberFunctionHelperTestClass::GetReferenceCount)
-            .def("MemberFunctionThrows", &IMemberFunctionHelperTestClass::MemberFunctionThrows);
-    };
-    */
-    /*
-    auto regFnc = []() -> luabind::scope {
-
-        return luabind::class_<aw::core::ai::ITask>("ITask").enum_("TaskResult")
-                [
-                    luabind::value("TASK_RESULT_FAILED", aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED),
-                    luabind::value("TASK_RESULT_PASSED", aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED),
-                    luabind::value("TASK_RESULT_RUNNING", aw::core::ai::ITask::TaskResult::TASK_RESULT_RUNNING)
-                ];
-    };
-    */
-
-
-
-
-
-
-
-
-    //! \brief Returns all values matching by type-ID.
-    // virtual IBlackboardValuePtr GetValue(const base::UUID& semanticTypeID) const = 0;
-
-
-
-
-
-
-
-
+    // Mapping back from an int to an enum.When registering the actual
+    // "pop" function another function gets injected to be
+    // executed afterwards performing the actual mapping from int - enum.
+    luaScriptResolver->RegisterFetchTypeFromLUAFunction(
+        typeid(aw::core::ai::ITask::TaskResult),
+        [](lua_State* state) {
+            return convertInt16ToTaskResult(
+                state,
+                [](lua_State* state) {
+                    return aw::core::scripting::lua::popFromLUAStack<int16_t>(state);
+                }
+            );
+        }
+    );
 }
 
 
