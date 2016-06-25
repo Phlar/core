@@ -16,6 +16,7 @@
 #include "IScriptAction.hpp"
 #include "IScriptingService.hpp"
 #include "InitAIService.hpp"
+#include "BlackboardUtils.hpp"
 
 #include <boost/any.hpp>
 #include <boost/test/unit_test.hpp>
@@ -82,7 +83,7 @@ BOOST_FIXTURE_TEST_CASE(TestResturnTaskResultFromLUAScript, TestFixture) {
 
     BOOST_CHECK_NO_THROW(exposeAIInterfacesToLUA());
 
-    const std::string scriptSource = "function testFunction()"
+    const std::string scriptSource = "function testFunction(blackboard)"
                                      "    print(\"Returning from LUA-script...\" .. ITask.TASK_RESULT_PASSED)"
                                      "    return (ITask.TASK_RESULT_PASSED)"
                                      "end";
@@ -99,6 +100,35 @@ BOOST_FIXTURE_TEST_CASE(TestResturnTaskResultFromLUAScript, TestFixture) {
     BOOST_CHECK(result == aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED);
 }
 
+BOOST_FIXTURE_TEST_CASE(TestCreateBlackboardParameterInLUAScript, TestFixture) {
+
+    BOOST_CHECK_NO_THROW(exposeAIInterfacesToLUA());
+
+    const std::string scriptSource = "function testFunction(blackboard)"
+                                     "    myUUID = createUUIDFromString(\"{11111111-2222-3333-4444-555555555555}\")"
+                                     "    myValue = createBlackBoardValue_string(myUUID, \"Value created in LUA.\")"
+                                     "    blackboard:SetValue(myValue)"
+                                     "    return (ITask.TASK_RESULT_PASSED)"
+                                     "end";
+
+    IBlackboardPtr blackboard = aiService->createBlackboard();
+
+    IScriptActionPtr scriptAction;
+    BOOST_CHECK_NO_THROW(scriptAction = aiService->createScriptActionFromString(
+                         scriptSource, scripting::lua::ID_LUA_SCRIPT_RESOLVER, "testFunction", false));
+    BOOST_REQUIRE(scriptAction);
+
+    aw::core::ai::ITask::TaskResult result = aw::core::ai::ITask::TaskResult::TASK_RESULT_FAILED;
+    BOOST_CHECK_NO_THROW(result = scriptAction->Evaluate(blackboard, nullptr));
+    BOOST_CHECK(result == aw::core::ai::ITask::TaskResult::TASK_RESULT_PASSED);
+
+    std::string blackboardString;
+    IBlackboardValuePtr blackboardValue;
+    BOOST_CHECK_NO_THROW(blackboardString = aw::core::ai::support::getTypedValue<std::string>(
+        blackboard,
+        aw::core::base::utils::CreateUUIDFromString("{11111111-2222-3333-4444-555555555555}")));
+    BOOST_CHECK_EQUAL(blackboardString, "Value created in LUA.");
+}
 
 
 } // namespace testing

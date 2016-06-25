@@ -41,14 +41,7 @@ createBlackBoardValue(const base::UUID& semanticID, typename T val = T())
 }
 
 
-IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
-
-    if(!blackboard) {
-        throw std::invalid_argument("Invalid blackboard to read value from.");
-    }
-
-    return blackboard->GetValue(semanticID);
-}
+IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const base::UUID& semanticID);
 
 template<typename T>
 T& castBlackboardValueToType(IBlackboardValuePtr blackBoardValue) {
@@ -80,13 +73,13 @@ T& getTypedValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
 }
 
 // Convenience blackboard-value creator functions for 'base' types.
-IBlackboardValuePtr createBlackBoardValue_uint8(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<uint8_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_uint16(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<uint16_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_uint32(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<uint32_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_int8(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<int8_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_int16(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<int16_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_int32(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<int32_t>(semanticID); }
-IBlackboardValuePtr createBlackBoardValue_string(const aw::core::base::UUID& semanticID) { return createBlackBoardValue<std::string>(semanticID); }
+IBlackboardValuePtr createBlackBoardValue_uint8(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_uint16(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_uint32(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_int8(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_int16(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_int32(const aw::core::base::UUID& semanticID);
+IBlackboardValuePtr createBlackBoardValue_string(const aw::core::base::UUID& semanticID, const std::string& value);
 
 } // namespace support
 } // namespace ai

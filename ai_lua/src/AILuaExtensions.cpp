@@ -67,8 +67,6 @@ boost::any convertInt16ToTaskResult(lua_State* luaState, const aw::core::scripti
     }
 }
 
-
-
 } // namespace anonymous
 
 
@@ -101,7 +99,8 @@ void exposeAIInterfacesToLUA() {
                luabind::def("createBlackBoardValue_int8", &aw::core::ai::support::createBlackBoardValue<int8_t>),
                luabind::def("createBlackBoardValue_int16", &aw::core::ai::support::createBlackBoardValue<int16_t>),
                luabind::def("createBlackBoardValue_int32", &aw::core::ai::support::createBlackBoardValue<int32_t>),
-               luabind::def("createBlackBoardValue_string", &aw::core::ai::support::createBlackBoardValue<std::string>);
+               luabind::def("createBlackBoardValue_string", &aw::core::ai::support::createBlackBoardValue_string),
+               luabind::def("createUUIDFromString", &aw::core::base::utils::CreateUUIDFromString);
     });
 
     luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
@@ -113,6 +112,21 @@ void exposeAIInterfacesToLUA() {
             ];
     });
 
+    luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
+        return luabind::class_<aw::core::ai::IBlackboardValue, aw::core::ai::IBlackboardValuePtr>("IBlackboardValue")
+            .def("GetTypeID", &aw::core::ai::IBlackboardValue::GetTypeID)
+            .def("GetID", &aw::core::ai::IBlackboardValue::GetID);
+    });
+
+    luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
+        return luabind::class_<aw::core::ai::IBlackboard, aw::core::ai::IBlackboardPtr>("IBlackboard")
+            .def("SetValue", &aw::core::ai::IBlackboard::SetValue)
+            .def("GetValue", &aw::core::ai::IBlackboard::GetValue);
+    });
+
+    luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
+        return luabind::class_<aw::core::base::UUID>("UUID");
+    });
 
 
     // Register certain "not out of the box" conversion helpers.

@@ -54,6 +54,11 @@ class BlackboardValue : public base::InterfaceImpl<IBlackboardValue> {
             return m_value;
         }
 
+        void operator=(const T& rhs) {
+
+            m_value = rhs;
+        }
+
     protected:
         
         virtual ~BlackboardValue() {
