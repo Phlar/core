@@ -46,7 +46,7 @@ struct AIBlackboardFixture : public AIServiceFixture {
 BOOST_AUTO_TEST_CASE(TestBlackboardValueCreation) {
 
     IBlackboardValuePtr bbVal;
-    BOOST_CHECK_NO_THROW(bbVal = support::createBlackBoardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
+    BOOST_CHECK_NO_THROW(bbVal = support::createBlackboardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
     BOOST_REQUIRE(bbVal);
 
     BOOST_CHECK(bbVal->GetID() != UUIDNil);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(TestBlackboardValueCreation) {
 BOOST_AUTO_TEST_CASE(TestBlackboardValueRetrieval) {
 
     IBlackboardValuePtr bbVal;
-    BOOST_CHECK_NO_THROW(bbVal = support::createBlackBoardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
+    BOOST_CHECK_NO_THROW(bbVal = support::createBlackboardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
     BOOST_REQUIRE(bbVal);
     
     std::string rawStringVal;
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(TestBlackboardValueRetrieval) {
 BOOST_AUTO_TEST_CASE(TestBlackboardValueAssignment) {
 
     IBlackboardValuePtr bbVal;
-    BOOST_CHECK_NO_THROW(bbVal = support::createBlackBoardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
+    BOOST_CHECK_NO_THROW(bbVal = support::createBlackboardValue<std::string>(UUIDSemanticTypeA, "FooBar"));
     BOOST_REQUIRE(bbVal);
 
     std::string rawVal;
@@ -93,11 +93,11 @@ BOOST_FIXTURE_TEST_CASE(TestRetrievingValues, AIBlackboardFixture)
 {
     // Set up the values to store.
     std::vector<int> initialIntValues(1, 42);
-    IBlackboardValuePtr intValues = support::createBlackBoardValue<IntVectorValue>(initialIntValues);
+    IBlackboardValuePtr intValues = support::createBlackboardValue<IntVectorValue>(initialIntValues);
     blackboard->SetValue(intValues);
 
     std::string initialStringValue("foo");
-    IBlackboardValuePtr stringValues = support::createBlackBoardValue<StringValue>(initialStringValue);
+    IBlackboardValuePtr stringValues = support::createBlackboardValue<StringValue>(initialStringValue);
     BOOST_CHECK_EQUAL(support::getRawValue<std::string>(stringValues), "foo");
     blackboard->SetValue(stringValues);
 

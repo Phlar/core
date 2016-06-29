@@ -29,14 +29,14 @@ const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 
 // Creator utilizing the type-trait above.
 template<typename T>
-IBlackboardValuePtr createBlackBoardValue(typename T::type val = T::type())
+IBlackboardValuePtr createBlackboardValue(typename T::type val = T::type())
 {
-    return createBlackBoardValue<T::type>(T::semanticID, T::type(val));
+    return createBlackboardValue<T::type>(T::semanticID, T::type(val));
 }
 
 // Plain creator function.
 template<typename T>
-IBlackboardValuePtr createBlackBoardValue(const base::UUID& semanticID, typename T val = T())
+IBlackboardValuePtr createBlackboardValue(const base::UUID& semanticID, typename T val = T())
 {
     return boost::intrusive_ptr<BlackboardValue<T> >
         (new BlackboardValue<T>(semanticID, val));
@@ -81,15 +81,6 @@ T getRawValueFromBlackboard(IBlackboardPtr blackboard, const base::UUID& semanti
 
     return getRawValue<T>(blackBoardValue);
 }
-
-// Convenience blackboard-value creator functions for 'base' types.
-IBlackboardValuePtr createBlackBoardValue_uint8(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_uint16(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_uint32(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_int8(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_int16(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_int32(const aw::core::base::UUID& semanticID);
-IBlackboardValuePtr createBlackBoardValue_string(const aw::core::base::UUID& semanticID, const std::string& value);
 
 } // namespace support
 } // namespace ai

@@ -131,7 +131,7 @@ ITask::TaskResult selectTreeToChop(IBlackboardPtr blackboard) {
     std::uniform_int_distribution<> distribution(0, static_cast<int>(forest.size()) - 1);
     const size_t treeIndex = distribution(randomGenerator);
 
-    blackboard->SetValue(support::createBlackBoardValue<TreeToChop>(static_cast<uint8_t>(treeIndex)));
+    blackboard->SetValue(support::createBlackboardValue<TreeToChop>(static_cast<uint8_t>(treeIndex)));
     return ITask::TaskResult::TASK_RESULT_PASSED;
 }
 
@@ -201,10 +201,10 @@ BOOST_FIXTURE_TEST_CASE(SampleApplication, AIServiceFixture) {
     sequencer2->AddTask(chopTreeAction);
 
     
-    blackboard->SetValue(support::createBlackBoardValue<TreePopulationLimit>(5));
-    blackboard->SetValue(support::createBlackBoardValue<ChoppedTreesLimit>(5));
-    blackboard->SetValue(support::createBlackBoardValue<Forest>());
-    blackboard->SetValue(support::createBlackBoardValue<TreesInWarehouse>());
+    blackboard->SetValue(support::createBlackboardValue<TreePopulationLimit>(5));
+    blackboard->SetValue(support::createBlackboardValue<ChoppedTreesLimit>(5));
+    blackboard->SetValue(support::createBlackboardValue<Forest>());
+    blackboard->SetValue(support::createBlackboardValue<TreesInWarehouse>());
 
     size_t collectedTrees = support::getRawValueFromBlackboard<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size();
     const uint32_t choppedTreesLimit = support::getRawValueFromBlackboard<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);

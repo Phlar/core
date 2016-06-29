@@ -93,13 +93,14 @@ void exposeAIInterfacesToLUA() {
 
     // Register all relevant types that should be usable from LUA scripts.
     luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
-        return luabind::def("createBlackBoardValue_uint8", &aw::core::ai::support::createBlackBoardValue<uint8_t>),
-               luabind::def("createBlackBoardValue_uint16", &aw::core::ai::support::createBlackBoardValue<uint16_t>),
-               luabind::def("createBlackBoardValue_uint32", &aw::core::ai::support::createBlackBoardValue<uint32_t>),
-               luabind::def("createBlackBoardValue_int8", &aw::core::ai::support::createBlackBoardValue<int8_t>),
-               luabind::def("createBlackBoardValue_int16", &aw::core::ai::support::createBlackBoardValue<int16_t>),
-               luabind::def("createBlackBoardValue_int32", &aw::core::ai::support::createBlackBoardValue<int32_t>),
-               luabind::def("createBlackBoardValue_string", &aw::core::ai::support::createBlackBoardValue_string),
+        return luabind::def("createBlackboardValue_uint8", &aw::core::ai::support::createBlackboardValue<uint8_t>),
+               luabind::def("createBlackboardValue_uint16", &aw::core::ai::support::createBlackboardValue<uint16_t>),
+               luabind::def("createBlackboardValue_uint32", &aw::core::ai::support::createBlackboardValue<uint32_t>),
+               luabind::def("createBlackboardValue_int8", &aw::core::ai::support::createBlackboardValue<int8_t>),
+               luabind::def("createBlackboardValue_int16", &aw::core::ai::support::createBlackboardValue<int16_t>),
+               luabind::def("createBlackboardValue_int32", &aw::core::ai::support::createBlackboardValue<int32_t>),
+               luabind::def("createBlackboardValue_float", &aw::core::ai::support::createBlackboardValue<float>),
+               luabind::def("createBlackboardValue_string", &aw::core::ai::support::createBlackboardValue<std::string>),
                luabind::def("createUUIDFromString", &aw::core::base::utils::CreateUUIDFromString);
     });
 
