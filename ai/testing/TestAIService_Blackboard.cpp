@@ -36,15 +36,15 @@ class BlackboardTestValue : public support::BlackboardValue<int> {
     public:
 
         BlackboardTestValue(int value, const base::UUID& typeID)
-        : support::BlackboardValue<int>(value, typeID) {
+        : support::BlackboardValue<int>(typeID, value) {
         }
 
         ~BlackboardTestValue() {
         }
 
-        void SetTypeID(const base::UUID& typeID) {
+        void SetTypeID(const base::UUID& semanticTypeID) {
 
-            m_typeID = typeID;
+            m_semanticTypeID = semanticTypeID;
         }
 
         void SetID(const base::UUID& id) {

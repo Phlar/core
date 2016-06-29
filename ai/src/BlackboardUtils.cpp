@@ -9,7 +9,7 @@ namespace core {
 namespace ai {
 namespace support {
 
-IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
+IBlackboardValuePtr getValueFromBlackboard(IBlackboardPtr blackboard, const base::UUID& semanticID) {
 
     if(!blackboard) {
         throw std::invalid_argument("Invalid blackboard to read value from.");

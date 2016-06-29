@@ -9,13 +9,15 @@
 
 #include <boost/intrusive_ptr.hpp>
 
+#include <sstream>
+
 
 namespace aw {
 namespace core {
 namespace ai {
 namespace support {
 
-
+// BlackboardValue support functions.
 template<typename T, const base::UUID& SID>
 struct SemanticTypeTrait {
     typedef T type;
@@ -25,6 +27,7 @@ struct SemanticTypeTrait {
 template<typename T, const base::UUID& SID>
 const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 
+// Creator utilizing the type-trait above.
 template<typename T>
 boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
 createBlackBoardValue(typename T::type val = T::type())
@@ -32,33 +35,42 @@ createBlackBoardValue(typename T::type val = T::type())
     return createBlackBoardValue<T::type>(T::semanticID, val);
 }
 
+// Plain creator function.
 template<typename T>
 boost::intrusive_ptr<support::BlackboardValue<typename T>>
 createBlackBoardValue(const base::UUID& semanticID, typename T val = T())
 {
     return boost::intrusive_ptr<BlackboardValue<T> >
-        (new BlackboardValue<T>(val, semanticID));
+        (new BlackboardValue<T>(semanticID, val));
 }
 
-
-IBlackboardValuePtr getValue(IBlackboardPtr blackboard, const base::UUID& semanticID);
-
+// Retrieve the raw type from the blackboard-value.
 template<typename T>
-T& castBlackboardValueToType(IBlackboardValuePtr blackBoardValue) {
+T getRawValue(IBlackboardValuePtr blackBoardValue) {
 
     if(!blackBoardValue) {
         throw std::invalid_argument("Invalid blackboard-value to retrieve value from.");
     }
 
-    auto castedValue = boost::dynamic_pointer_cast<BlackboardValue<T>>(blackBoardValue);
-    if(!castedValue) {
-        throw std::logic_error("Cannot cast blackboard value to target type.");
+    boost::any anyVal = blackBoardValue->GetValue();
+    const T* ptrVal = boost::any_cast<T>(&anyVal);
+    if(!ptrVal) {
+
+        std::stringstream errorMessage;
+        errorMessage << "Error fetching 'raw' blackboard-value, cast failed from '"
+            << anyVal.type().name() << "' to '"
+            << typeid(T).name() << "'";
+        throw std::runtime_error(errorMessage.str());
     }
-    return castedValue->GetValue();
+    return *ptrVal;
 }
 
+// Blackboard support functions.
+
+IBlackboardValuePtr getValueFromBlackboard(IBlackboardPtr blackboard, const base::UUID& semanticID);
+
 template<typename T>
-T& getTypedValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
+T getRawValueFromBlackboard(IBlackboardPtr blackboard, const base::UUID& semanticID) {
 
     if(!blackboard) {
         throw std::invalid_argument("Invalid blackboard to read value from.");
@@ -69,7 +81,7 @@ T& getTypedValue(IBlackboardPtr blackboard, const base::UUID& semanticID) {
         throw std::logic_error("No value listed on black-board matching the semantic type-ID.");
     }
 
-    return castBlackboardValueToType<T>(blackBoardValue);
+    return getRawValue<T>(blackBoardValue);
 }
 
 // Convenience blackboard-value creator functions for 'base' types.

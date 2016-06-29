@@ -114,7 +114,7 @@ void exposeAIInterfacesToLUA() {
 
     luaScriptResolver->AddTypeRegistrationFunction([]() -> luabind::scope {
         return luabind::class_<aw::core::ai::IBlackboardValue, aw::core::ai::IBlackboardValuePtr>("IBlackboardValue")
-            .def("GetTypeID", &aw::core::ai::IBlackboardValue::GetTypeID)
+            .def("GetSemanticTypeID", &aw::core::ai::IBlackboardValue::GetSemanticTypeID)
             .def("GetID", &aw::core::ai::IBlackboardValue::GetID);
     });
 

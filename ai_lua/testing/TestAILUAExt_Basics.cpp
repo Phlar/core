@@ -124,7 +124,7 @@ BOOST_FIXTURE_TEST_CASE(TestCreateBlackboardParameterInLUAScript, TestFixture) {
 
     std::string blackboardString;
     IBlackboardValuePtr blackboardValue;
-    BOOST_CHECK_NO_THROW(blackboardString = aw::core::ai::support::getTypedValue<std::string>(
+    BOOST_CHECK_NO_THROW(blackboardString = aw::core::ai::support::getRawValueFromBlackboard<std::string>(
         blackboard,
         aw::core::base::utils::CreateUUIDFromString("{11111111-2222-3333-4444-555555555555}")));
     BOOST_CHECK_EQUAL(blackboardString, "Value created in LUA.");

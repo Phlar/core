@@ -22,7 +22,7 @@ void Blackboard::SetValue(IBlackboardValuePtr value) {
         throw std::invalid_argument("Empty value cannot be added to blackboard.");
     }
 
-    if(value->GetTypeID().is_nil()) {
+    if(value->GetSemanticTypeID().is_nil()) {
         throw std::invalid_argument("Value having invalid type-ID cannot be added to blackboard");
     }
 
@@ -30,7 +30,7 @@ void Blackboard::SetValue(IBlackboardValuePtr value) {
         throw std::invalid_argument("Value having invalid ID cannot be added to blackboard");
     }
 
-    m_valueMap[value->GetTypeID()] = value;
+    m_valueMap[value->GetSemanticTypeID()] = value;
 }
 
 IBlackboardValuePtr Blackboard::GetValue(const base::UUID& semanticID) const {

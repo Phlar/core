@@ -102,8 +102,8 @@ ITask::TaskResult enoughTreesAvailable(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
-    const uint32_t populationLimit = support::getTypedValue<TreePopulationLimit::type>(blackboard, BBTreePopulationLimitID);
-    const uint32_t availableTrees = static_cast<uint32_t>(support::getTypedValue<Forest::type>(blackboard, BBForestUID).size());
+    const uint32_t populationLimit = support::getRawValueFromBlackboard<TreePopulationLimit::type>(blackboard, BBTreePopulationLimitID);
+    const uint32_t availableTrees = static_cast<uint32_t>(support::getRawValueFromBlackboard<Forest::type>(blackboard, BBForestUID).size());
     
     return (availableTrees < populationLimit) ? ITask::TaskResult::TASK_RESULT_FAILED: ITask::TaskResult::TASK_RESULT_PASSED;
 }
@@ -112,8 +112,8 @@ ITask::TaskResult enoughTreesCollected(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
-    const uint32_t choppedTreesLimit = support::getTypedValue<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);
-    const uint32_t choppedTrees = static_cast<uint32_t>(support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size());
+    const uint32_t choppedTreesLimit = support::getRawValueFromBlackboard<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);
+    const uint32_t choppedTrees = static_cast<uint32_t>(support::getRawValueFromBlackboard<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size());
 
     return (choppedTrees <= choppedTreesLimit) ? ITask::TaskResult::TASK_RESULT_FAILED: ITask::TaskResult::TASK_RESULT_PASSED;
 }
@@ -123,7 +123,7 @@ ITask::TaskResult selectTreeToChop(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
-    const TreeVector& forest = support::getTypedValue<Forest::type>(blackboard, BBForestUID);
+    const TreeVector& forest = support::getRawValueFromBlackboard<Forest::type>(blackboard, BBForestUID);
     if(forest.empty()) {
         return ITask::TaskResult::TASK_RESULT_FAILED;
     }
@@ -140,17 +140,22 @@ ITask::TaskResult chopTree(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
-    TreeVector& forest = support::getTypedValue<Forest::type>(blackboard, BBForestUID);
+    IBlackboardValuePtr bbForest = support::getValueFromBlackboard(blackboard, BBForestUID);
+    TreeVector forest = support::getRawValue<Forest::type>(bbForest);
     if(forest.empty()) {
         return ITask::TaskResult::TASK_RESULT_FAILED;
     }
 
-    const uint8_t treeIndex = support::getTypedValue<TreeToChop::type>(blackboard, BBTreeToChopUID);
+    const uint8_t treeIndex = support::getRawValueFromBlackboard<TreeToChop::type>(blackboard, BBTreeToChopUID);
     TreePtr treeToChop = forest.at(treeIndex);
     forest.erase(forest.begin() + treeIndex);
+    bbForest->AssignValue(forest);
 
-    TreeVector& warehouseTrees = support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID);
+
+    IBlackboardValuePtr bbWarehouse = support::getValueFromBlackboard(blackboard, BBTreesInWarehouseUID);
+    TreeVector warehouseTrees = support::getRawValue<TreesInWarehouse::type>(bbWarehouse);
     warehouseTrees.push_back(treeToChop);
+    bbWarehouse->AssignValue(warehouseTrees);
 
     return ITask::TaskResult::TASK_RESULT_PASSED;
 }
@@ -160,13 +165,15 @@ ITask::TaskResult plantTree(IBlackboardPtr blackboard) {
 
     LOG_METHOD
 
-    TreeVector& forest = support::getTypedValue<Forest::type>(blackboard, BBForestUID);
+    IBlackboardValuePtr bbForest = support::getValueFromBlackboard(blackboard, BBForestUID);
+    TreeVector forest = support::getRawValue<Forest::type>(bbForest);
 
     std::uniform_real_distribution<> distribution(-10.0, 10.0);
     TreePtr newTree = Tree::create(Position(static_cast<float>(distribution(randomGenerator)),
                                             static_cast<float>(distribution(randomGenerator))));
 
     forest.push_back(newTree);
+    bbForest->AssignValue(forest);
 
     return ITask::TaskResult::TASK_RESULT_PASSED;
 }
@@ -199,15 +206,15 @@ BOOST_FIXTURE_TEST_CASE(SampleApplication, AIServiceFixture) {
     blackboard->SetValue(support::createBlackBoardValue<Forest>());
     blackboard->SetValue(support::createBlackBoardValue<TreesInWarehouse>());
 
-    size_t collectedTrees = support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size();
-    const uint32_t choppedTreesLimit = support::getTypedValue<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);
+    size_t collectedTrees = support::getRawValueFromBlackboard<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size();
+    const uint32_t choppedTreesLimit = support::getRawValueFromBlackboard<ChoppedTreesLimit::type>(blackboard, BBChoppedTreesLimitID);
 
     // Todo: Refactor out into decorators.
     do {
         sequencer1->Evaluate(blackboard);
-        collectedTrees = support::getTypedValue<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size();
+        collectedTrees = support::getRawValueFromBlackboard<TreesInWarehouse::type>(blackboard, BBTreesInWarehouseUID).size();
 
-        std::cout << "Forest currently has " << support::getTypedValue<Forest::type>(blackboard, BBForestUID).size() << " trees." << std::endl;
+        std::cout << "Forest currently has " << support::getRawValueFromBlackboard<Forest::type>(blackboard, BBForestUID).size() << " trees." << std::endl;
         std::cout << "Currently chopped trees " << collectedTrees << "/" << choppedTreesLimit << std::endl;
     } while(collectedTrees < choppedTreesLimit);
 }

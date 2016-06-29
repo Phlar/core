@@ -17,7 +17,7 @@ namespace ai {
 //! \brief Storage container in order to exchange data
 //! while processing the tree. Data is stored in a 
 //! key / value store where key = UUID returned via
-//! IBlackboardValue::GetTypeID() and a collecction
+//! IBlackboardValue::GetSemanticTypeID() and a collecction
 //! of IBlackboardValues. Within a container of a certain type
 //! the values must be unique by ID. However across containers
 //! IDs of values need not be unique.
