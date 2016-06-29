@@ -93,11 +93,11 @@ BOOST_FIXTURE_TEST_CASE(TestRetrievingValues, AIBlackboardFixture)
 {
     // Set up the values to store.
     std::vector<int> initialIntValues(1, 42);
-    IntVectorValuePtr intValues = support::createBlackBoardValue<IntVectorValue>(initialIntValues);
+    IBlackboardValuePtr intValues = support::createBlackBoardValue<IntVectorValue>(initialIntValues);
     blackboard->SetValue(intValues);
 
     std::string initialStringValue("foo");
-    StringValuePtr stringValues = support::createBlackBoardValue<StringValue>(initialStringValue);
+    IBlackboardValuePtr stringValues = support::createBlackBoardValue<StringValue>(initialStringValue);
     BOOST_CHECK_EQUAL(support::getRawValue<std::string>(stringValues), "foo");
     blackboard->SetValue(stringValues);
 

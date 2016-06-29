@@ -29,16 +29,14 @@ const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 
 // Creator utilizing the type-trait above.
 template<typename T>
-boost::intrusive_ptr<support::BlackboardValue<typename T::type>>
-createBlackBoardValue(typename T::type val = T::type())
+IBlackboardValuePtr createBlackBoardValue(typename T::type val = T::type())
 {
     return createBlackBoardValue<T::type>(T::semanticID, val);
 }
 
 // Plain creator function.
 template<typename T>
-boost::intrusive_ptr<support::BlackboardValue<typename T>>
-createBlackBoardValue(const base::UUID& semanticID, typename T val = T())
+IBlackboardValuePtr createBlackBoardValue(const base::UUID& semanticID, typename T val = T())
 {
     return boost::intrusive_ptr<BlackboardValue<T> >
         (new BlackboardValue<T>(semanticID, val));
