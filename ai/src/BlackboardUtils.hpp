@@ -31,7 +31,7 @@ const base::UUID SemanticTypeTrait<T, SID>::semanticID = SID;
 template<typename T>
 IBlackboardValuePtr createBlackBoardValue(typename T::type val = T::type())
 {
-    return createBlackBoardValue<T::type>(T::semanticID, val);
+    return createBlackBoardValue<T::type>(T::semanticID, T::type(val));
 }
 
 // Plain creator function.
