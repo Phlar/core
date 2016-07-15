@@ -32,12 +32,18 @@ class Timer {
             TIMER_PAUSED
         };
 
-        boost::atomic<boost::chrono::steady_clock::time_point> m_timerStart;
         boost::atomic<boost::chrono::steady_clock::time_point> m_expectedTimerEnd;
+        boost::atomic<boost::chrono::steady_clock::time_point> m_pauseStarted;
+
+        boost::chrono::steady_clock::time_point m_timerStart;
 
         boost::atomic<TimerState> m_timerState;
         ThreadPtr m_timerThread;
         Callback m_callback;
+
+        boost::mutex m_syncMutex;
+        boost::condition_variable m_syncVariable;
+
 };
 
 } // namespace base
